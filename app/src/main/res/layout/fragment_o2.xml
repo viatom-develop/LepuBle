@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.OxyFragment"
+    android:background="@color/colorGrayBg"
+    android:padding="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/common_card"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/ble_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:src="@mipmap/bluetooth_error"
+                    app:layout_constraintBottom_toBottomOf="@id/battery_left_duration"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/battery_left_duration" />
+
+                <ImageView
+                    android:id="@+id/battery"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="14dp"
+                    android:src="@drawable/batter_blue"
+                    android:layout_marginStart="5dp"
+                    app:layout_constraintBottom_toBottomOf="@id/battery_left_duration"
+                    app:layout_constraintStart_toEndOf="@id/ble_state"
+                    app:layout_constraintTop_toTopOf="@id/battery_left_duration" />
+
+                <TextView
+                    android:id="@+id/battery_left_duration"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:textColor="@color/Black"
+                    app:layout_constraintStart_toEndOf="@id/battery"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/device_sn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="未绑定设备"
+                    app:layout_constraintBottom_toBottomOf="@id/battery_left_duration"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/battery_left_duration" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_oxy"
+                android:text="\?"
+                android:textSize="32sp"
+                android:textColor="@color/text_blue"
+                android:textStyle="bold"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                app:layout_constraintTop_toBottomOf="@id/info"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/tv_oxy_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_blue"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto"
+                android:textSize="16sp"
+                android:text=" %"
+                app:layout_constraintBottom_toBottomOf="@id/tv_oxy"
+                app:layout_constraintStart_toEndOf="@id/tv_oxy"/>
+
+            <TextView
+                android:id="@+id/tv_pr"
+                android:text="\?"
+                android:textSize="24sp"
+                android:textColor="@color/text_green"
+                android:textStyle="bold"
+                android:layout_marginStart="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                app:layout_constraintBottom_toBottomOf="@id/tv_oxy"
+                app:layout_constraintStart_toEndOf="@id/tv_oxy_unit"/>
+
+            <TextView
+                android:id="@+id/tv_pr_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_green"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:fontFamily="@font/roboto"
+                android:text=" /min"
+                app:layout_constraintBottom_toBottomOf="@id/tv_oxy"
+                app:layout_constraintStart_toEndOf="@id/tv_pr"/>
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_pi"-->
+<!--                android:text="?"-->
+<!--                android:textSize="32sp"-->
+<!--                android:textColor="@color/Black"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_marginStart="25dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/info"-->
+<!--                app:layout_constraintStart_toEndOf="@id/tv_pr"/>-->
+
+
+            <TextView
+                android:id="@+id/unit_oxi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/Black"
+                app:layout_constraintTop_toBottomOf="@id/tv_oxy"
+                app:layout_constraintStart_toStartOf="@id/tv_oxy"
+                android:text="SpO2"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/Black"
+                app:layout_constraintTop_toBottomOf="@id/tv_pr"
+                app:layout_constraintStart_toStartOf="@id/tv_pr"
+                android:text="PR"/>
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/text_yellow"-->
+<!--                android:textSize="12sp"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/tv_pi"-->
+<!--                app:layout_constraintStart_toStartOf="@id/tv_pi"-->
+<!--                android:text="PI"/>-->
+
+
+            <RelativeLayout
+                android:id="@+id/oxi_view"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/unit_oxi"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Lepu Ble</string>
+    <string name="app_name_er1">Lepu Ble ER1</string>
+    <string name="app_name_er2">Lepu Ble ER2</string>
+    <string name="app_name_er3">Lepu Ble ER3</string>
+    <string name="app_name_oxy">Lepu Ble Oxy</string>
+    <string name="app_name_airbp">Lepu Ble AirBP</string>
+    <string name="app_name_bp2">Lepu Ble BP2</string>
+    <string name="app_name_kca">Lepu Ble KCA</string>
+
+    <string name="name_er1">乐普心贴</string>
+    <string name="name_er2">ER2</string>
+    <string name="name_kca">动态血压计</string>
+    <string name="name_o2">腕式血氧仪</string>
+    <string name="name_o2_max">腕式血氧仪 Max</string>
+    <string name="name_scale">S1 体脂秤</string>
+
+    <string name="add_module">添加模块</string>
+
+    <string name="relay_info">收发器信息</string>
+    <string name="host_config">中央站配置</string>
+    <string name="bind_device">绑定设备</string>
+    <string name="lock_screen">锁定</string>
+    <string name="user_agreement">用户协议</string>
+
+    <string name="measure_config">定时测量</string>
+    <string name="measure_config_note">请确保将血压计开关拨至自动模式</string>
+
+    <string name="not_bound">未绑定</string>
+    <string name="unbind">解绑</string>
+
+    <string name="disclaimer">免责声明</string>
+    <string name="app_version">APP版本</string>
+    <string name="check_update">检测更新</string>
+
+    <string name="about">关于</string>
+    <string name="newest_app_version">当前已经是最新版本</string>
+    <string name="update_version_tip">当前版本%s，最新版本%s，确定升级吗</string>
+    <string name="net_request_data">正在请求数据</string>
+    <string name="checking">正在检测中</string>
+    <string name="cancel">取消</string>
+    <string name="sure">确定</string>
+
+    <array name="modules">
+        <item>乐普心贴</item>
+        <item>腕式血氧仪</item>
+        <item>动态血压计</item>
+    </array>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="fullscreenDialogStyle">
+        <!--        <item name="android:windowFullscreen">true</item>-->
+        <!--        <item name="android:windowNoTitle">true</item>-->
+    </style>
+    <style name="common_card" parent="CardView">
+        <item name="cardElevation">4dp</item>
+        <item name="cardCornerRadius">5dp</item>
+    </style>
+</resources>

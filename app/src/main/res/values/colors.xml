@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#3DADD0</color>
+    <color name="colorPrimaryDark">#3291C3</color>
+    <color name="colorAccent">#03DAC5</color>
+
+    <color name="text_blue">#167AFF</color>
+    <color name="text_green">#01BF6F</color>
+    <color name="text_yellow">#F5A623</color>
+
+    <color name="color_connect">#f6a944</color>
+
+    <color name="colorffffff">#ffffff</color>
+    <color name="color333333">#333333</color>
+    <color name="color666666">#666666</color>
+    <color name="color3DADD0">#3DADD0</color>
+
+
+    <color name="color_white">#ffffff</color>
+    <color name="colorBFD4DD">#BFD4DD</color>
+    <color name="color015478">#015478</color>
+    <color name="colorB6CBD4">#B6CBD4</color>
+    <color name="colorF2F2F2">#F2F2F2</color>
+    <color name="colorD7D7D7">#D7D7D7</color>
+    <color name="color000000">#000000</color>
+    <color name="color7F7F7F">#7F7F7F</color>
+    <color name="colorB4B4B4">#B4B4B4</color>
+    <color name="colorAACCD6">#AACCD6</color>
+    <color name="color478090">#478090</color>
+    <color name="color367587">#367587</color>
+    <color name="color347586">#347586</color>
+    <color name="colorAEAEAE">#AEAEAE</color>
+    <color name="color8A8C8B">#8A8C8B</color>
+    <color name="color357488">#357488</color>
+    <color name="colorF1F7F9">#F1F7F9</color>
+
+    <color name="red_m">#ff7c7c</color>
+    <color name="red_b">#ff0000</color>
+    <color name="Black">#000000</color>
+    <color name="Black90">#E0000000</color>
+
+    <color name="color_ecg_bkg">#252D38</color>
+    <color name="color_ecg_grid_1mm">#dae9e9</color>
+    <color name="color_ecg_grid_5mm">#99CCCC</color>
+    <color name="color_ecg_line">#30b849</color>
+
+    <color name="ecg_bkg">#3e4e5e</color>
+    <color name="greenPrimary">#42be8d</color>
+    <color name="ecg_line_1">#5a6377</color>
+    <color name="ecg_line_2">#505c6a</color>
+    <color name="color_dash_board_bg">#3C4C5E</color>
+    <color name="color_dash_board_bg_dark">#1F252D</color>
+    <color name="color_hr_trace_bg">#29313C</color>
+    <color name="color_FED4E8">#FED4E8</color>
+    <color name="color_FF8384">#FF8384</color>
+
+    <color name="color_btn_grey">#B0B0B0</color>
+
+    <color name="transparent_grey">#cca3afb3</color>
+    <color name="foreground_disabled_material_dark">#80bebebe</color>
+    <color name="text_color_report_label">#313131</color>
+    <color name="text_color_report_value">#454545</color>
+
+    <color name="colorBlack">#000000</color>
+    <color name="colorBlack33">#cc000000</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorWhite33">#66ffffff</color>
+    <color name="colorWhite99">#99ffffff</color>
+    <color name="colorWhiteCC">#CCffffff</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorGray">#ECEDEE</color>
+    <color name="colorGrayDark">#929292</color>
+    <color name="colorBlue4B">#4b97c1</color>
+    <color name="colorBlue5B">#5B9BD5</color>
+    <color name="colorBlueLight">#03A9F4</color>
+    <color name="colorBlueDark">#0288D1</color>
+    <color name="colorBlueBar">#007AFF</color>
+    <color name="colorGreyTransparent">#cca3afb3</color>
+    <color name="colorBgGray">#E9E9E9</color>
+    <color name="colorOrange">#F5AF36</color>
+    <color name="colorRed">#F25555</color>
+    <color name="colorRedF8">#F84957</color>
+    <color name="colorRedDark">#FF0000</color>
+    <color name="colorGreenLight">#42BE8D</color>
+    <color name="colorGrayBg">#EFEFF4</color>
+    <color name="colorGrayBar">#F6F6F9</color>
+    <color name="colorGrayE1">#E1E1E1</color>
+    <color name="colorGrayEB">#EBEBEB</color>
+    <color name="colorGrayC8">#C8C8C8</color>
+    <color name="colorGrayE5">#E5E6E7</color>
+    <color name="colorGrayE9">#E9E9E9</color>
+
+    <color name="JProgressDialogBg">#ffffff</color>
+
+    <color name="ListBkg">#E9E9E9</color>
+    <color name="button_red">#ff8080</color>
+    <color name="text_color_item">#0288A8</color>
+    <color name="dialog_btn_positive_red">#FF2200</color>
+    <color name="dialog_btn_positive_red_press">#ff3000</color>
+    <color name="dialog_btn_positive_blue">#016FB5</color>
+    <color name="dialog_btn_positive_blue_press">#1596D2</color>
+
+    <color name="colorDeviceGrey">#7A7878</color>
+</resources>
