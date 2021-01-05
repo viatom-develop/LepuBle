@@ -5,11 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import com.blankj.utilcode.util.LogUtils
 import com.lepu.lepuble.BuildConfig
 import com.lepu.lepuble.R
-import com.lepu.lepuble.fragments.Er1Fragment
-import com.lepu.lepuble.fragments.KcaFragment
-import com.lepu.lepuble.fragments.OxyFragment
+import com.lepu.lepuble.fragments.*
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.vals.curModel
 import com.lepu.lepuble.viewmodel.MainViewModel
@@ -42,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initFragments() {
         val fragment: Fragment
+        LogUtils.d(BuildConfig.FLAVOR, "current model: $curModel")
         when(curModel) {
             Bluetooth.MODEL_ER1  -> {
                 fragment = Er1Fragment.newInstance()
@@ -50,12 +50,15 @@ class MainActivity : AppCompatActivity() {
                 fragment = Er1Fragment.newInstance()
             }
             Bluetooth.MODEL_ER3 -> {
-                fragment = Er1Fragment.newInstance()
+                fragment = Er3Fragment.newInstance()
             }
             Bluetooth.MODEL_CHECKO2 -> {
                 fragment = OxyFragment.newInstance()
             }
 //            Bluetooth.MODEL_AIRBP -> {}
+            Bluetooth.MODEL_S1 -> {
+                fragment = S1Fragment.newInstance()
+            }
             Bluetooth.MODEL_BP2 -> {
                 fragment = Er1Fragment.newInstance()
             }

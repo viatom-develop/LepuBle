@@ -61,6 +61,16 @@ android {
             ]
         }
 
+        s1 {
+            dimension 'type'
+            applicationIdSuffix ".s1"
+            versionNameSuffix "-s1"
+            manifestPlaceholders = [
+                    name: "@string/app_name_s1",
+//                    logo: "@mipmap/lepu_icon",
+            ]
+        }
+
         oxy {
             dimension 'type'
             applicationIdSuffix ".oxy"

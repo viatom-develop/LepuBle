@@ -78,6 +78,53 @@ object Er1BleResponse {
         }
     }
 
+    class Er3RtData constructor(var bytes: ByteArray) {
+        var content: ByteArray = bytes
+        var param: RtParam
+        var wave: Er3RtWave
+
+        init {
+            param = RtParam(bytes.copyOfRange(0, 20))
+            wave = Er3RtWave(bytes.copyOfRange(20, bytes.size))
+        }
+    }
+
+    @ExperimentalUnsignedTypes
+    class Er3RtWave constructor(var bytes: ByteArray) {
+        var content: ByteArray = bytes
+        var len: Int
+        val lead = 4
+        var wave = mutableListOf<ByteArray>()
+        var wFs : FloatArray? = null
+
+        init {
+            len = toUInt(bytes.copyOfRange(0, 2))
+            val lead1 = mutableListOf<Byte>()
+            val lead2 = mutableListOf<Byte>()
+            val lead3 = mutableListOf<Byte>()
+            val lead4 = mutableListOf<Byte>()
+            for (i in 2 until bytes.size step 8) {
+                lead1.add(bytes[i])
+                lead1.add(bytes[i+1])
+                lead2.add(bytes[i+2])
+                lead2.add(bytes[i+3])
+                lead3.add(bytes[i+4])
+                lead3.add(bytes[i+5])
+                lead4.add(bytes[i+6])
+                lead4.add(bytes[i+7])
+            }
+            wave.add(lead1.toByteArray())
+            wave.add(lead2.toByteArray())
+            wave.add(lead3.toByteArray())
+            wave.add(lead4.toByteArray())
+
+            wFs = FloatArray(len)
+            for (i in 0 until len) {
+                wFs!![i] = Er1DataController.byteTomV(lead1[2 * i], lead1[2 * i + 1])
+            }
+        }
+    }
+
 
     class Er1File(val name:String, val size: Int) {
         var fileName: String

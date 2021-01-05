@@ -8,30 +8,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
-import com.lepu.lepuble.ble.Er1BleInterface
+import com.lepu.lepuble.ble.S1BleInterface
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.vals.EventMsgConst
-import com.lepu.lepuble.viewmodel.Er1ViewModel
 import com.lepu.lepuble.viewmodel.MainViewModel
+import com.lepu.lepuble.viewmodel.S1ViewModel
 import com.lepu.lepuble.views.EcgBkg
 import com.lepu.lepuble.views.EcgView
-import kotlinx.android.synthetic.main.fragment_er1.*
+import kotlinx.android.synthetic.main.fragment_s1.*
 import java.text.SimpleDateFormat
 import kotlin.math.floor
 
-private const val ARG_ER1_DEVICE = "er1_device"
 
-class Er1Fragment : Fragment() {
+class S1Fragment : Fragment() {
 
-    private lateinit var bleInterface: Er1BleInterface
+    private lateinit var bleInterface: S1BleInterface
 
-    private val model: Er1ViewModel by viewModels()
+    private val s1Model: S1ViewModel by viewModels()
     private val activityModel: MainViewModel by activityViewModels()
 
     private lateinit var ecgBkg: EcgBkg
@@ -73,7 +71,7 @@ class Er1Fragment : Fragment() {
 //            LogUtils.d("DataRec: ${Er1DataController.dataRec.size}, delayed $interval")
 
             val temp = Er1DataController.draw(5)
-            model.dataSrc.value = Er1DataController.feed(model.dataSrc.value, temp)
+            s1Model.dataSrc.value = Er1DataController.feed(s1Model.dataSrc.value, temp)
         }
     }
 
@@ -98,17 +96,17 @@ class Er1Fragment : Fragment() {
 //            LogUtils.d("instance: ${device?.name}")
 //            connect()
 //        }
-        bleInterface = Er1BleInterface()
-        bleInterface.setViewModel(model)
+        bleInterface = S1BleInterface()
+        bleInterface.setViewModel(s1Model)
         addLiveDataObserver()
         addLiveEventObserver()
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
-        val v = inflater.inflate(R.layout.fragment_er1, container, false)
+        val v = inflater.inflate(R.layout.fragment_s1, container, false)
 
         // add view
         viewEcgBkg = v.findViewById<RelativeLayout>(R.id.ecg_bkg)
@@ -128,27 +126,27 @@ class Er1Fragment : Fragment() {
 
     @ExperimentalUnsignedTypes
     private fun initView() {
-        get_file_list.setOnClickListener {
-            bleInterface.getFileList()
-        }
-
-        /**
-         * 默认下载第一条数据
-         */
-        download_file.setOnClickListener {
-            if (bleInterface.fileList == null || bleInterface.fileList!!.size == 0) {
-                Toast.makeText(activity, "请先获取数据列表或数据列表为空", Toast.LENGTH_SHORT).show()
-            } else {
-                val name = bleInterface.fileList!!.fileList[0]
-                bleInterface.downloadFile(name)
-            }
-
-        }
-
-        get_rt_data.setOnClickListener {
-            bleInterface.runRtTask()
-            startWave()
-        }
+//        get_file_list.setOnClickListener {
+//            bleInterface.getFileList()
+//        }
+//
+//        /**
+//         * 默认下载第一条数据
+//         */
+//        download_file.setOnClickListener {
+//            if (bleInterface.fileList == null || bleInterface.fileList!!.size == 0) {
+//                Toast.makeText(activity, "请先获取数据列表或数据列表为空", Toast.LENGTH_SHORT).show()
+//            } else {
+//                val name = bleInterface.fileList!!.fileList[0]
+//                bleInterface.downloadFile(name)
+//            }
+//
+//        }
+//
+//        get_rt_data.setOnClickListener {
+//            bleInterface.runRtTask()
+//            startWave()
+//        }
     }
 
     private fun initEcgView() {
@@ -184,23 +182,24 @@ class Er1Fragment : Fragment() {
             }
         })
 
-        model.dataSrc.observe(this, {
+        s1Model.dataSrc.observe(this, {
             if (this::ecgView.isInitialized) {
                 ecgView.setDataSrc(it)
                 ecgView.invalidate()
             }
         })
 
-        model.er1.observe(this, {
+        s1Model.er1.observe(this, {
             device_sn.text = "SN：${it.sn}"
         })
 
-        model.connect.observe(this, {
+        s1Model.connect.observe(this, {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 ecg_view.visibility = View.VISIBLE
                 battery.visibility = View.VISIBLE
                 battery_left_duration.visibility = View.VISIBLE
+                startWave()
             } else {
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
                 ecg_view.visibility = View.INVISIBLE
@@ -210,7 +209,7 @@ class Er1Fragment : Fragment() {
             }
         })
 
-        model.duration.observe(this, {
+        s1Model.duration.observe(this, {
             if (it == 0) {
                 measure_duration.text = "?"
                 start_at.text = "?"
@@ -229,16 +228,26 @@ class Er1Fragment : Fragment() {
             }
         })
 
-        model.battery.observe(this, {
+        s1Model.battery.observe(this, {
             battery.setImageLevel(it)
         })
 
-        model.hr.observe(this, {
+        s1Model.hr.observe(this, {
             if (it == 0) {
                 hr.text = "?"
             } else {
                 hr.text = it.toString()
             }
+        })
+
+        s1Model.weight.observe(this, {
+            weight.text = it.toString()
+        })
+        s1Model.unit.observe(this,{
+            unit.text = it.toString()
+        })
+        s1Model.resistance.observe(this, {
+            resistance.text = it.toString()
         })
     }
 
@@ -255,21 +264,13 @@ class Er1Fragment : Fragment() {
                 })
     }
 
-    @SuppressLint("UseRequireInsteadOfGet")
     private fun connect(b: Bluetooth) {
-        this@Er1Fragment.context?.let { bleInterface.connect(it, b.device) }
+        this@S1Fragment.context?.let { bleInterface.connect(it, b.device) }
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(b: Bluetooth) =
-            Er1Fragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_ER1_DEVICE, b)
-                }
-            }
 
         @JvmStatic
-        fun newInstance() = Er1Fragment()
+        fun newInstance() = S1Fragment()
     }
 }

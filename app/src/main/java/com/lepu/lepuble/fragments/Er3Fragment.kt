@@ -3,21 +3,21 @@ package com.lepu.lepuble.fragments
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
-import com.lepu.lepuble.ble.Er1BleInterface
+import com.lepu.lepuble.ble.Er3BleInterface
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.vals.EventMsgConst
-import com.lepu.lepuble.viewmodel.Er1ViewModel
+import com.lepu.lepuble.viewmodel.Er3ViewModel
 import com.lepu.lepuble.viewmodel.MainViewModel
 import com.lepu.lepuble.views.EcgBkg
 import com.lepu.lepuble.views.EcgView
@@ -25,13 +25,10 @@ import kotlinx.android.synthetic.main.fragment_er1.*
 import java.text.SimpleDateFormat
 import kotlin.math.floor
 
-private const val ARG_ER1_DEVICE = "er1_device"
+class Er3Fragment: Fragment() {
+    private lateinit var bleInterface: Er3BleInterface
 
-class Er1Fragment : Fragment() {
-
-    private lateinit var bleInterface: Er1BleInterface
-
-    private val model: Er1ViewModel by viewModels()
+    private val model: Er3ViewModel by viewModels()
     private val activityModel: MainViewModel by activityViewModels()
 
     private lateinit var ecgBkg: EcgBkg
@@ -98,15 +95,15 @@ class Er1Fragment : Fragment() {
 //            LogUtils.d("instance: ${device?.name}")
 //            connect()
 //        }
-        bleInterface = Er1BleInterface()
+        bleInterface = Er3BleInterface()
         bleInterface.setViewModel(model)
         addLiveDataObserver()
         addLiveEventObserver()
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val v = inflater.inflate(R.layout.fragment_er1, container, false)
 
@@ -257,17 +254,10 @@ class Er1Fragment : Fragment() {
 
     @SuppressLint("UseRequireInsteadOfGet")
     private fun connect(b: Bluetooth) {
-        this@Er1Fragment.context?.let { bleInterface.connect(it, b.device) }
+        this@Er3Fragment.context?.let { bleInterface.connect(it, b.device) }
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(b: Bluetooth) =
-            Er1Fragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_ER1_DEVICE, b)
-                }
-            }
 
         @JvmStatic
         fun newInstance() = Er1Fragment()
