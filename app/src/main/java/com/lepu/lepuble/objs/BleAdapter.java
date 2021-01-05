@@ -47,6 +47,7 @@ public class BleAdapter extends BaseAdapter {
             LayoutInflater inflater = LayoutInflater.from(context);
             v = inflater.inflate(R.layout.list_bluetooth, null);
             vh.name = v.findViewById(R.id.name);
+            vh.rssi = v.findViewById(R.id.rssi);
 //            vh.layout = v.findViewById(R.id.layout_er1);
 //            vh.layout.setOnClickListener(mListener);
 
@@ -55,10 +56,11 @@ public class BleAdapter extends BaseAdapter {
             vh = (ViewHolder) v.getTag();
         }
 
-//        Bluetooth b = deviceList.get(p);
-        String name = deviceList.get(p).getName();
+        Bluetooth b = deviceList.get(p);
+//        String name = deviceList.get(p).getName();
 //        String sn = name.substring(name.length()-4);
-        vh.name.setText(name);
+        vh.name.setText(b.getName());
+        vh.rssi.setText(b.getRssi() + " dbm");
 //        vh.name.setText(b.getName() + " => " + b.getMacAddr());
 //        vh.layout.setTag(b);
 
@@ -83,5 +85,6 @@ public class BleAdapter extends BaseAdapter {
     class ViewHolder {
 //        private ConstraintLayout layout;
         private TextView name;
+        private TextView rssi;
     }
 }
