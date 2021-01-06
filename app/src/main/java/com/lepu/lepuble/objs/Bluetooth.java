@@ -18,7 +18,8 @@ public class Bluetooth implements Parcelable {
 //    public static final String BT_NAME_WEARO2 = "WearO2";
 //    public static final String BT_NAME_SLEEPU = "SleepU";
     public static final String BT_NAME_ER1 = "ER1";
-//    public static final String BT_NAME_ER2 = "DuoEK";
+    public static final String BT_NAME_DUOEK = "DuoEK";
+    public static final String BT_NAME_ER2 = "ER2";
 //    public static final String BT_NAME_PULSEBIT_EX = "Pulsebit";
     public static final String BT_NAME_OXY_LINK = "Oxylink";
     public static final String BT_NAME_KIDS_O2 = "KidsO2";
@@ -71,6 +72,8 @@ public class Bluetooth implements Parcelable {
         String deviceNamePrefix = deviceName.split(" ")[0];
         switch (deviceNamePrefix) {
             case BT_NAME_ER1:
+            case BT_NAME_ER2:
+            case BT_NAME_DUOEK:
                 return MODEL_ER1;
 //            case BT_NAME_ER2:
 //                return MODEL_ER2;
