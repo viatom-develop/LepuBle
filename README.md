@@ -10,6 +10,7 @@ Here is a list of supported devices
 | s1 body fat scale | s1 |
 | O2 serial: CheckO2, O2Ring, SleepO2 ... | oxy |
 | KCA BP monitor | kca |
+| BP2 | bp2 |
 
 
 
