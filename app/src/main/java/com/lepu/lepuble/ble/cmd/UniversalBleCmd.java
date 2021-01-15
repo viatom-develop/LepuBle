@@ -1,19 +1,25 @@
 package com.lepu.lepuble.ble.cmd;
 
-import android.util.Log;
-
 import com.blankj.utilcode.util.LogUtils;
+import com.lepu.lepuble.ble.utils.BleCRC;
 import com.lepu.lepuble.utils.ByteArrayKt;
 
-public class Er1BleCmd {
+/**
+ * universal command for Viatom devices
+ */
+public class UniversalBleCmd {
 
-    public static int ER1_CMD_GET_INFO = 0xE1;
-    public static int ER1_CMD_RT_DATA = 0x03;
-    public static int ER1_CMD_VIBRATE_CONFIG = 0x00;
-    public static int ER1_CMD_READ_FILE_LIST = 0xF1;
-    public static int ER1_CMD_READ_FILE_START = 0xF2;
-    public static int ER1_CMD_READ_FILE_DATA = 0xF3;
-    public static int ER1_CMD_READ_FILE_END = 0xF4;
+    public static int GET_INFO = 0xE1;
+    public static int RESET = 0xE2;
+    public static int FACTORY_RESET = 0xE3;
+    public static int BURN_FACTORY_INFO = 0xEA;
+    public static int BURN_LOCK_FLASH = 0xEB;
+    public static int RT_DATA = 0x03;
+    public static int VIBRATE_CONFIG = 0x00;
+    public static int READ_FILE_LIST = 0xF1;
+    public static int READ_FILE_START = 0xF2;
+    public static int READ_FILE_DATA = 0xF3;
+    public static int READ_FILE_END = 0xF4;
 
     private static int seqNo = 0;
     private static void addNo() {
@@ -35,7 +41,7 @@ public class Er1BleCmd {
         cmd[5] = (byte) 0x01;
         cmd[6] = (byte) 0x00;
         cmd[7] = (byte) 0x7D;  // 0 -> 125hz;  1-> 62.5hz
-        cmd[8] = Er1BleCRC.calCRC8(cmd);
+        cmd[8] = BleCRC.calCRC8(cmd);
 
         addNo();
         return cmd;
@@ -52,7 +58,7 @@ public class Er1BleCmd {
         cmd[4] = (byte) seqNo;
         cmd[5] = (byte) 0;
         cmd[6] = (byte) 0;
-        cmd[7] = Er1BleCRC.calCRC8(cmd);
+        cmd[7] = BleCRC.calCRC8(cmd);
 
         addNo();
 
@@ -78,7 +84,7 @@ public class Er1BleCmd {
 
         cmd[8] = (byte) threshold1;
         cmd[9] = (byte) threshold2;
-        cmd[10] = Er1BleCRC.calCRC8(cmd);
+        cmd[10] = BleCRC.calCRC8(cmd);
         addNo();
 
         LogUtils.d(ByteArrayKt.bytesToHex(cmd));
@@ -96,7 +102,7 @@ public class Er1BleCmd {
         cmd[4] = (byte) seqNo;
         cmd[5] = (byte) 0x00;
         cmd[6] = (byte) 0x00;
-        cmd[7] = Er1BleCRC.calCRC8(cmd);
+        cmd[7] = BleCRC.calCRC8(cmd);
         addNo();
 
         LogUtils.d(ByteArrayKt.bytesToHex(cmd));
@@ -107,13 +113,13 @@ public class Er1BleCmd {
 
         byte[] cmd = new byte[8+len];
         cmd[0] = (byte) 0xA5;
-        cmd[1] = (byte) ER1_CMD_READ_FILE_LIST;
-        cmd[2] = (byte) ~ER1_CMD_READ_FILE_LIST;
+        cmd[1] = (byte) READ_FILE_LIST;
+        cmd[2] = (byte) ~READ_FILE_LIST;
         cmd[3] = (byte) 0x00;
         cmd[4] = (byte) seqNo;
         cmd[5] = (byte) 0x00;
         cmd[6] = (byte) 0x00;
-        cmd[7] = Er1BleCRC.calCRC8(cmd);
+        cmd[7] = BleCRC.calCRC8(cmd);
         addNo();
 
         LogUtils.d(ByteArrayKt.bytesToHex(cmd));
@@ -125,8 +131,8 @@ public class Er1BleCmd {
 
         byte[] cmd = new byte[8+len];
         cmd[0] = (byte) 0xA5;
-        cmd[1] = (byte) ER1_CMD_READ_FILE_START;
-        cmd[2] = (byte) ~ER1_CMD_READ_FILE_START;
+        cmd[1] = (byte) READ_FILE_START;
+        cmd[2] = (byte) ~READ_FILE_START;
         cmd[3] = (byte) 0x00;
         cmd[4] = (byte) seqNo;
         cmd[5] = (byte) 0x14;
@@ -139,7 +145,7 @@ public class Er1BleCmd {
         cmd[24] = (byte) (offset >> 8);
         cmd[25] = (byte) (offset >> 16);
         cmd[26] = (byte) (offset >> 24);
-        cmd[27] = Er1BleCRC.calCRC8(cmd);
+        cmd[27] = BleCRC.calCRC8(cmd);
         addNo();
 
         LogUtils.d(ByteArrayKt.bytesToHex(cmd));
@@ -150,8 +156,8 @@ public class Er1BleCmd {
         int len = 4;
         byte[] cmd = new byte[8+len];
         cmd[0] = (byte) 0xA5;
-        cmd[1] = (byte) ER1_CMD_READ_FILE_DATA;
-        cmd[2] = (byte) ~ER1_CMD_READ_FILE_DATA;
+        cmd[1] = (byte) READ_FILE_DATA;
+        cmd[2] = (byte) ~READ_FILE_DATA;
         cmd[3] = (byte) 0x00;
         cmd[4] = (byte) seqNo;
         cmd[5] = (byte) 0x04;
@@ -162,7 +168,7 @@ public class Er1BleCmd {
         cmd[9] = (byte) (offset >> 16);
         cmd[10] = (byte) (offset >> 24);
 
-        cmd[11] = Er1BleCRC.calCRC8(cmd);
+        cmd[11] = BleCRC.calCRC8(cmd);
         addNo();
         LogUtils.d(ByteArrayKt.bytesToHex(cmd));
         return cmd;
@@ -171,13 +177,13 @@ public class Er1BleCmd {
         int len = 0;
         byte[] cmd = new byte[8+len];
         cmd[0] = (byte) 0xA5;
-        cmd[1] = (byte) ER1_CMD_READ_FILE_END;
-        cmd[2] = (byte) ~ER1_CMD_READ_FILE_END;
+        cmd[1] = (byte) READ_FILE_END;
+        cmd[2] = (byte) ~READ_FILE_END;
         cmd[3] = (byte) 0x00;
         cmd[4] = (byte) seqNo;
         cmd[5] = (byte) 0x00;
         cmd[6] = (byte) 0x00;
-        cmd[7] = Er1BleCRC.calCRC8(cmd);
+        cmd[7] = BleCRC.calCRC8(cmd);
         addNo();
 
         LogUtils.d(ByteArrayKt.bytesToHex(cmd));

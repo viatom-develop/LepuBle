@@ -9,7 +9,7 @@ object Er1BleResponse {
 
     @ExperimentalUnsignedTypes
     @Parcelize
-    class Er1Response @ExperimentalUnsignedTypes constructor(var bytes: ByteArray) : Parcelable {
+    class Er1Response constructor(var bytes: ByteArray) : Parcelable {
         var cmd: Int
         var pkgType: Byte
         var pkgNo: Int
@@ -27,7 +27,8 @@ object Er1BleResponse {
 
 
     @Parcelize
-    class RtData @ExperimentalUnsignedTypes constructor(var bytes: ByteArray) : Parcelable {
+    @ExperimentalUnsignedTypes
+    class RtData constructor(var bytes: ByteArray) : Parcelable {
         var content: ByteArray = bytes
         var param: RtParam
         var wave: RtWave
@@ -40,7 +41,7 @@ object Er1BleResponse {
 
     @ExperimentalUnsignedTypes
     @Parcelize
-    class RtParam @ExperimentalUnsignedTypes constructor(var bytes: ByteArray) : Parcelable {
+    class RtParam constructor(var bytes: ByteArray) : Parcelable {
         var hr: Int
         var sysFlag: Byte
         var battery: Int
@@ -62,7 +63,8 @@ object Er1BleResponse {
     }
 
     @Parcelize
-    class RtWave @ExperimentalUnsignedTypes constructor(var bytes: ByteArray) : Parcelable {
+    @ExperimentalUnsignedTypes
+    class RtWave constructor(var bytes: ByteArray) : Parcelable {
         var content: ByteArray = bytes
         var len: Int
         var wave: ByteArray
@@ -78,6 +80,7 @@ object Er1BleResponse {
         }
     }
 
+    @ExperimentalUnsignedTypes
     class Er3RtData constructor(var bytes: ByteArray) {
         var content: ByteArray = bytes
         var param: RtParam

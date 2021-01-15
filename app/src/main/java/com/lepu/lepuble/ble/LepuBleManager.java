@@ -9,17 +9,21 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-
 import com.blankj.utilcode.util.LogUtils;
+import com.lepu.lepuble.ble.cmd.UniversalBleResponse;
+import com.lepu.lepuble.ble.utils.BleCRC;
+import com.lepu.lepuble.ble.cmd.Er1BleResponse;
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd;
+import com.lepu.lepuble.utils.ByteUtils;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.data.Data;
 
 
-public class Er1BleManager extends BleManager {
+public class LepuBleManager extends BleManager {
     public final static UUID service_uuid =
             UUID.fromString("14839ac4-7d7e-415c-9a42-167340cf2339");
     public final static UUID write_uuid =
@@ -30,12 +34,13 @@ public class Er1BleManager extends BleManager {
     private BluetoothGattCharacteristic write_char, notify_char;
 
     private onNotifyListener listener;
+    private byte[] pool = null;
 
     public void setNotifyListener(onNotifyListener listener) {
         this.listener = listener;
     }
 
-    public Er1BleManager(@NonNull final Context context) {
+    public LepuBleManager(@NonNull final Context context) {
         super(context);
     }
 
@@ -101,7 +106,9 @@ public class Er1BleManager extends BleManager {
                     .enqueue();
             // You may easily enqueue more operations here like such:
 
+            //                        LogUtils.d(device.getName() + " received: " + ByteArrayKt.bytesToHex(data.getValue()));
             setNotificationCallback(notify_char)
+//                    .with(LepuBleManager.this::onNotify);
                     .with((device, data) -> {
 //                        LogUtils.d(device.getName() + " received: " + ByteArrayKt.bytesToHex(data.getValue()));
                         listener.onNotify(device, data);
@@ -113,18 +120,6 @@ public class Er1BleManager extends BleManager {
             // get info
             getInfo();
 
-//            writeCharacteristic(write_char, "Hello World!".getBytes())
-//                    .done(device -> log(Log.INFO, "Greetings sent"))
-//                    .enqueue();
-            // Set a callback for your notifications. You may also use waitForNotification(...).
-            // Both callbacks will be called when notification is received.
-//            waitForNotification(notify_char);
-
-            // If you need to send very long data using Write Without Response, use split()
-            // or define your own splitter in split(DataSplitter splitter, WriteProgressCallback cb).
-//            writeCharacteristic(write_char, "Very, very long data that will no fit into MTU")
-//                    .split()
-//                    .enqueue();
         }
 
         @Override
@@ -157,47 +152,49 @@ public class Er1BleManager extends BleManager {
         void onNotify(BluetoothDevice device, Data data);
     }
 
-    // Define your API.
-
-//    private abstract class DataCallback implements DataReceivedCallback {
-//        @Override
-//        public void onDataReceived(@NonNull final BluetoothDevice device, @NonNull final Data data) {
-//            // Some validation?
-//            listener.onNotify(device, data);
-//            LogUtils.d("onNotify", device.getName(), data.getValue() == null ? null : data.getValue().length);
-//            onNotifySet();
+//    public interface onNotifyListener {
+//        void onResponse(UniversalBleResponse.LepuResponse response);
+//    }
+//
+//    private void onNotify(BluetoothDevice device, Data data) {
+//        if (data != null) {
+//            pool = ByteUtils.add(pool, data.getValue());
+//        }
+//        if (pool != null) {
+//            pool = hsaResponse(pool);
+//        }
+//    }
+//
+//    private byte[] hsaResponse(byte[] bytes) {
+//        byte[] bytesLeft = bytes;
+//
+//        if (bytes == null || bytes.length <= 0) {
+//            return bytes;
 //        }
 //
-//        abstract void onNotifySet();
-//    }
-
-//    /** Initialize time machine. */
-//    public void enableFluxCapacitor(final int year) {
-//        waitForNotification(notify_char)
-//                .trigger(
-//                        writeCharacteristic(write_char, new FluxJumpRequest(year))
-//                                .done(device -> log(Log.INDO, "Power on command sent"))
-//                )
-//                .with(new FluxHandler() {
-//                    public void onFluxCapacitorEngaged() {
-//                        log(Log.WARN, "Flux Capacitor enabled! Going back to the future in 3 seconds!");
+//        for (int i = 0; i < bytes.length-8; i++) {
+//            if (bytes[i] != 0xa5 || bytes[i+1] != ~bytes[i+2]) {
+//                continue;
+//            }
 //
-//                        sleep(3000).enqueue();
-//                        write(write_char, "Hold on!".getBytes())
-//                                .done(device -> log(Log.WARN, "It's " + year + "!"))
-//                                .fail((device, status) -> "Not enough flux? (status: " + status + ")")
-//                                .enqueue();
-//                    }
-//                })
-//                .enqueue();
-//    }
+//            // content length
+//            int len = (bytes[i+5] & 0xff) + ((bytes[i+6] &0xff) << 8);
+//            if (i+8+len > bytes.length) {
+//                continue;
+//            }
 //
-//    /**
-//     * Aborts time travel. Call during 3 sec after enabling Flux Capacitor and only if you don't
-//     * like 2020.
-//     */
-//    public void abort() {
-//        cancelQueue();
+//            byte[] tmp = Arrays.copyOfRange(bytes, i, i+8+len);
+//            if (tmp[-1] == BleCRC.calCRC8(tmp)) {
+//                UniversalBleResponse.LepuResponse response = new UniversalBleResponse.LepuResponse(tmp);
+//                listener.onResponse(response);
+//
+//                bytesLeft = (i+8+len == bytes.length) ? null : (Arrays.copyOfRange(bytes, i+8+len, bytes.length));
+//
+//                hsaResponse(bytesLeft);
+//
+//            }
+//        }
+//        return bytesLeft;
 //    }
 
     @Override

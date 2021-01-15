@@ -3,32 +3,42 @@ package com.lepu.lepuble.fragments
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
-import com.lepu.lepuble.ble.Er3BleInterface
+import com.lepu.lepuble.ble.Bp2BleInterface
+import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_BP_MEASURE_END
+import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_BP_MEASURING
+import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_CHARGE
+import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_ECG_MEASURE_END
+import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_ECG_MEASURING
+import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_MEMERY
+import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_READY
+import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_SLEEP
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.vals.EventMsgConst
-import com.lepu.lepuble.viewmodel.Er3ViewModel
+import com.lepu.lepuble.viewmodel.Bp2ViewModel
 import com.lepu.lepuble.viewmodel.MainViewModel
 import com.lepu.lepuble.views.EcgBkg
 import com.lepu.lepuble.views.EcgView
-import kotlinx.android.synthetic.main.fragment_er1.*
+import kotlinx.android.synthetic.main.fragment_bp2.*
 import java.text.SimpleDateFormat
 import kotlin.math.floor
 
-class Er3Fragment: Fragment() {
-    private lateinit var bleInterface: Er3BleInterface
 
-    private val model: Er3ViewModel by viewModels()
+class Bp2Fragment : Fragment() {
+
+    private lateinit var bleInterface: Bp2BleInterface
+
+    private val model: Bp2ViewModel by viewModels()
     private val activityModel: MainViewModel by activityViewModels()
 
     private lateinit var ecgBkg: EcgBkg
@@ -39,9 +49,8 @@ class Er3Fragment: Fragment() {
 
     private var device: Bluetooth? = null
 
-
     /**
-     * rt wave
+     * rt ecg wave
      */
     private val waveHandler = Handler()
 
@@ -90,22 +99,19 @@ class Er3Fragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        arguments?.let {
-//            device = it.getParcelable(ARG_ER1_DEVICE)
-//            LogUtils.d("instance: ${device?.name}")
-//            connect()
-//        }
-        bleInterface = Er3BleInterface()
+
+        bleInterface = Bp2BleInterface()
         bleInterface.setViewModel(model)
         addLiveDataObserver()
         addLiveEventObserver()
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        val v = inflater.inflate(R.layout.fragment_er1, container, false)
+        // Inflate the layout for this fragment
+        val v = inflater.inflate(R.layout.fragment_bp2, container, false)
 
         // add view
         viewEcgBkg = v.findViewById<RelativeLayout>(R.id.ecg_bkg)
@@ -188,7 +194,7 @@ class Er3Fragment: Fragment() {
             }
         })
 
-        model.er3.observe(this, {
+        model.bp2.observe(this, {
             device_sn.text = "SN：${it.sn}"
         })
 
@@ -207,22 +213,69 @@ class Er3Fragment: Fragment() {
             }
         })
 
+        model.status.observe(this, {
+            when(it) {
+                STATUS_SLEEP -> status.text = "STATUS_SLEEP"
+                STATUS_MEMERY -> status.text = "STATUS_SLEEP"
+                STATUS_CHARGE -> status.text = "STATUS_CHARGE"
+                STATUS_READY -> status.text = "STATUS_READY"
+                STATUS_BP_MEASURING -> status.text = "STATUS_BP_MEASURING"
+                STATUS_BP_MEASURE_END -> status.text = "STATUS_BP_MEASURE_END"
+                STATUS_ECG_MEASURING -> status.text = "STATUS_ECG_MEASURING"
+                STATUS_ECG_MEASURE_END -> status.text = "STATUS_ECG_MEASURE_END"
+            }
+        })
+
         model.duration.observe(this, {
             if (it == 0) {
                 measure_duration.text = "?"
                 start_at.text = "?"
             } else {
-                val day = it/60/60/24
-                val hour = it/60/60 % 24
-                val minute = it/60 % 60
+                measure_duration.text = "$it s"
 
-                val start = System.currentTimeMillis() - it*1000
-                start_at.text = SimpleDateFormat("yyyy/MM/dd HH:mm").format(start)
-                if (day != 0) {
-                    measure_duration.text = "$day 天 $hour 小时 $minute 分钟"
-                } else {
-                    measure_duration.text = "$hour 小时 $minute 分钟"
-                }
+//                val day = it/60/60/24
+//                val hour = it/60/60 % 24
+//                val minute = it/60 % 60
+//
+//                val start = System.currentTimeMillis() - it*1000
+//                start_at.text = SimpleDateFormat("yyyy/MM/dd HH:mm").format(start)
+//                if (day != 0) {
+//                    measure_duration.text = "$day 天 $hour 小时 $minute 分钟"
+//                } else {
+//                    measure_duration.text = "$hour 小时 $minute 分钟"
+//                }
+            }
+        })
+
+        model.pr.observe(this, {
+            if (it == 0) {
+                tv_pr.text = "?"
+            } else {
+                tv_pr.text = it.toString()
+            }
+        })
+
+        model.sys.observe(this, {
+            if (it == 0) {
+                tv_sys.text = "?"
+            } else {
+                tv_sys.text = it.toString()
+            }
+        })
+
+        model.dia.observe(this, {
+            if (it == 0) {
+                tv_dia.text = "?"
+            } else {
+                tv_dia.text = it.toString()
+            }
+        })
+
+        model.mean.observe(this, {
+            if (it == 0) {
+                tv_mean.text = "?"
+            } else {
+                tv_mean.text = it.toString()
             }
         })
 
@@ -247,19 +300,19 @@ class Er3Fragment: Fragment() {
      */
     private fun addLiveEventObserver() {
         LiveEventBus.get(EventMsgConst.EventDeviceChoosen)
-                .observe(this, {
-                    connect(it as Bluetooth)
-                })
+            .observe(this, {
+                connect(it as Bluetooth)
+            })
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
     private fun connect(b: Bluetooth) {
-        this@Er3Fragment.context?.let { bleInterface.connect(it, b.device) }
+        this@Bp2Fragment.context?.let { bleInterface.connect(it, b.device) }
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance() = Er3Fragment()
+        fun newInstance() = Bp2Fragment()
     }
 }

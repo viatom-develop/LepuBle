@@ -6,14 +6,13 @@ import android.os.Handler
 import androidx.annotation.NonNull
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.lepu.lepuble.ble.cmd.Er1BleCRC
-import com.lepu.lepuble.ble.cmd.Er1BleCmd
+import com.lepu.lepuble.ble.utils.BleCRC
+import com.lepu.lepuble.ble.cmd.UniversalBleCmd
 import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.obj.Er1DataController
-import com.lepu.lepuble.ble.obj.Er1Device
+import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.add
-import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er1ViewModel
@@ -43,9 +42,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                 count++
                 getRtData()
 //                LogUtils.d("RtTask: $count")
-            } else {
-                LiveEventBus.get(EventMsgConst.EventEr1InvalidRtData)
-                    .post(true)
             }
         }
     }
@@ -60,10 +56,9 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
      */
     public var state = false
     private var connecting = false
-    private var linkLost = true
 
     public fun connect(context: Context, @NonNull device: BluetoothDevice) {
-        if (connecting || state || !linkLost) {
+        if (connecting || state) {
             return
         }
         LogUtils.d("try connect: ${device.name}")
@@ -86,7 +81,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     public fun disconnect() {
         manager.disconnect()
         manager.close()
-        linkLost = true
 
         this.onDeviceDisconnected(mydevice, ConnectionObserver.REASON_SUCCESS)
     }
@@ -95,14 +89,14 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
      * get device info
      */
     public fun getInfo() {
-        sendCmd(Er1BleCmd.getInfo())
+        sendCmd(UniversalBleCmd.getInfo())
     }
 
     /**
      * get real-time data
      */
     public fun getRtData() {
-        sendCmd(Er1BleCmd.getRtData())
+        sendCmd(UniversalBleCmd.getRtData())
     }
 
     /**
@@ -116,7 +110,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
      * get file list
      */
     public fun getFileList() {
-        sendCmd(Er1BleCmd.getFileList())
+        sendCmd(UniversalBleCmd.getFileList())
     }
 
     /**
@@ -127,7 +121,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     var fileList: Er1BleResponse.Er1FileList? = null
     public fun downloadFile(name : ByteArray) {
         curFileName = String(name)
-        sendCmd(Er1BleCmd.readFileStart(name, 0))
+        sendCmd(UniversalBleCmd.readFileStart(name, 0))
     }
 
     private fun sendCmd(bs: ByteArray) {
@@ -141,15 +135,15 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     private fun onResponseReceived(response: Er1BleResponse.Er1Response) {
 //        LogUtils.d("received: ${response.cmd}")
         when(response.cmd) {
-            Er1BleCmd.ER1_CMD_GET_INFO -> {
-                val erInfo = Er1Device(response.content)
+            UniversalBleCmd.GET_INFO -> {
+                val erInfo = LepuDevice(response.content)
                 model.er1.value = erInfo
                 LiveEventBus.get(EventMsgConst.EventEr1Info)
                     .post(erInfo)
 
             }
 
-            Er1BleCmd.ER1_CMD_RT_DATA -> {
+            UniversalBleCmd.RT_DATA -> {
                 val rtData = Er1BleResponse.RtData(response.content)
                 model.hr.value = rtData.param.hr
                 model.duration.value = rtData.param.recordTime
@@ -162,35 +156,35 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                     .post(rtData)
             }
 
-            Er1BleCmd.ER1_CMD_READ_FILE_LIST -> {
+            UniversalBleCmd.READ_FILE_LIST -> {
                 fileList = Er1BleResponse.Er1FileList(response.content)
                 LogUtils.d(fileList.toString())
             }
 
-            Er1BleCmd.ER1_CMD_READ_FILE_START -> {
+            UniversalBleCmd.READ_FILE_START -> {
                 if (response.pkgType == 0x01.toByte()) {
                     curFile = Er1BleResponse.Er1File(curFileName!!, toUInt(response.content))
-                    sendCmd(Er1BleCmd.readFileData(0))
+                    sendCmd(UniversalBleCmd.readFileData(0))
                 } else {
-                    LogUtils.d("读文件失败：${response.pkgType}")
+                    LogUtils.d("read file failed：${response.pkgType}")
                 }
             }
 
-            Er1BleCmd.ER1_CMD_READ_FILE_DATA -> {
+            UniversalBleCmd.READ_FILE_DATA -> {
                 curFile?.apply {
                     this.addContent(response.content)
-                    LogUtils.d("读文件：${curFile?.fileName}   => ${curFile?.index} / ${curFile?.fileSize}")
+                    LogUtils.d("read file：${curFile?.fileName}   => ${curFile?.index} / ${curFile?.fileSize}")
 
                     if (this.index < this.fileSize) {
-                        sendCmd(Er1BleCmd.readFileData(this.index))
+                        sendCmd(UniversalBleCmd.readFileData(this.index))
                     } else {
-                        sendCmd(Er1BleCmd.readFileEnd())
+                        sendCmd(UniversalBleCmd.readFileEnd())
                     }
                 }
             }
 
-            Er1BleCmd.ER1_CMD_READ_FILE_END -> {
-                LogUtils.d("读文件完成: ${curFile?.fileName} ==> ${curFile?.fileSize}")
+            UniversalBleCmd.READ_FILE_END -> {
+                LogUtils.d("read file finished: ${curFile?.fileName} ==> ${curFile?.fileSize}")
                 curFileName = null
                 curFile = null
             }
@@ -218,7 +212,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             }
 
             val temp: ByteArray = bytes.copyOfRange(i, i+8+len)
-            if (temp.last() == Er1BleCRC.calCRC8(temp)) {
+            if (temp.last() == BleCRC.calCRC8(temp)) {
                 val bleResponse = Er1BleResponse.Er1Response(temp)
 //                LogUtils.d("get response: ${temp.toHex()}" )
                 onResponseReceived(bleResponse)
@@ -252,7 +246,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         model.connect.value = state
         LogUtils.d(mydevice.name)
 
-        linkLost = false
         connecting = false
     }
 
@@ -273,9 +266,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         clearVar()
 
         connecting = false
-        if (reason == ConnectionObserver.REASON_LINK_LOSS) {
-            linkLost = true
-        }
 
         LiveEventBus.get(EventMsgConst.EventDeviceDisconnect).post(Bluetooth.MODEL_ER1)
     }

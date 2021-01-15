@@ -64,7 +64,7 @@
                     android:id="@+id/device_sn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="未绑定设备"
+                    android:text="no bind device"
                     app:layout_constraintBottom_toBottomOf="@id/battery_left_duration"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/battery_left_duration" />

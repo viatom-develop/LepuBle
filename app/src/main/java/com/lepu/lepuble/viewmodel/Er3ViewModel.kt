@@ -2,7 +2,7 @@ package com.lepu.lepuble.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.lepu.lepuble.ble.obj.Er1Device
+import com.lepu.lepuble.ble.obj.LepuDevice
 
 class Er3ViewModel : ViewModel() {
 
@@ -10,8 +10,8 @@ class Er3ViewModel : ViewModel() {
         MutableLiveData<Boolean>()
     }
 
-    val er1: MutableLiveData<Er1Device> by lazy {
-        MutableLiveData<Er1Device>()
+    val er3: MutableLiveData<LepuDevice> by lazy {
+        MutableLiveData<LepuDevice>()
     }
 
     val battery: MutableLiveData<Int> by lazy {
@@ -26,7 +26,7 @@ class Er3ViewModel : ViewModel() {
         MutableLiveData<Int>()
     }
 
-    // 已测量时长
+    // measure duration
     val duration: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }

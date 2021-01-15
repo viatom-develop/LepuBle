@@ -1,4 +1,4 @@
-package com.lepu.lepuble.ble.cmd;
+package com.lepu.lepuble.ble.utils;
 
 public class KcaBleCrc {
 

@@ -75,8 +75,8 @@ public class Bluetooth implements Parcelable {
             case BT_NAME_ER2:
             case BT_NAME_DUOEK:
                 return MODEL_ER1;
-//            case BT_NAME_ER2:
-//                return MODEL_ER2;
+            case BT_NAME_ER3:
+                return MODEL_ER3;
             case BT_NAME_OXY_LINK:
                 return MODEL_OXYLINK;
             case BT_NAME_BP2:

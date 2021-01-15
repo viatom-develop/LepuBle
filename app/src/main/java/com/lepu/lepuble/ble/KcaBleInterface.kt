@@ -39,10 +39,9 @@ class KcaBleInterface : ConnectionObserver, KcaBleManger.onNotifyListener {
      */
     public var state = false
     private var connecting = false
-    private var linkLost = true
 
     public fun connect(context: Context, @NonNull device: BluetoothDevice) {
-        if (connecting || state || !linkLost) {
+        if (connecting || state) {
             return
         }
         manager = KcaBleManger(context)
@@ -63,7 +62,6 @@ class KcaBleInterface : ConnectionObserver, KcaBleManger.onNotifyListener {
     public fun disconnect() {
         manager.disconnect()
         manager.close()
-        linkLost = true
 
         this.onDeviceDisconnected(mydevice, ConnectionObserver.REASON_SUCCESS)
     }
@@ -235,7 +233,6 @@ class KcaBleInterface : ConnectionObserver, KcaBleManger.onNotifyListener {
         state = true
         model.connect.value = state
 
-        linkLost = false
         connecting = false
     }
 
@@ -251,9 +248,6 @@ class KcaBleInterface : ConnectionObserver, KcaBleManger.onNotifyListener {
         model.connect.value = state
 
         connecting = false
-        if (reason == ConnectionObserver.REASON_LINK_LOSS) {
-            linkLost = true
-        }
 
         LiveEventBus.get(EventMsgConst.EventDeviceDisconnect).post(Bluetooth.MODEL_KCA)
     }

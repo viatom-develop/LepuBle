@@ -137,7 +137,7 @@ class Er1Fragment : Fragment() {
          */
         download_file.setOnClickListener {
             if (bleInterface.fileList == null || bleInterface.fileList!!.size == 0) {
-                Toast.makeText(activity, "请先获取数据列表或数据列表为空", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "please get file list at first or file list is null", Toast.LENGTH_SHORT).show()
             } else {
                 val name = bleInterface.fileList!!.fileList[0]
                 bleInterface.downloadFile(name)
@@ -178,7 +178,7 @@ class Er1Fragment : Fragment() {
 
         activityModel.er1DeviceName.observe(this, {
             if (it == null) {
-                device_sn.text = "未绑定设备"
+                device_sn.text = "no bind device"
             } else {
                 device_sn.text = it
             }

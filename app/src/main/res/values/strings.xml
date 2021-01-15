@@ -1,13 +1,17 @@
 <resources>
     <string name="app_name">Lepu Ble</string>
-    <string name="app_name_er1">Lepu Ble ER1</string>
-    <string name="app_name_er2">Lepu Ble ER2</string>
-    <string name="app_name_er3">Lepu Ble ER3</string>
-    <string name="app_name_s1">Lepu Ble S1</string>
-    <string name="app_name_oxy">Lepu Ble Oxy</string>
-    <string name="app_name_airbp">Lepu Ble AirBP</string>
-    <string name="app_name_bp2">Lepu Ble BP2</string>
-    <string name="app_name_kca">Lepu Ble KCA</string>
+    <string name="app_name_er1">Lepu ER1</string>
+    <string name="app_name_er2">Lepu ER2</string>
+    <string name="app_name_er3">Lepu ER3</string>
+    <string name="app_name_s1">Lepu S1</string>
+    <string name="app_name_oxy">Lepu Oxy</string>
+    <string name="app_name_airbp">Lepu AirBP</string>
+    <string name="app_name_bp2">Lepu BP2</string>
+    <string name="app_name_kca">Lepu KCA</string>
+
+    <string name="get_file_list">get file list</string>
+    <string name="download_file">download 1st file</string>
+    <string name="rt_data">get Real-time Data</string>
 
     <string name="name_er1">乐普心贴</string>
     <string name="name_er2">ER2</string>

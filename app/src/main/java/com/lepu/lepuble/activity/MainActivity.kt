@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                 fragment = S1Fragment.newInstance()
             }
             Bluetooth.MODEL_BP2 -> {
-                fragment = Er1Fragment.newInstance()
+                fragment = Bp2Fragment.newInstance()
             }
             Bluetooth.MODEL_KCA -> {
                 fragment = KcaFragment.newInstance()

@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @ExperimentalUnsignedTypes
 @Parcelize
-class Er1Device @ExperimentalUnsignedTypes constructor(var bytes: ByteArray) : Parcelable {
+class LepuDevice constructor(var bytes: ByteArray) : Parcelable {
     var hwV: Char? = null
     var fwV: String? = null
     var btlV: String? = null
@@ -42,5 +42,12 @@ class Er1Device @ExperimentalUnsignedTypes constructor(var bytes: ByteArray) : P
         protocolMaxLen = toUInt(bytes.copyOfRange(21, 23))
         snLen = (bytes[37].toUInt() and 0xFFu).toInt()
         sn = String(bytes.copyOfRange(38, 38+snLen!!))
+    }
+
+    override fun toString(): String {
+        return """
+            $deviceType: $fwV => $curTime
+            $sn
+        """.trimIndent()
     }
 }

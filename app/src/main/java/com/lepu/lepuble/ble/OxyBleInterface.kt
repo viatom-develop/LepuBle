@@ -6,7 +6,7 @@ import android.os.Handler
 import androidx.annotation.NonNull
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.lepu.lepuble.ble.cmd.Er1BleCRC
+import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.ble.cmd.OxyBleCmd
 import com.lepu.lepuble.ble.cmd.OxyBleResponse
 import com.lepu.lepuble.ble.obj.OxyDataController
@@ -56,10 +56,9 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
 
     public var state = false
     private var connecting = false
-    private var linkLost = true
 
     public fun connect(context: Context, @NonNull device: BluetoothDevice) {
-        if (connecting || state || !linkLost) {
+        if (connecting || state) {
             return
         }
         LogUtils.d("try connect: ${device.name}")
@@ -168,7 +167,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
                     curFile = OxyBleResponse.OxyFile(curFileName!!, fileSize)
                     sendCmd(OxyBleCmd.OXY_CMD_READ_CONTENT, OxyBleCmd.readFileContent())
                 } else {
-                    LogUtils.d("读文件失败：${response.content.toHex()}")
+                    LogUtils.d("read file failed：${response.content.toHex()}")
                 }
             }
 
@@ -176,7 +175,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
                 clearTimeout()
                 curFile?.apply {
                     this.addContent(response.content)
-                    LogUtils.d("读文件：${curFile?.fileName}   => ${curFile?.index} / ${curFile?.fileSize}")
+                    LogUtils.d("read file：${curFile?.fileName}   => ${curFile?.index} / ${curFile?.fileSize}")
                     if (this.index < this.fileSize) {
                         sendCmd(OxyBleCmd.OXY_CMD_READ_CONTENT, OxyBleCmd.readFileContent())
                     } else {
@@ -186,7 +185,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
             }
             OxyBleCmd.OXY_CMD_READ_END -> {
                 clearTimeout()
-                LogUtils.d("读文件完成: ${curFile?.fileName} ==> ${curFile?.fileSize}")
+                LogUtils.d("read file finished: ${curFile?.fileName} ==> ${curFile?.fileSize}")
                 curFileName = null
                 curFile = null
             }
@@ -231,7 +230,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
             }
 
             val temp: ByteArray = bytes.copyOfRange(i, i+8+len)
-            if (temp.last() == Er1BleCRC.calCRC8(temp)) {
+            if (temp.last() == BleCRC.calCRC8(temp)) {
                 val bleResponse = OxyBleResponse.OxyResponse(temp)
 //                Log.d(TAG, "get response: " + temp.toHex())
                 onResponseReceived(bleResponse)
@@ -248,7 +247,6 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
     fun disconnect() {
         manager.disconnect()
         manager.close()
-        linkLost = true
 
         this.onDeviceDisconnected(mydevice, ConnectionObserver.REASON_SUCCESS)
     }
@@ -297,7 +295,6 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
         state = true
         model.connect.value = state
 
-        linkLost = false
         connecting = false
     }
 
@@ -319,9 +316,6 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
         clearVar()
 
         connecting = false
-        if (reason == ConnectionObserver.REASON_LINK_LOSS) {
-            linkLost = true
-        }
 
         LiveEventBus.get(EventMsgConst.EventDeviceDisconnect).post(Bluetooth.MODEL_CHECKO2)
     }

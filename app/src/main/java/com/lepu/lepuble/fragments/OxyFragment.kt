@@ -136,7 +136,7 @@ class OxyFragment : Fragment() {
 
         activityModel.oxyDeviceName.observe(this, {
             if (it == null) {
-                device_sn.text = "未绑定设备"
+                device_sn.text = "no bind device"
             } else {
                 device_sn.text = it
             }

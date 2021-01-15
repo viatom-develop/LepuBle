@@ -4,13 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lepu.lepuble.ble.obj.LepuDevice
 
-class Er1ViewModel : ViewModel() {
+class Bp2ViewModel: ViewModel() {
 
     val connect: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
 
-    val er1: MutableLiveData<LepuDevice> by lazy {
+    val bp2: MutableLiveData<LepuDevice> by lazy {
         MutableLiveData<LepuDevice>()
     }
 
@@ -18,20 +18,35 @@ class Er1ViewModel : ViewModel() {
         MutableLiveData<Int>()
     }
 
-    val lead: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>()
+    val status: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    val duration: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
     }
 
     val hr: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
 
-    // measure duration
-    val duration: MutableLiveData<Int> by lazy {
+    val sys: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
 
-    // draw
+    val dia: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    val mean: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    val pr: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    // draw ecg
     val dataSrc: MutableLiveData<FloatArray> by lazy {
         MutableLiveData<FloatArray>()
     }

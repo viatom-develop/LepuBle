@@ -80,7 +80,7 @@ class KcaFragment : Fragment() {
 
         activityModel.kcaDeviceName.observe(this, {
             if (it == null) {
-                device_sn.text = "未绑定设备"
+                device_sn.text = "no bind device"
             } else {
                 device_sn.text = "SN：$it"
             }

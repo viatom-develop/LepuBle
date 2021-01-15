@@ -6,29 +6,27 @@ import android.os.Handler
 import androidx.annotation.NonNull
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.lepu.lepuble.ble.utils.BleCRC
-import com.lepu.lepuble.ble.cmd.UniversalBleCmd
-import com.lepu.lepuble.ble.cmd.Er1BleResponse
-import com.lepu.lepuble.ble.cmd.S1BleResponse
+import com.lepu.lepuble.ble.cmd.*
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
+import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
-import com.lepu.lepuble.viewmodel.S1ViewModel
+import com.lepu.lepuble.viewmodel.Bp2ViewModel
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import kotlin.experimental.inv
 
-class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
+class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
 
-    private lateinit var model: S1ViewModel
-    fun setViewModel(viewModel: S1ViewModel) {
+    private lateinit var model: Bp2ViewModel
+    fun setViewModel(viewModel: Bp2ViewModel) {
         this.model = viewModel
     }
 
-    lateinit var manager: Er1BleManager
+    lateinit var manager: LepuBleManager
 
     lateinit var mydevice: BluetoothDevice
 
@@ -43,9 +41,6 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                 count++
                 getRtData()
 //                LogUtils.d("RtTask: $count")
-            } else {
-                LiveEventBus.get(EventMsgConst.EventEr1InvalidRtData)
-                    .post(true)
             }
         }
     }
@@ -60,14 +55,13 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
      */
     public var state = false
     private var connecting = false
-    private var linkLost = true
 
     public fun connect(context: Context, @NonNull device: BluetoothDevice) {
-        if (connecting || state || !linkLost) {
+        if (connecting || state) {
             return
         }
         LogUtils.d("try connect: ${device.name}")
-        manager = Er1BleManager(context)
+        manager = LepuBleManager(context)
         mydevice = device
         manager.setConnectionObserver(this)
         manager.setNotifyListener(this)
@@ -86,7 +80,6 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     public fun disconnect() {
         manager.disconnect()
         manager.close()
-        linkLost = true
 
         this.onDeviceDisconnected(mydevice, ConnectionObserver.REASON_SUCCESS)
     }
@@ -102,7 +95,7 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
      * get real-time data
      */
     public fun getRtData() {
-        sendCmd(UniversalBleCmd.getRtData())
+        sendCmd(Bp2BleCmd.getRtData())
     }
 
     /**
@@ -138,31 +131,56 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     }
 
     @ExperimentalUnsignedTypes
-    private fun onResponseReceived(response: Er1BleResponse.Er1Response) {
+    private fun onResponseReceived(response: UniversalBleResponse.LepuResponse) {
 //        LogUtils.d("received: ${response.cmd}")
         when(response.cmd) {
             UniversalBleCmd.GET_INFO -> {
-                val erInfo = LepuDevice(response.content)
-                model.er1.value = erInfo
-                LiveEventBus.get(EventMsgConst.EventEr1Info)
-                    .post(erInfo)
-                runRtTask()
+                val info = LepuDevice(response.content)
+                model.bp2.value = info
+                LogUtils.d("device info: $info")
             }
 
-            UniversalBleCmd.RT_DATA -> {
-                val rtData = S1BleResponse.S1RtData(response.content)
-                model.hr.value = rtData.param.hr
-                model.duration.value = rtData.param.recordTime
-                model.lead.value = rtData.param.leadOn
+            Bp2BleCmd.RT_DATA -> {
+                val rtData = Bp2Response.RtData(response.content)
+//                model.hr.value = rtData.param.hr
+//                model.duration.value = rtData.param.recordTime
+//                model.lead.value = rtData.param.leadOn
+                model.battery.value = rtData.param.batteryLevel
+                model.status.value = rtData.param.status
+                val wave = rtData.wave
+                wave.dataBping?.apply {
+                    model.pr.value = this.pr/100
+                    model.sys.value = this.pressure
+                }
+                wave.dataBpResult?.apply {
+                    model.pr.value = this.pr
+                    model.sys.value = this.sys
+                    model.dia.value = this.dia
+                    model.mean.value = this.mean
+                }
+                wave.dataEcging?.apply {
+                    model.hr.value = this.hr
+                    model.duration.value = this.duration
+                }
+                wave.dataEcgResult?.apply {
+                    model.hr.value = this.hr
+                }
 
-                model.weight.value = rtData.scaleData.weight
-                model.unit.value = rtData.scaleData.unit
-                model.resistance.value = rtData.scaleData.resistance
+//                Er1DataController.receive(rtData.wave.wFs)
+                LogUtils.d("${rtData.toString()}")
+//                LiveEventBus.get(EventMsgConst.EventEr1RtData)
+//                    .post(rtData)
+            }
 
-                Er1DataController.receive(rtData.wave.wFs)
-//                LogUtils.d("ER1 Controller: ${Er1DataController.dataRec.size}")
-                LiveEventBus.get(EventMsgConst.EventEr1RtData)
-                    .post(rtData)
+            Bp2BleCmd.RT_PARAM -> {
+                val param = Bp2Response.RtParam(response.content)
+                model.battery.value = param.batteryLevel
+                model.status.value = param.status
+            }
+
+            Bp2BleCmd.RT_WAVE -> {
+                val wave = Bp2Response.RtWave(response.content)
+                LogUtils.d("$wave")
             }
 
             UniversalBleCmd.READ_FILE_LIST -> {
@@ -200,6 +218,7 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         }
     }
 
+
     @OptIn(ExperimentalUnsignedTypes::class)
     fun hasResponse(bytes: ByteArray?): ByteArray? {
         val bytesLeft: ByteArray? = bytes
@@ -222,7 +241,7 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
             val temp: ByteArray = bytes.copyOfRange(i, i+8+len)
             if (temp.last() == BleCRC.calCRC8(temp)) {
-                val bleResponse = Er1BleResponse.Er1Response(temp)
+                val bleResponse = UniversalBleResponse.LepuResponse(temp)
 //                LogUtils.d("get response: ${temp.toHex()}" )
                 onResponseReceived(bleResponse)
 
@@ -237,10 +256,13 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
     private fun clearVar() {
         model.battery.value = 0
-        model.duration.value = 0
-        model.hr.value = 0
     }
 
+//    override fun onResponse(response: UniversalBleResponse.LepuResponse?) {
+//        response?.apply {
+//            onResponseReceived(this)
+//        }
+//    }
     override fun onNotify(device: BluetoothDevice?, data: Data?) {
         data?.value?.apply {
             pool = add(pool, this)
@@ -250,12 +272,12 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         }
     }
 
+
     override fun onDeviceConnected(device: BluetoothDevice) {
         state = true
         model.connect.value = state
         LogUtils.d(mydevice.name)
 
-        linkLost = false
         connecting = false
     }
 
@@ -276,9 +298,6 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         clearVar()
 
         connecting = false
-        if (reason == ConnectionObserver.REASON_LINK_LOSS) {
-            linkLost = true
-        }
 
         LiveEventBus.get(EventMsgConst.EventDeviceDisconnect).post(Bluetooth.MODEL_ER1)
     }
@@ -303,4 +322,6 @@ class S1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         connecting = false
 //        LogUtils.d(mydevice.name)
     }
+
+
 }

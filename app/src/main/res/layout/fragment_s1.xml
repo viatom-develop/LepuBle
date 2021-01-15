@@ -109,7 +109,7 @@
                     android:id="@+id/device_sn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="未绑定设备"
+                    android:text="no bind device"
                     app:layout_constraintBottom_toBottomOf="@id/battery_left_duration"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/battery_left_duration" />
@@ -147,7 +147,7 @@
                     android:id="@+id/start_at_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="开始测量时间: "
+                    android:text="start at: "
                     android:textColor="@color/Black"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
@@ -165,7 +165,7 @@
                     android:id="@+id/measure_duration_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="测量时长: "
+                    android:text="duration: "
                     android:textColor="@color/Black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>

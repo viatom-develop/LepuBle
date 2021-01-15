@@ -1,6 +1,7 @@
 package com.lepu.lepuble.ble.cmd;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.lepu.lepuble.ble.utils.KcaBleCrc;
 import com.lepu.lepuble.utils.ByteArrayKt;
 
 import java.util.ArrayList;

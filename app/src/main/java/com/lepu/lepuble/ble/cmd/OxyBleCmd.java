@@ -1,6 +1,8 @@
 package com.lepu.lepuble.ble.cmd;
 
 
+import com.lepu.lepuble.ble.utils.BleCRC;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,7 +33,7 @@ public class OxyBleCmd {
         buf[1] = (byte) OXY_CMD_INFO;
         buf[2] = (byte) ~OXY_CMD_INFO;
 
-        buf[7] = Er1BleCRC.calCRC8(buf);
+        buf[7] = BleCRC.calCRC8(buf);
 
 
         return buf;
@@ -59,7 +61,7 @@ public class OxyBleCmd {
             buf[7+i] = (byte) chars[i];
         }
 
-        buf[8+size-1] = Er1BleCRC.calCRC8(buf);
+        buf[8+size-1] = BleCRC.calCRC8(buf);
 
 
         return buf;
@@ -77,7 +79,7 @@ public class OxyBleCmd {
 
         buf[7] = (byte) 0;  // 0 -> 125hz;  1-> 62.5hz
 
-        buf[8] = Er1BleCRC.calCRC8(buf);
+        buf[8] = BleCRC.calCRC8(buf);
 
 
         return buf;
@@ -99,7 +101,7 @@ public class OxyBleCmd {
             buf[7+i] = (byte) name[i];
         }
 
-        buf[buf.length - 1] = Er1BleCRC.calCRC8(buf);
+        buf[buf.length - 1] = BleCRC.calCRC8(buf);
 
         seqNo = 0;
 
@@ -114,7 +116,7 @@ public class OxyBleCmd {
         buf[3] = (byte) seqNo;
         buf[4] = (byte) (seqNo >> 8);
 
-        buf[7] = Er1BleCRC.calCRC8(buf);
+        buf[7] = BleCRC.calCRC8(buf);
 
         seqNo++;
 
@@ -127,7 +129,7 @@ public class OxyBleCmd {
         buf[1] = (byte) OXY_CMD_READ_END;
         buf[2] = (byte) ~OXY_CMD_READ_END;
 
-        buf[7] = Er1BleCRC.calCRC8(buf);
+        buf[7] = BleCRC.calCRC8(buf);
 
         seqNo = 0;
 
