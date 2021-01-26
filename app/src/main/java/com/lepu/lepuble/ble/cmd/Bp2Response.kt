@@ -1,5 +1,8 @@
 package com.lepu.lepuble.ble.cmd
 
+import com.lepu.lepuble.R
+import com.lepu.lepuble.ble.obj.Er1DataController
+import com.lepu.lepuble.utils.toInt
 import com.lepu.lepuble.utils.toUInt
 
 object Bp2Response {
@@ -85,7 +88,8 @@ object Bp2Response {
         var dataEcging: DataEcging? = null
         var dataEcgResult: DataEcgResult? = null
         var waveLen: Int
-        var wave: ByteArray? = null
+        var wave: ByteArray? = null   // bytes for wave data
+        var waveFs: FloatArray? = null   // mv values for wave data
 
         init {
             var index = 0
@@ -101,7 +105,13 @@ object Bp2Response {
             if (bytes.size > 21) {
                 waveLen = toUInt(bytes.copyOfRange(index, index+2))
                 index+=2
-                wave = bytes.copyOfRange(index, index+(2*waveLen))
+                if (waveLen != 0) {
+                    wave = bytes.copyOfRange(index, index+(2*waveLen))
+                    waveFs = FloatArray(waveLen)
+                    for (i in 0 until waveLen) {
+                        waveFs!![i] = Er1DataController.byteTomV(wave!![2 * i], wave!![2 * i + 1])
+                    }
+                }
             } else {
                 waveLen = 0
             }
@@ -227,7 +237,7 @@ object Bp2Response {
      */
     @ExperimentalUnsignedTypes
     class DataEcgResult(var bytes: ByteArray) {
-        var result: ByteArray
+        var result: Int
         var hr: Int
         var qrs: Int
         var pvcs: Int
@@ -236,7 +246,7 @@ object Bp2Response {
 
         init {
             var index = 0
-            result = bytes.copyOfRange(index, index+4)
+            result = toInt(bytes.copyOfRange(index, index+4))
             index += 4
             hr = toUInt(bytes.copyOfRange(index, index+2))
             index += 2
@@ -247,6 +257,16 @@ object Bp2Response {
             qtc = toUInt(bytes.copyOfRange(index, index+2))
             index += 2
             // reserve 8
+        }
+
+        fun getResultStr() = when(result) {
+            0x00000000 -> R.string.be_ecg_diagnosis_regular
+            0x00000001 -> R.string.be_ecg_diagnosis_fast_hr
+            0x00000002 -> R.string.be_ecg_diagnosis_slow_hr
+            -1 -> R.string.be_ecg_diagnosis_poor_signal
+            -2 -> R.string.be_device_ecg_result_FFFFFFFE
+            -3 -> R.string.be_device_ecg_result_FFFFFFFD
+            else -> R.string.be_ecg_diagnosis_irregular
         }
 
         override fun toString(): String {

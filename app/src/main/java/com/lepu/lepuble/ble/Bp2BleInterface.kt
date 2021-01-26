@@ -149,8 +149,10 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
                 model.status.value = rtData.param.status
                 val wave = rtData.wave
                 wave.dataBping?.apply {
-                    model.pr.value = this.pr/100
-                    model.sys.value = this.pressure
+                    model.pr.value = this.pr
+                    model.sys.value = this.pressure / 100
+                    model.dia.value = 0
+                    model.mean.value = 0
                 }
                 wave.dataBpResult?.apply {
                     model.pr.value = this.pr
@@ -161,6 +163,7 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
                 wave.dataEcging?.apply {
                     model.hr.value = this.hr
                     model.duration.value = this.duration
+                    Er1DataController.receive(wave.waveFs)
                 }
                 wave.dataEcgResult?.apply {
                     model.hr.value = this.hr

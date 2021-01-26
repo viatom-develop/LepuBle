@@ -53,4 +53,23 @@
     </array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- ECG result -->
+    <string name="be_ecg_diagnosis_poor_signal">The recorded signal is too small or with too much noise.\n
+\n
+Tips for high-quality capture:\n
+- Moisten your skin before measure;\n
+- Resting your hand on table or thigh during measure;\n
+- Keep apart from electronic equipment.</string>
+    <string name="be_ecg_diagnosis_regular">The recorded ECG is in a common regular pattern.\n
+\n
+Always consult your doctor for any health condition.</string>
+    <string name="be_ecg_diagnosis_irregular">The recorded ECG is different from common pattern. It may be caused by premature beat, atrial fibrillation, heart pause or other arrhythmia. Excessive noise in the captured strip may lead to an unreliable result.\n
+\n
+Always consult your doctor for any health condition.</string>
+    <string name="be_ecg_diagnosis_fast_hr">The average heart rate is above 120 beats per minute.</string>
+    <string name="be_ecg_diagnosis_slow_hr">The average heart rate is below 50 beats per minute.</string>
+    <string name="be_device_ecg_result_FFFFFFFD">Motion detected, no analysis</string>
+    <string name="be_device_ecg_result_FFFFFFFE">Less than 30s</string>
+    <string name="be_device_ecg_result_FFFFFFFF">Poor signal</string>
 </resources>
