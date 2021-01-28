@@ -11,15 +11,14 @@ import android.view.GestureDetector;
 import android.view.View;
 
 import com.lepu.lepuble.R;
-import com.lepu.lepuble.ble.obj.Er1DataController;
-
-import static com.lepu.lepuble.ble.obj.Er1DataController.ampKey;
+import com.lepu.lepuble.ble.obj.EcgDataController;
 
 
 /**
- * normal ecg view, use Er1DataController
+ * normal ecg view, use EcgDataController
+ * use in 12 lead
  */
-public class EcgView extends View {
+public class EcgView12 extends View {
 
     private TextPaint mTextPaint;
     private Paint bPaint;
@@ -47,17 +46,17 @@ public class EcgView extends View {
 
     private GestureDetector detector;
 
-    public EcgView(Context context) {
+    public EcgView12(Context context) {
         super(context);
         init(null, 0);
     }
 
-    public EcgView(Context context, AttributeSet attrs) {
+    public EcgView12(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs, 0);
     }
 
-    public EcgView(Context context, AttributeSet attrs, int defStyle) {
+    public EcgView12(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs, defStyle);
     }
@@ -137,7 +136,7 @@ public class EcgView extends View {
     private void iniParam() {
 //        SPEED = DataController.SPEED;
 
-        maxIndex = Er1DataController.maxIndex;
+        maxIndex = EcgDataController.getMaxIndex();
 
 //        maxIndex = (int) (getWidth() / 2 / SPEED * 2);
 //        dataSrc = new byte[maxIndex*2];
@@ -152,14 +151,14 @@ public class EcgView extends View {
         mHeight = getHeight();
 
         mBase = (mHeight / 2);
-        mTop = (float) (mBase - 20/ Er1DataController.mm2px);
-        mBottom = (float) (mBase + 20/ Er1DataController.mm2px);
+        mTop = (float) (mBase - 20/ EcgDataController.getMm2px());
+        mBottom = (float) (mBase + 20/ EcgDataController.getMm2px());
     }
 
     private void drawRuler(Canvas canvas) {
-        float chartStartX = (float) (1.0 / (5.0 *  Er1DataController.mm2px));
-        float standardYTop = mBase - (Er1DataController.amp[ampKey] * 0.5f / Er1DataController.mm2px);
-        float standardTBottom = mBase + (Er1DataController.amp[ampKey] * 0.5f / Er1DataController.mm2px);
+        float chartStartX = (float) (1.0 / (5.0 *  EcgDataController.getMm2px()));
+        float standardYTop = mBase - (EcgDataController.getAmpVal() * 0.5f / EcgDataController.getMm2px());
+        float standardTBottom = mBase + (EcgDataController.getAmpVal() * 0.5f / EcgDataController.getMm2px());
 
         canvas.drawLine(chartStartX + 10, standardYTop, chartStartX+10, standardTBottom, linePaint);
 
@@ -172,23 +171,23 @@ public class EcgView extends View {
         p.moveTo(0, mBase);
         for (int i = 0; i < maxIndex; i++) {
 
-            if (i == Er1DataController.index && i < maxIndex-5) {
+            if (i == EcgDataController.getIndex() && i < maxIndex-5) {
 
-                float y = (mBase - (Er1DataController.amp[ampKey]*dataSrc[i+4]/ Er1DataController.mm2px));
+                float y = (mBase - (EcgDataController.getAmpVal()*dataSrc[i+4]/ EcgDataController.getMm2px()));
 //                y = y > mBottom ? mBottom : y;
 //                y = y < mTop ? mTop : y;
 
-                float x = (float) (i+4)/5/ Er1DataController.mm2px;
+                float x = (float) (i+4)/5/ EcgDataController.getMm2px();
 
                 p.moveTo(x, y);
                 i = i+4;
             } else {
-                float y1 = mBase - (Er1DataController.amp[ampKey]*dataSrc[i]/ Er1DataController.mm2px);
+                float y1 = mBase - (EcgDataController.getAmpVal()*dataSrc[i]/ EcgDataController.getMm2px());
 
 //                y1 = y1 > mBottom ? mBottom : y1;
 //                y1 = y1 < mTop ? mTop : y1;
 
-                float x1 = (float) i/5/ Er1DataController.mm2px;
+                float x1 = (float) i/5/ EcgDataController.getMm2px();
                 p.lineTo(x1, y1);
             }
         }

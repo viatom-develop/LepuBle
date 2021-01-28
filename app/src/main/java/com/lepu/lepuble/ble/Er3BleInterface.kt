@@ -10,6 +10,7 @@ import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd
 import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.cmd.Er3BleCmd
+import com.lepu.lepuble.ble.obj.EcgDataController
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.objs.Bluetooth
@@ -21,13 +22,13 @@ import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import kotlin.experimental.inv
 
-class Er3BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
+class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
     private lateinit var model: Er3ViewModel
     fun setViewModel(viewModel: Er3ViewModel) {
         this.model = viewModel
     }
 
-    lateinit var manager: Er1BleManager
+    lateinit var manager: Er3BleManager
 
     lateinit var mydevice: BluetoothDevice
 
@@ -37,7 +38,7 @@ class Er3BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     private var count: Int = 0
     inner class RtTask: Runnable {
         override fun run() {
-            rtHandler.postDelayed(this, 1000)
+            rtHandler.postDelayed(this, 200)
             if (state) {
                 count++
                 getRtData()
@@ -62,7 +63,7 @@ class Er3BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             return
         }
         LogUtils.d("try connect: ${device.name}")
-        manager = Er1BleManager(context)
+        manager = Er3BleManager(context)
         mydevice = device
         manager.setConnectionObserver(this)
         manager.setNotifyListener(this)
@@ -151,8 +152,9 @@ class Er3BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                 model.lead.value = rtData.param.leadOn
                 model.battery.value = rtData.param.battery
 
-                Er1DataController.receive(rtData.wave.wFs)
-//                LogUtils.d("ER1 Controller: ${Er1DataController.dataRec.size}")
+                LogUtils.d("${rtData.param.hr} => ${rtData.wave.len}")
+
+                rtData.wave.waveFs?.let { EcgDataController.receive(it) }
                 LiveEventBus.get(EventMsgConst.EventEr1RtData)
                         .post(rtData)
             }
