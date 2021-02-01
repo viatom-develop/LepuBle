@@ -110,6 +110,16 @@ android {
 //                    logo: "@mipmap/lepu_icon",
             ]
         }
+
+        p1 {
+            dimension 'type'
+            applicationIdSuffix ".p1"
+            versionNameSuffix "-p1"
+            manifestPlaceholders = [
+                    name: "@string/app_name_p1",
+//                    logo: "@mipmap/lepu_icon",
+            ]
+        }
     }
 
     compileOptions {

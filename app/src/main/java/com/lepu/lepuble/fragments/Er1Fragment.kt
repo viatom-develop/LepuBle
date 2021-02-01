@@ -25,8 +25,6 @@ import kotlinx.android.synthetic.main.fragment_er1.*
 import java.text.SimpleDateFormat
 import kotlin.math.floor
 
-private const val ARG_ER1_DEVICE = "er1_device"
-
 class Er1Fragment : Fragment() {
 
     private lateinit var bleInterface: Er1BleInterface
@@ -261,13 +259,6 @@ class Er1Fragment : Fragment() {
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(b: Bluetooth) =
-            Er1Fragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(ARG_ER1_DEVICE, b)
-                }
-            }
 
         @JvmStatic
         fun newInstance() = Er1Fragment()

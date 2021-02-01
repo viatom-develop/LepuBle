@@ -13,6 +13,7 @@ import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.add
+import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er1ViewModel
@@ -128,6 +129,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         if (!state) {
             return
         }
+        LogUtils.d(bs.toHex())
         manager.sendCmd(bs)
     }
 

@@ -3,8 +3,10 @@ package com.lepu.lepuble.ble.cmd
 import android.os.Parcelable
 import com.blankj.utilcode.util.LogUtils
 import com.lepu.lepuble.ble.obj.Er1DataController
+import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 object Er1BleResponse {
 
@@ -108,9 +110,11 @@ object Er1BleResponse {
 
                 waveFs = FloatArray(len * channels)
 
-                for (i in 0 until (len*channels) step 2) {
+                for (i in 0 until (len * channels)) {
                     waveFs!![i] = Er1DataController.byteTomV(wave!![2 * i], wave!![2 * i + 1])
                 }
+//                LogUtils.d(wave!!.toHex())
+//                LogUtils.d(Arrays.toString(waveFs))
             }
         }
     }
