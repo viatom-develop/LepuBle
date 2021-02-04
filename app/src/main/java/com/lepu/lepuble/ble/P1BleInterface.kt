@@ -63,10 +63,15 @@ class P1BleInterface : ConnectionObserver, P1BleManager.onNotifyListener {
             .retry(3, 100)
             .done {
                 LogUtils.d("Device Init")
+                getSn()
                 updateState()
             }
             .enqueue()
 
+    }
+
+    public fun getSn() {
+        sendCmd(P1BleCmd.getSn())
     }
 
     public fun updateState() {
@@ -113,6 +118,11 @@ class P1BleInterface : ConnectionObserver, P1BleManager.onNotifyListener {
         LogUtils.d("Response received: ${response.cmd}  => ${response.content.toHex()}")
         when(response.cmd) {
 
+            P1BleCmd.P1_CMD_SN -> {
+                val sn = P1BleResponse.P1Sn(response.content)
+                model.sn.value = sn.sn
+            }
+
             P1BleCmd.P1_CMD_STATE -> {
                 val state = P1BleResponse.P1State(response.content)
                 model.power.value = state.power
@@ -126,7 +136,8 @@ class P1BleInterface : ConnectionObserver, P1BleManager.onNotifyListener {
         }
     }
 
-    fun hasResponse(bytes: ByteArray?){
+    @ExperimentalUnsignedTypes
+    private fun hasResponse(bytes: ByteArray?){
         bytes?.apply {
             if (bytes.size < 9)
                 return
@@ -151,6 +162,7 @@ class P1BleInterface : ConnectionObserver, P1BleManager.onNotifyListener {
         model.duration.value = 0
     }
 
+    @ExperimentalUnsignedTypes
     override fun onNotify(device: BluetoothDevice?, data: Data?) {
         data?.value?.apply {
             hasResponse(this)

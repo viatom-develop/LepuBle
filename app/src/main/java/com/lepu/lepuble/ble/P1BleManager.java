@@ -57,21 +57,23 @@ public class P1BleManager extends BleManager {
                 write_char = service.getCharacteristic(write_uuid);
                 notify_char = service.getCharacteristic(notify_uuid);
             }
-            // Validate properties
-            boolean notify = false;
-            if (notify_char != null) {
-                final int properties = notify_char.getProperties();
-                notify = (properties & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0;
-            }
-            boolean writeRequest = false;
-            if (write_char != null) {
-                final int properties = write_char.getProperties();
-                writeRequest = (properties & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0;
-                write_char.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-            }
-            // Return true if all required services have been found
-            return write_char != null && notify_char != null
-                    && notify && writeRequest;
+//            // Validate properties
+//            boolean notify = false;
+//            if (notify_char != null) {
+//                final int properties = notify_char.getProperties();
+//                notify = (properties & BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0;
+//            }
+//            boolean writeRequest = false;
+//            if (write_char != null) {
+//                final int properties = write_char.getProperties();
+//                writeRequest = (properties & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0;
+//                write_char.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
+//            }
+//            // Return true if all required services have been found
+//            return write_char != null && notify_char != null
+//                    && notify && writeRequest;
+
+            return write_char != null && notify_char != null;
         }
 
 

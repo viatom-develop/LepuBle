@@ -9,6 +9,10 @@ class P1ViewModel: ViewModel() {
         MutableLiveData<Boolean>()
     }
 
+    val sn: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
     val mode: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }

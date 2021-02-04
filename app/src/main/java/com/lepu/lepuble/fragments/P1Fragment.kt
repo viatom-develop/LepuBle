@@ -82,6 +82,10 @@ class P1Fragment : Fragment() {
     }
 
     private fun addLiveEventObserver() {
+        model.sn.observe(this, {
+            sn.text = "sn: $it"
+        })
+
         model.connect.observe(this, {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)

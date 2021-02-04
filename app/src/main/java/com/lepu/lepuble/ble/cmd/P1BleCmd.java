@@ -13,6 +13,8 @@ public class P1BleCmd {
     public static int P1_CMD_DURATION = 0x06;  // 按摩时长
     public static int P1_CMD_GET_STATE = 0x80;
     public static int P1_CMD_STATE = 0x81;
+    public static int P1_CMD_GET_SN = 0x90; // sn
+    public static int P1_CMD_SN = 0x91;
 
     private static int seqNo = 0;
     private static void addNo() {
@@ -20,6 +22,28 @@ public class P1BleCmd {
         if (seqNo >= 9999) {
             seqNo = 0;
         }
+    }
+
+    public static byte[] getSn() {
+        byte[] buf = new byte[10];
+
+        int len = 1;
+
+        buf[0] = (byte) 0x55;
+        buf[1] = (byte) 0xaa;
+        buf[2] = (byte) (seqNo >> 8);
+        buf[3] = (byte) seqNo;
+        buf[4] = (byte) 0x00; // send cmd
+        buf[5] = (byte) P1_CMD_GET_SN;
+        buf[6] = (byte) len;
+        buf[7] = 0x00; // null
+        buf[8] = P1CRC.CalCrc(buf);
+        buf[9] = (byte) 0xfe;
+
+        addNo();
+
+        return buf;
+
     }
 
     public static byte[] turnOn(boolean on) {

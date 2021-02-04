@@ -1,5 +1,8 @@
 package com.lepu.lepuble.ble.cmd
 
+import com.lepu.lepuble.utils.ByteUtils
+import com.lepu.lepuble.utils.HexString
+import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 
 object P1BleResponse {
@@ -45,6 +48,22 @@ object P1BleResponse {
                 strength: $strength
                 duration: $duration
             """.trimIndent()
+        }
+    }
+
+    class P1Sn constructor(var bytes: ByteArray) {
+        var year: Int
+        var month: Int
+        var model: Int
+        var serial: Int
+        var sn: String
+
+        init {
+            year = 2000 + ByteUtils.byte2UInt(bytes[0])
+            month = ByteUtils.byte2UInt(bytes[1])
+            model = ByteUtils.byte2UInt(bytes[2])
+            serial = ByteUtils.bytes2UIntBig(bytes[3], bytes[4])
+            sn = HexString.trimStr(bytes.toHex())
         }
     }
 }
