@@ -37,6 +37,8 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
     lateinit var manager: OxyBleManager
     lateinit var mydevice: BluetoothDevice
 
+    private var oxyInfo: OxyBleResponse.OxyInfo? = null
+
     private var pool: ByteArray? = null
     private var count: Int = 0
 
@@ -140,7 +142,6 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
                 LiveEventBus.get(EventMsgConst.EventOxyInfo)
                     .post(info)
 //                model.battery.value = info.battery
-                runRtTask()
 //                downloadFiles(oxyInfo = info)
             }
 
@@ -274,7 +275,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
         sendCmd(OxyBleCmd.OXY_CMD_READ_START, OxyBleCmd.readFileStart(fileName))
     }
 
-    private fun downloadFiles(oxyInfo: OxyBleResponse.OxyInfo) {
+    fun downloadFiles(oxyInfo: OxyBleResponse.OxyInfo) {
         val files = oxyInfo.fileList.split(",")
         if (files.isNotEmpty()) {
             readFile(files[0])

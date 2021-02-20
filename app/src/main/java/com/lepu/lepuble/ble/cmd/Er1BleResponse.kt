@@ -37,6 +37,7 @@ object Er1BleResponse {
         var wave: RtWave
 
         init {
+            LogUtils.d(bytes.toHex())
             param = RtParam(bytes.copyOfRange(0, 20))
             wave = RtWave(bytes.copyOfRange(20, bytes.size))
         }
@@ -54,6 +55,7 @@ object Er1BleResponse {
         // reserve 11
 
         init {
+//            LogUtils.d(bytes.toHex())
             hr = toUInt(bytes.copyOfRange(0, 2))
             sysFlag = bytes[2]
             battery = (bytes[3].toUInt() and 0xFFu).toInt()
@@ -74,12 +76,14 @@ object Er1BleResponse {
         var wFs : FloatArray? = null
 
         init {
+//            LogUtils.d(bytes.toHex())
             len = toUInt(bytes.copyOfRange(0, 2))
             wave = bytes.copyOfRange(2, bytes.size)
             wFs = FloatArray(len)
             for (i in 0 until len) {
                 wFs!![i] = Er1DataController.byteTomV(wave[2 * i], wave[2 * i + 1])
             }
+//            LogUtils.d(Arrays.toString(wFs))
         }
     }
 

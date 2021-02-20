@@ -11,6 +11,7 @@ import com.lepu.lepuble.ble.cmd.KcaBleResponse
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
+import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.KcaViewModel
 import no.nordicsemi.android.ble.data.Data
@@ -90,6 +91,7 @@ class KcaBleInterface : ConnectionObserver, KcaBleManger.onNotifyListener {
         if (!state) {
             return
         }
+
 //        val bleJob = BleJobController.BleJob(cmd, bs, timeout)
         manager.sendCmd(bs)
     }
@@ -98,7 +100,6 @@ class KcaBleInterface : ConnectionObserver, KcaBleManger.onNotifyListener {
     private fun onResponseReceived(pkg: KcaBleCmd.KcaPackage) {
 //        controller.onBleResponseReceived(response)
         val kcaContent = KcaBleCmd.KcaContent(pkg.content)
-//        LogUtils.d("received cmd: ${kcaContent.cmd}")
 //        for (key in kcaContent.keyObjs) {
 //            LogUtils.d("received key: ${kcaContent.cmd} -> ${key.key} ~ ${key.`val`.toHex()}")
 //        }
@@ -222,7 +223,7 @@ class KcaBleInterface : ConnectionObserver, KcaBleManger.onNotifyListener {
     override fun onNotify(device: BluetoothDevice?, data: Data?) {
         data?.value?.apply {
             pool = add(pool, this)
-//            LogUtils.d(pool!!.toHex())
+            LogUtils.d(this.toHex())
         }
         pool?.apply {
             pool = hasResponse(pool)

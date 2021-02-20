@@ -38,7 +38,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     private var count: Int = 0
     inner class RtTask: Runnable {
         override fun run() {
-            rtHandler.postDelayed(this, 500)
+            rtHandler.postDelayed(this, 1000)
             if (state) {
                 count++
                 getRtData()

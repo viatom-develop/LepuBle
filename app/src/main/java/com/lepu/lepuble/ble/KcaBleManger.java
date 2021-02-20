@@ -10,7 +10,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 
+import com.blankj.utilcode.util.LogUtils;
 import com.lepu.lepuble.ble.cmd.KcaBleCmd;
+import com.lepu.lepuble.utils.ByteArrayKt;
 
 import java.util.UUID;
 
@@ -163,7 +165,7 @@ public class KcaBleManger extends BleManager {
         writeCharacteristic(write_char, bytes)
                 .split()
                 .done(device -> {
-//                    LogUtils.d(device.getName() + " send: " + ByteArrayKt.bytesToHex(bytes));
+                    LogUtils.d(device.getName() + " send: " + ByteArrayKt.bytesToHex(bytes));
                 })
                 .enqueue();
     }

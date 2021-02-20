@@ -10,6 +10,9 @@ import android.util.Log;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
+
+import com.blankj.utilcode.util.LogUtils;
+
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.data.Data;
 
@@ -87,7 +90,7 @@ public class OxyBleManager extends BleManager {
             beginAtomicRequestQueue()
                     .add(requestMtu(23) // Remember, GATT needs 3 bytes extra. This will allow packet size of 244 bytes.
                             .with((device, mtu) -> log(Log.INFO, "MTU set to " + mtu))
-                            .fail((device, status) -> log(Log.WARN, "Requested MTU not supported: " + status)))
+                            .fail((device, status) -> log(Log.WARN, ": " + status)))
 //                    .add(setPreferredPhy(PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_OPTION_NO_PREFERRED)
 //                            .fail((device, status) -> log(Log.WARN, "Requested PHY not supported: " + status)))
 //                    .add(requestConnectionPriority(CONNECTION_PRIORITY_HIGH))
@@ -155,7 +158,7 @@ public class OxyBleManager extends BleManager {
 //        if (Build.DEBUG || priority == Log.ERROR) {
 //            Log.println(priority, "MyBleManager", message);
 //        }
-//        LogUtils.d(message);
+        LogUtils.d(message);
     }
 
 }

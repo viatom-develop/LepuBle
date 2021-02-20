@@ -109,6 +109,8 @@ class OxyFragment : Fragment() {
             initOxyView()
         }
 
+        initUI()
+
         return v
     }
 
@@ -130,6 +132,18 @@ class OxyFragment : Fragment() {
         model.dataSrc.value = OxyDataController.iniDataSrc(index)
 
         oxyView.visibility = View.GONE
+    }
+
+    private fun initUI() {
+        get_rt_data.setOnClickListener {
+            bleInterface.getRtData()
+        }
+
+        download_file.setOnClickListener {
+            model.info.value?.apply {
+                bleInterface.downloadFiles(this)
+            }
+        }
     }
 
     private fun addLiveDataObserver() {
