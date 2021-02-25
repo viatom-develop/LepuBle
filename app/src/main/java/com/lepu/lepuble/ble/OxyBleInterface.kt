@@ -167,6 +167,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
                     val fileSize = toUInt(response.content)
                     curFile = OxyBleResponse.OxyFile(curFileName!!, fileSize)
                     sendCmd(OxyBleCmd.OXY_CMD_READ_CONTENT, OxyBleCmd.readFileContent())
+                    LogUtils.d("read file start：$curFileName")
                 } else {
                     LogUtils.d("read file failed：${response.content.toHex()}")
                 }

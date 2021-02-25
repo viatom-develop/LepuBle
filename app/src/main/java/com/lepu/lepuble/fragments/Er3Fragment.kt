@@ -1,6 +1,8 @@
 package com.lepu.lepuble.fragments
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
+import com.lepu.lepuble.activity.About
 import com.lepu.lepuble.ble.Er3BleInterface
 import com.lepu.lepuble.ble.obj.EcgDataController
 import com.lepu.lepuble.objs.Bluetooth
@@ -89,6 +92,7 @@ class Er3Fragment: Fragment() {
 
     private var device: Bluetooth? = null
 
+    private var dialog: ProgressDialog? = null
 
     /**
      * rt wave
@@ -233,6 +237,12 @@ class Er3Fragment: Fragment() {
             bleInterface.runRtTask()
             startWave()
         }
+
+        about.setOnClickListener {
+            val i = Intent(activity, About::class.java)
+            i.putExtra("er3", model.er3.value)
+            startActivity(i)
+        }
     }
 
     private fun initEcgView() {
@@ -345,7 +355,7 @@ class Er3Fragment: Fragment() {
         ecgViewVisible(false)
     }
 
-    fun ecgViewVisible(b: Boolean) {
+    private fun ecgViewVisible(b: Boolean) {
         if (b) {
             ecg_view_1.visibility = View.VISIBLE
             ecg_view_2.visibility = View.VISIBLE
@@ -461,6 +471,9 @@ class Er3Fragment: Fragment() {
 
         model.er3.observe(this, {
             device_sn.text = "SN：${it.sn}"
+
+            about.isEnabled = true
+            about.setTextColor(resources.getColor(R.color.colorPrimary))
         })
 
         model.connect.observe(this, {
@@ -469,6 +482,9 @@ class Er3Fragment: Fragment() {
                 ecgViewVisible(true)
                 battery.visibility = View.VISIBLE
                 battery_left_duration.visibility = View.VISIBLE
+
+                dialog?.dismiss()
+                Toast.makeText(activity, "配对成功", Toast.LENGTH_SHORT).show()
             } else {
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
                 ecgViewVisible(false)
@@ -518,6 +534,10 @@ class Er3Fragment: Fragment() {
         LiveEventBus.get(EventMsgConst.EventDeviceChoosen)
                 .observe(this, {
                     connect(it as Bluetooth)
+                    dialog = ProgressDialog(activity)
+                    dialog?.setMessage("正在配对")
+                    dialog?.setCancelable(false)
+                    dialog?.show()
                 })
     }
 

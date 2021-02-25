@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd;
+import com.lepu.lepuble.utils.ByteArrayKt;
 
 import java.util.UUID;
 
@@ -140,7 +141,7 @@ public class Er1BleManager extends BleManager {
     }
 
     private void syncTime() {
-
+        sendCmd(UniversalBleCmd.syncTime());
     }
 
     public void sendCmd(byte[] bytes) {

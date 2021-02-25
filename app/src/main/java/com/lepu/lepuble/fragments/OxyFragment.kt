@@ -109,9 +109,12 @@ class OxyFragment : Fragment() {
             initOxyView()
         }
 
-        initUI()
-
         return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initUI()
     }
 
     private fun initOxyView() {
@@ -136,7 +139,7 @@ class OxyFragment : Fragment() {
 
     private fun initUI() {
         get_rt_data.setOnClickListener {
-            bleInterface.getRtData()
+            bleInterface.runRtTask()
         }
 
         download_file.setOnClickListener {

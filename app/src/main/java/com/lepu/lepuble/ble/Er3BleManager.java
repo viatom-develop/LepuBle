@@ -139,7 +139,7 @@ public class Er3BleManager extends BleManager {
     }
 
     private void syncTime() {
-
+        sendCmd(UniversalBleCmd.syncTime());
     }
 
     public void sendCmd(byte[] bytes) {

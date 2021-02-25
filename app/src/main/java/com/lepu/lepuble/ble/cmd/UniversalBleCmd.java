@@ -4,6 +4,8 @@ import com.blankj.utilcode.util.LogUtils;
 import com.lepu.lepuble.ble.utils.BleCRC;
 import com.lepu.lepuble.utils.ByteArrayKt;
 
+import java.util.Calendar;
+
 /**
  * universal command for Viatom devices
  */
@@ -14,6 +16,7 @@ public class UniversalBleCmd {
     public static int FACTORY_RESET = 0xE3;
     public static int BURN_FACTORY_INFO = 0xEA;
     public static int BURN_LOCK_FLASH = 0xEB;
+    public static int SYNC_TIME = 0xEC;
     public static int RT_DATA = 0x03;
     public static int VIBRATE_CONFIG = 0x00;
     public static int READ_FILE_LIST = 0xF1;
@@ -59,6 +62,36 @@ public class UniversalBleCmd {
         cmd[5] = (byte) 0;
         cmd[6] = (byte) 0;
         cmd[7] = BleCRC.calCRC8(cmd);
+
+        addNo();
+
+        return cmd;
+    }
+
+    public static byte[] syncTime() {
+        int len = 7;
+
+        byte cmd[] = new byte[8+len];
+        cmd[0] = (byte) 0xA5;
+        cmd[1] = (byte) SYNC_TIME;
+        cmd[2] = (byte) ~SYNC_TIME;
+        cmd[3] = (byte) 0x00;
+        cmd[4] = (byte) seqNo;
+        cmd[5] = (byte) len;
+        cmd[6] = (byte) (len>>8);
+
+        Calendar c = Calendar.getInstance();
+        LogUtils.d(c.toString());
+
+        cmd[7] = (byte) (c.get(Calendar.YEAR));
+        cmd[8] = (byte) ((c.get(Calendar.YEAR) >> 8));
+        cmd[9] = (byte) (c.get(Calendar.MONTH) +1);
+        cmd[10] = (byte) (c.get(Calendar.DAY_OF_MONTH));
+        cmd[11] = (byte) (c.get(Calendar.HOUR_OF_DAY));
+        cmd[12] = (byte) (c.get(Calendar.MINUTE));
+        cmd[13] = (byte) (c.get(Calendar.SECOND));
+
+        cmd[14] = BleCRC.calCRC8(cmd);
 
         addNo();
 

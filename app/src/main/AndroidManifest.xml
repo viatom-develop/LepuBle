@@ -30,11 +30,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LepuBle">
-        <activity android:name=".activity.MainActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.SearchActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activity.PermissionActivity"
+        <activity android:name=".activity.About"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.PermissionActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
