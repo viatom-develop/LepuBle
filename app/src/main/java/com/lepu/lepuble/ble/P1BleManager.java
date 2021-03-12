@@ -116,6 +116,7 @@ public class P1BleManager extends BleManager {
 
             // get info
 //            getInfo();
+            sleep(2000);
 
         }
 

@@ -23,6 +23,7 @@ import com.lepu.lepuble.viewmodel.Er1ViewModel
 import com.lepu.lepuble.viewmodel.P1ViewModel
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import java.util.*
 import kotlin.experimental.inv
 
 class P1BleInterface : ConnectionObserver, P1BleManager.onNotifyListener {
@@ -63,8 +64,16 @@ class P1BleInterface : ConnectionObserver, P1BleManager.onNotifyListener {
             .retry(3, 100)
             .done {
                 LogUtils.d("Device Init")
-                getSn()
-                updateState()
+
+                /**
+                 * the device may take 2 second to init the bluetooth.
+                 * during th initing, no response
+                 */
+                Timer().schedule(object : TimerTask() {
+                    override fun run() {
+                        getSn()
+                        updateState()
+                    }}, 2000)
             }
             .enqueue()
 
@@ -215,6 +224,7 @@ class P1BleInterface : ConnectionObserver, P1BleManager.onNotifyListener {
 
     override fun onDeviceReady(device: BluetoothDevice) {
         connecting = false
-//        LogUtils.d(mydevice.name)
+        LogUtils.d("${mydevice.name} ready")
+
     }
 }
