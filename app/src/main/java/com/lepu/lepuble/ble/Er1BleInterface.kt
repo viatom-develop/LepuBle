@@ -12,6 +12,7 @@ import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.objs.Bluetooth
+import com.lepu.lepuble.objs.SpeedTest
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
@@ -129,7 +130,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         if (!state) {
             return
         }
-        LogUtils.d(bs.toHex())
+//        LogUtils.d(bs.toHex())
         manager.sendCmd(bs)
     }
 
@@ -167,15 +168,24 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                 if (response.pkgType == 0x01.toByte()) {
                     curFile = Er1BleResponse.Er1File(curFileName!!, toUInt(response.content))
                     sendCmd(UniversalBleCmd.readFileData(0))
+
+                    // speed test
+                    SpeedTest.init()
                 } else {
                     LogUtils.d("read file failed：${response.pkgType}")
                 }
+
             }
 
             UniversalBleCmd.READ_FILE_DATA -> {
                 curFile?.apply {
                     this.addContent(response.content)
                     LogUtils.d("read file：${curFile?.fileName}   => ${curFile?.index} / ${curFile?.fileSize}")
+
+                    // speed test
+                    val s = SpeedTest.add(response.content.size)
+                    model.speed.postValue(s)
+                    LogUtils.d("speed in 10s is $s")
 
                     if (this.index < this.fileSize) {
                         sendCmd(UniversalBleCmd.readFileData(this.index))

@@ -120,7 +120,7 @@ public class UniversalBleCmd {
         cmd[10] = BleCRC.calCRC8(cmd);
         addNo();
 
-        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
+//        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
         return cmd;
     }
 
@@ -155,7 +155,7 @@ public class UniversalBleCmd {
         cmd[7] = BleCRC.calCRC8(cmd);
         addNo();
 
-        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
+//        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
         return cmd;
     }
 
@@ -181,7 +181,7 @@ public class UniversalBleCmd {
         cmd[27] = BleCRC.calCRC8(cmd);
         addNo();
 
-        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
+//        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
         return cmd;
     }
 
@@ -203,7 +203,7 @@ public class UniversalBleCmd {
 
         cmd[11] = BleCRC.calCRC8(cmd);
         addNo();
-        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
+//        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
         return cmd;
     }
     public static byte[] readFileEnd() {
@@ -219,7 +219,7 @@ public class UniversalBleCmd {
         cmd[7] = BleCRC.calCRC8(cmd);
         addNo();
 
-        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
+//        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
         return cmd;
     }
 }

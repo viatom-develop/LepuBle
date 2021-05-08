@@ -35,4 +35,8 @@ class Er1ViewModel : ViewModel() {
     val dataSrc: MutableLiveData<FloatArray> by lazy {
         MutableLiveData<FloatArray>()
     }
+
+    val speed: MutableLiveData<Float> by lazy {
+        MutableLiveData<Float>()
+    }
 }

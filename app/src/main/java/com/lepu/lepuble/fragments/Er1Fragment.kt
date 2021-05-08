@@ -238,6 +238,10 @@ class Er1Fragment : Fragment() {
                 hr.text = it.toString()
             }
         })
+
+        model.speed.observe(this, {
+            speed.text = "$it kb/s"
+        })
     }
 
 
