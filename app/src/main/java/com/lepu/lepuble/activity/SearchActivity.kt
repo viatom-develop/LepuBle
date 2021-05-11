@@ -7,10 +7,12 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.AdapterView
+import androidx.annotation.RequiresApi
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
@@ -19,6 +21,7 @@ import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.objs.BluetoothController
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.vals.curModel
+import com.lepu.lepuble.vals.support2MPhy
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -82,9 +85,19 @@ class SearchActivity : AppCompatActivity() {
         val bluetoothManager =
                 getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothAdapter = bluetoothManager.adapter
+
+        checkPhy()
+
         leScanner = bluetoothAdapter.bluetoothLeScanner
 
         startDiscover()
+    }
+
+    // @RequiresApi(Build.VERSION_CODES.O)
+    private fun checkPhy() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            support2MPhy = bluetoothAdapter.isLe2MPhySupported
+        }
     }
 
     /**

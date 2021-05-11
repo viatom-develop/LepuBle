@@ -139,6 +139,7 @@ class Er1Fragment : Fragment() {
             } else {
                 val name = bleInterface.fileList!!.fileList[0]
                 bleInterface.downloadFile(name)
+                Toast.makeText(activity, "download ${name.toString()}", Toast.LENGTH_SHORT).show()
             }
 
         }

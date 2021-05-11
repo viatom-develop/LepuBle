@@ -130,7 +130,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         if (!state) {
             return
         }
-//        LogUtils.d(bs.toHex())
+        LogUtils.d(bs.toHex())
         manager.sendCmd(bs)
     }
 
