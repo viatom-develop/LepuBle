@@ -171,7 +171,7 @@ public class UniversalBleCmd {
         cmd[5] = (byte) 0x14;
         cmd[6] = (byte) 0x00;
         int k=0;
-        for(k=0;k<16;k++){
+        for(k=0;k<Math.min(15, name.length);k++){
             cmd[7+k]=name[k];
         }
         cmd[23] = (byte) (offset);

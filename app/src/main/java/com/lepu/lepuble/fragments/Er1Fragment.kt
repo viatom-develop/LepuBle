@@ -139,7 +139,7 @@ class Er1Fragment : Fragment() {
             } else {
                 val name = bleInterface.fileList!!.fileList[0]
                 bleInterface.downloadFile(name)
-                Toast.makeText(activity, "download ${name.toString()}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "download ${String(name)}", Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -147,6 +147,10 @@ class Er1Fragment : Fragment() {
         get_rt_data.setOnClickListener {
             bleInterface.runRtTask()
             startWave()
+        }
+
+        download_all.setOnClickListener {
+            bleInterface.getAllFiles()
         }
     }
 

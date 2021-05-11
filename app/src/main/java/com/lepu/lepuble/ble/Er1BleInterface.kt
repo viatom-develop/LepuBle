@@ -2,17 +2,20 @@ package com.lepu.lepuble.ble
 
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.os.Environment
 import android.os.Handler
 import androidx.annotation.NonNull
+import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.lepu.lepuble.ble.utils.BleCRC
-import com.lepu.lepuble.ble.cmd.UniversalBleCmd
 import com.lepu.lepuble.ble.cmd.Er1BleResponse
+import com.lepu.lepuble.ble.cmd.UniversalBleCmd
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
+import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.objs.SpeedTest
+import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
@@ -20,9 +23,15 @@ import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er1ViewModel
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import kotlin.experimental.inv
 
 class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
+
+    private lateinit var context: Context
 
     private lateinit var model: Er1ViewModel
     fun setViewModel(viewModel: Er1ViewModel) {
@@ -60,6 +69,9 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     private var connecting = false
 
     public fun connect(context: Context, @NonNull device: BluetoothDevice) {
+
+        this.context = context
+
         if (connecting || state) {
             return
         }
@@ -116,13 +128,53 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     }
 
     /**
+     * 测试功能，下载"file_list.txt"文件
+     * 每16个字节一个文件名
+     */
+    val ALL_FILE_NAME = "file_list.txt"
+    private var isDownloadingAllFile = false
+    val allFileList = mutableListOf<ByteArray>()
+    public fun getAllFiles() {
+        downloadFile(ALL_FILE_NAME.toByteArray())
+    }
+
+    private fun readAllFileList(bytes: ByteArray) {
+        for (i in 0 until (bytes.size/16)) {
+            allFileList.add(bytes.copyOfRange(i*16, (i+1)*16))
+        }
+    }
+
+    /**
+     * save file
+     */
+    private fun saveFile(name: String, bytes: ByteArray?) {
+
+
+        val file = File(context.filesDir, name)
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+
+
+        try {
+            val fileOutputStream = FileOutputStream(file)
+            fileOutputStream.write(bytes)
+            fileOutputStream.close()
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
      * download a file, name come from filelist
      */
     var curFileName: String? = null
     var curFile: Er1BleResponse.Er1File? = null
     var fileList: Er1BleResponse.Er1FileList? = null
     public fun downloadFile(name : ByteArray) {
-        curFileName = String(name)
+        curFileName = HexString.trimStr(String(name))
         sendCmd(UniversalBleCmd.readFileStart(name, 0))
     }
 
@@ -180,7 +232,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             UniversalBleCmd.READ_FILE_DATA -> {
                 curFile?.apply {
                     this.addContent(response.content)
-                    LogUtils.d("read file：${curFile?.fileName}   => ${curFile?.index} / ${curFile?.fileSize}")
+//                    LogUtils.d("read file：${curFile?.fileName}   => ${curFile?.index} / ${curFile?.fileSize}")
 
                     // speed test
                     val s = SpeedTest.add(response.content.size)
@@ -197,8 +249,29 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
             UniversalBleCmd.READ_FILE_END -> {
                 LogUtils.d("read file finished: ${curFile?.fileName} ==> ${curFile?.fileSize}")
+
+                saveFile(curFile!!.fileName, curFile!!.content)
+
+                if (curFile?.fileName == ALL_FILE_NAME) {
+                    isDownloadingAllFile = true
+                    readAllFileList(curFile!!.content)
+                }
+
                 curFileName = null
                 curFile = null
+
+            }
+        }
+    }
+
+    private fun proceedNextFile() {
+
+        if (isDownloadingAllFile) {
+            allFileList.removeAt(0)
+            if (allFileList.size > 0) {
+                downloadFile(allFileList[0])
+            } else {
+                isDownloadingAllFile = false
             }
         }
     }
