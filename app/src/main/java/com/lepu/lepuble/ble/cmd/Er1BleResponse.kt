@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.blankj.utilcode.util.LogUtils
 import com.google.gson.Gson
 import com.lepu.lepuble.ble.obj.Er1DataController
+import com.lepu.lepuble.utils.ByteUtils
 import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toInt
 import com.lepu.lepuble.utils.toUInt
@@ -98,8 +99,8 @@ object Er1BleResponse {
 
         init {
 //            LogUtils.d(bytes.toHex())
-            param = RtRriParam(bytes.copyOfRange(0, 22))
-            rri = RtRri(bytes.copyOfRange(22, bytes.size), param.unix_time)
+            param = RtRriParam(bytes.copyOfRange(0, 21))
+            rri = RtRri(bytes.copyOfRange(21, bytes.size), param.unix_time)
         }
     }
 
@@ -121,7 +122,7 @@ object Er1BleResponse {
         var unix_time: Long
 
         init {
-            LogUtils.d(bytes.toHex())
+//            LogUtils.d(bytes.toHex())
             var index = 0
             hr = toUInt(bytes.copyOfRange(index, index + 2))
             index += 2
@@ -132,26 +133,26 @@ object Er1BleResponse {
             if (bytes[8].toUInt() and 0x02u == 0x02u) {
                 recordTime = toUInt(bytes.copyOfRange(index, index+4))
             }
-            runStatus = bytes[index+4]
-            leadOn = (bytes[index+4].toUInt() and 0x07u) != 0x07u
             index+=4
+            runStatus = bytes[8]
+            leadOn = (bytes[8].toUInt() and 0x07u) != 0x07u
             index++
             s = toUInt(bytes.copyOfRange(index, index+4))
             index+=4
             ms = toUInt(bytes.copyOfRange(index, index+2))
             index+=2
-            axis_x = toInt(bytes.copyOfRange(index, index+2))
+            axis_x = ByteUtils.bytes2Short(bytes[index], bytes[index+1])
             index+=2
-            axis_y = toInt(bytes.copyOfRange(index, index+2))
+            axis_y = ByteUtils.bytes2Short(bytes[index], bytes[index+1])
             index+=2
-            axis_z = toInt(bytes.copyOfRange(index, index+2))
+            axis_z = ByteUtils.bytes2Short(bytes[index], bytes[index+1])
             index+=2
 
             unix_time = s.toLong()*1000+ms
 
             val c = Calendar.getInstance()
             c.timeInMillis = unix_time
-            LogUtils.d("$s + $ms = $unix_time", c.toString(), "($axis_x, $axis_y, $axis_z)")
+//            LogUtils.d("$s + $ms = $unix_time", c.toString(), "($axis_x, $axis_y, $axis_z)")
         }
     }
 
@@ -163,19 +164,19 @@ object Er1BleResponse {
         var rris = mutableListOf<RRI>()
 
         init {
-            LogUtils.d(bytes.toHex())
+//            LogUtils.d(bytes.toHex())
             len = toUInt(bytes.copyOfRange(0, 2))
             wave = bytes.copyOfRange(2, bytes.size)
             for (i in 0 until len) {
                 rris.add(RRI(end - (len-i)*4, toUInt(wave.copyOfRange(2*i, 2*i+2))))
             }
-            LogUtils.d(rris.toString())
+//            LogUtils.d(rris.toString())
         }
     }
 
     class RRI constructor(var time: Long, var value: Int) {
         override fun toString(): String {
-            return Gson().toJson(this)
+            return "$time:$value\n"
         }
     }
 

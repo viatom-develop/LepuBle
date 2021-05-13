@@ -39,4 +39,13 @@ class Er1ViewModel : ViewModel() {
     val speed: MutableLiveData<Float> by lazy {
         MutableLiveData<Float>()
     }
+
+    // rri & 3-axis Acceleration
+    val acceleration: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
+    val rris: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
 }

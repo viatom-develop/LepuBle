@@ -251,6 +251,14 @@ class Er1Fragment : Fragment() {
         model.speed.observe(this, {
             speed.text = "$it kb/s"
         })
+
+        model.acceleration.observe(this, {
+            axis_value.text = it
+        })
+
+        model.rris.observe(this, {
+            rris.text = it
+        })
     }
 
 
