@@ -2,8 +2,10 @@ package com.lepu.lepuble.ble.cmd
 
 import android.os.Parcelable
 import com.blankj.utilcode.util.LogUtils
+import com.google.gson.Gson
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.utils.toHex
+import com.lepu.lepuble.utils.toInt
 import com.lepu.lepuble.utils.toUInt
 import kotlinx.android.parcel.Parcelize
 import java.util.*
@@ -96,8 +98,8 @@ object Er1BleResponse {
 
         init {
 //            LogUtils.d(bytes.toHex())
-            param = RtRriParam(bytes.copyOfRange(0, 21))
-            rri = RtRri(bytes.copyOfRange(21, bytes.size), param.unix_time)
+            param = RtRriParam(bytes.copyOfRange(0, 22))
+            rri = RtRri(bytes.copyOfRange(22, bytes.size), param.unix_time)
         }
     }
 
@@ -133,22 +135,23 @@ object Er1BleResponse {
             runStatus = bytes[index+4]
             leadOn = (bytes[index+4].toUInt() and 0x07u) != 0x07u
             index+=4
+            index++
             s = toUInt(bytes.copyOfRange(index, index+4))
             index+=4
             ms = toUInt(bytes.copyOfRange(index, index+2))
             index+=2
-            axis_x = toUInt(bytes.copyOfRange(index, index+2))
+            axis_x = toInt(bytes.copyOfRange(index, index+2))
             index+=2
-            axis_y = toUInt(bytes.copyOfRange(index, index+2))
+            axis_y = toInt(bytes.copyOfRange(index, index+2))
             index+=2
-            axis_z = toUInt(bytes.copyOfRange(index, index+2))
+            axis_z = toInt(bytes.copyOfRange(index, index+2))
             index+=2
 
             unix_time = s.toLong()*1000+ms
 
             val c = Calendar.getInstance()
             c.timeInMillis = unix_time
-            LogUtils.d(unix_time, c.toString(), "($axis_x, $axis_y, $axis_z)")
+            LogUtils.d("$s + $ms = $unix_time", c.toString(), "($axis_x, $axis_y, $axis_z)")
         }
     }
 
@@ -170,7 +173,11 @@ object Er1BleResponse {
         }
     }
 
-    class RRI constructor(var time: Long, var value: Int)
+    class RRI constructor(var time: Long, var value: Int) {
+        override fun toString(): String {
+            return Gson().toJson(this)
+        }
+    }
 
     @ExperimentalUnsignedTypes
     class Er3RtData constructor(var bytes: ByteArray) {

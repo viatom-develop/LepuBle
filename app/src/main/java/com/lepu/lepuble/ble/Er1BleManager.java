@@ -124,7 +124,7 @@ public class Er1BleManager extends BleManager {
                     });
 
             // sync time
-            syncTime();
+//            syncTime();
 
             // get info
             getInfo();
