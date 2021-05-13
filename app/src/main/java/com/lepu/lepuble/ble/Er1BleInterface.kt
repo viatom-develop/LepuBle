@@ -250,9 +250,9 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                     model.battery.value = this.battery
 
                     model.acceleration.value = """
-                        x: ${this.axis_x}
-                        y: ${this.axis_y}
-                        z: ${this.axis_z}
+                        x: ${this.axis_x} mg
+                        y: ${this.axis_y} mg
+                        z: ${this.axis_z} mg
                     """.trimIndent()
 
                 }

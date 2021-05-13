@@ -40,7 +40,7 @@ class Er1ViewModel : ViewModel() {
         MutableLiveData<Float>()
     }
 
-    // rri & 3-axis Acceleration
+    // rri & 3-axis
     val acceleration: MutableLiveData<String> by lazy {
         MutableLiveData<String>()
     }

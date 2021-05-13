@@ -116,9 +116,14 @@ object Er1BleResponse {
         // rri version
         var ms: Int
         var s: Int
-        var axis_x: Int
-        var axis_y: Int
-        var axis_z: Int
+
+        /**
+         * 三轴加速度 3-axis acceleration
+         * 单位：千分之一重力加速度
+         */
+        var axis_x: Float
+        var axis_y: Float
+        var axis_z: Float
         var unix_time: Long
 
         init {
@@ -141,11 +146,11 @@ object Er1BleResponse {
             index+=4
             ms = toUInt(bytes.copyOfRange(index, index+2))
             index+=2
-            axis_x = ByteUtils.bytes2Short(bytes[index], bytes[index+1])
+            axis_x = ByteUtils.bytes2Short(bytes[index], bytes[index+1]).toFloat() * 2000 /32768
             index+=2
-            axis_y = ByteUtils.bytes2Short(bytes[index], bytes[index+1])
+            axis_y = ByteUtils.bytes2Short(bytes[index], bytes[index+1]).toFloat() * 2000 /32768
             index+=2
-            axis_z = ByteUtils.bytes2Short(bytes[index], bytes[index+1])
+            axis_z = ByteUtils.bytes2Short(bytes[index], bytes[index+1]).toFloat() * 2000 /32768
             index+=2
 
             unix_time = s.toLong()*1000+ms
