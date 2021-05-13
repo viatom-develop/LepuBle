@@ -50,4 +50,9 @@ object EventMsgConst {
      */
     const val EventSocketConnect = "com.lepu.socket.connect"
     const val EventSocketMsg = "com.lepu.socket.msg"
+
+    /**
+     * just send a message
+     */
+    const val EventCommonMsg = "com.lepu.common.message"
 }

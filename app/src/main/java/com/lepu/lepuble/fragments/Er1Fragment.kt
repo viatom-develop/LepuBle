@@ -152,6 +152,10 @@ class Er1Fragment : Fragment() {
         download_all.setOnClickListener {
             bleInterface.getAllFiles()
         }
+
+        get_rri.setOnClickListener {
+            bleInterface.runRtRriTask()
+        }
     }
 
     private fun initEcgView() {
@@ -260,6 +264,11 @@ class Er1Fragment : Fragment() {
                 .observe(this, {
                     connect(it as Bluetooth)
                 })
+
+        LiveEventBus.get(EventMsgConst.EventCommonMsg)
+            .observe(this, {
+                download_progress.text = it as String
+            })
     }
 
     @SuppressLint("UseRequireInsteadOfGet")

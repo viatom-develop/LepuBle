@@ -87,6 +87,91 @@ object Er1BleResponse {
         }
     }
 
+    @Parcelize
+    @ExperimentalUnsignedTypes
+    class RtRriData constructor(var bytes: ByteArray) : Parcelable {
+        var content: ByteArray = bytes
+        var param: RtRriParam
+        var rri: RtRri
+
+        init {
+//            LogUtils.d(bytes.toHex())
+            param = RtRriParam(bytes.copyOfRange(0, 21))
+            rri = RtRri(bytes.copyOfRange(21, bytes.size), param.unix_time)
+        }
+    }
+
+    @ExperimentalUnsignedTypes
+    class RtRriParam constructor(var bytes: ByteArray) {
+        var hr: Int
+        var sysFlag: Byte
+        var battery: Int
+        var recordTime: Int = 0
+        var runStatus: Byte
+        var leadOn: Boolean
+
+        // rri version
+        var ms: Int
+        var s: Int
+        var axis_x: Int
+        var axis_y: Int
+        var axis_z: Int
+        var unix_time: Long
+
+        init {
+            LogUtils.d(bytes.toHex())
+            var index = 0
+            hr = toUInt(bytes.copyOfRange(index, index + 2))
+            index += 2
+            sysFlag = bytes[index]
+            index++
+            battery = (bytes[index].toUInt() and 0xFFu).toInt()
+            index++
+            if (bytes[8].toUInt() and 0x02u == 0x02u) {
+                recordTime = toUInt(bytes.copyOfRange(index, index+4))
+            }
+            runStatus = bytes[index+4]
+            leadOn = (bytes[index+4].toUInt() and 0x07u) != 0x07u
+            index+=4
+            s = toUInt(bytes.copyOfRange(index, index+4))
+            index+=4
+            ms = toUInt(bytes.copyOfRange(index, index+2))
+            index+=2
+            axis_x = toUInt(bytes.copyOfRange(index, index+2))
+            index+=2
+            axis_y = toUInt(bytes.copyOfRange(index, index+2))
+            index+=2
+            axis_z = toUInt(bytes.copyOfRange(index, index+2))
+            index+=2
+
+            unix_time = s.toLong()*1000+ms
+
+            val c = Calendar.getInstance()
+            c.timeInMillis = unix_time
+            LogUtils.d(unix_time, c.toString(), "($axis_x, $axis_y, $axis_z)")
+        }
+    }
+
+    @ExperimentalUnsignedTypes
+    class RtRri constructor(var bytes: ByteArray, var end: Long) {
+        var content: ByteArray = bytes
+        var len: Int
+        var wave: ByteArray
+        var rris = mutableListOf<RRI>()
+
+        init {
+            LogUtils.d(bytes.toHex())
+            len = toUInt(bytes.copyOfRange(0, 2))
+            wave = bytes.copyOfRange(2, bytes.size)
+            for (i in 0 until len) {
+                rris.add(RRI(end - (len-i)*4, toUInt(wave.copyOfRange(2*i, 2*i+2))))
+            }
+            LogUtils.d(rris.toString())
+        }
+    }
+
+    class RRI constructor(var time: Long, var value: Int)
+
     @ExperimentalUnsignedTypes
     class Er3RtData constructor(var bytes: ByteArray) {
         var content: ByteArray = bytes

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull
 import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
+import com.lepu.lepuble.ble.cmd.Er1BleCmd
 import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd
 import com.lepu.lepuble.ble.obj.Er1DataController
@@ -52,6 +53,17 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             if (state) {
                 count++
                 getRtData()
+//                LogUtils.d("RtTask: $count")
+            }
+        }
+    }
+
+    inner class RtRriTask: Runnable {
+        override fun run() {
+            rtHandler.postDelayed(this, 1000)
+            if (state) {
+                count++
+                getRtRri()
 //                LogUtils.d("RtTask: $count")
             }
         }
@@ -114,10 +126,24 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     }
 
     /**
+     * get real-time RRI
+     */
+    public fun getRtRri() {
+        sendCmd(Er1BleCmd.getRtRri())
+    }
+
+    /**
      * run real-time task
      */
     public fun runRtTask() {
         rtHandler.postDelayed(RtTask(), 200)
+    }
+
+    /**
+     * run real-time rri task
+     */
+    public fun runRtRriTask() {
+        rtHandler.postDelayed(RtRriTask(), 200)
     }
 
     /**
@@ -141,6 +167,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     private fun readAllFileList(bytes: ByteArray) {
         for (i in 0 until (bytes.size/16)) {
             allFileList.add(bytes.copyOfRange(i*16, (i+1)*16))
+            totalFileNum++
         }
     }
 
@@ -173,6 +200,8 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     var curFileName: String? = null
     var curFile: Er1BleResponse.Er1File? = null
     var fileList: Er1BleResponse.Er1FileList? = null
+    var fileNum: Int = 0
+    var totalFileNum: Int = 0
     public fun downloadFile(name : ByteArray) {
         curFileName = HexString.trimStr(String(name))
         sendCmd(UniversalBleCmd.readFileStart(name, 0))
@@ -182,7 +211,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         if (!state) {
             return
         }
-        LogUtils.d(bs.toHex())
+//        LogUtils.d(bs.toHex())
         manager.sendCmd(bs)
     }
 
@@ -211,6 +240,14 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                     .post(rtData)
             }
 
+            Er1BleCmd.RT_RRI -> {
+                val rtRriData = Er1BleResponse.RtRriData(response.content)
+                model.hr.value = rtRriData.param.hr
+                model.duration.value = rtRriData.param.recordTime
+                model.lead.value = rtRriData.param.leadOn
+                model.battery.value = rtRriData.param.battery
+            }
+
             UniversalBleCmd.READ_FILE_LIST -> {
                 fileList = Er1BleResponse.Er1FileList(response.content)
                 LogUtils.d(fileList.toString())
@@ -225,6 +262,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                     SpeedTest.init()
                 } else {
                     LogUtils.d("read file failed：${response.pkgType}")
+                    proceedNextFile()
                 }
 
             }
@@ -237,7 +275,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                     // speed test
                     val s = SpeedTest.add(response.content.size)
                     model.speed.postValue(s)
-                    LogUtils.d("speed in 10s is $s")
+//                    LogUtils.d("speed in 10s is $s")
 
                     if (this.index < this.fileSize) {
                         sendCmd(UniversalBleCmd.readFileData(this.index))
@@ -260,6 +298,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                 curFileName = null
                 curFile = null
 
+                proceedNextFile()
             }
         }
     }
@@ -268,6 +307,9 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
         if (isDownloadingAllFile) {
             allFileList.removeAt(0)
+            fileNum++
+            LiveEventBus.get(EventMsgConst.EventCommonMsg).post("$fileNum/$totalFileNum")
+
             if (allFileList.size > 0) {
                 downloadFile(allFileList[0])
             } else {
@@ -347,6 +389,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         model.connect.value = state
         LogUtils.d(mydevice.name)
         rtHandler.removeCallbacks(RtTask())
+        rtHandler.removeCallbacks(RtRriTask())
 
         clearVar()
 
