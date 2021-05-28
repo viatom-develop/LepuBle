@@ -60,7 +60,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
     inner class RtRriTask: Runnable {
         override fun run() {
-            rtHandler.postDelayed(this, 1000)
+            rtHandler.postDelayed(this, 100)
             if (state) {
                 count++
                 getRtRri()
@@ -242,10 +242,24 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
             Er1BleCmd.RT_RRI -> {
                 val rtRriData = Er1BleResponse.RtRriData(response.content)
-                model.hr.value = rtRriData.param.hr
-                model.duration.value = rtRriData.param.recordTime
-                model.lead.value = rtRriData.param.leadOn
-                model.battery.value = rtRriData.param.battery
+
+                rtRriData.param.apply {
+                    model.hr.value = this.hr
+                    model.duration.value = this.recordTime
+                    model.lead.value = this.leadOn
+                    model.battery.value = this.battery
+
+                    model.acceleration.value = """
+                        x: ${this.axis_x} mg
+                        y: ${this.axis_y} mg
+                        z: ${this.axis_z} mg
+                    """.trimIndent()
+
+                }
+
+                rtRriData.rri.apply {
+                    model.rris.value = this.rris.toString()
+                }
             }
 
             UniversalBleCmd.READ_FILE_LIST -> {
