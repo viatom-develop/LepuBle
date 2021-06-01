@@ -41,15 +41,15 @@ android {
             ]
         }
 
-        er2 {
-            dimension 'type'
-            applicationIdSuffix ".er2"
-            versionNameSuffix "-er2"
-            manifestPlaceholders = [
-                    name: "@string/app_name_er2",
-//                    logo: "@mipmap/lepu_icon",
-            ]
-        }
+//        er2 {
+//            dimension 'type'
+//            applicationIdSuffix ".er2"
+//            versionNameSuffix "-er2"
+//            manifestPlaceholders = [
+//                    name: "@string/app_name_er2",
+////                    logo: "@mipmap/lepu_icon",
+//            ]
+//        }
 
         er3 {
             dimension 'type'

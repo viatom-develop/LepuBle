@@ -185,26 +185,26 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/download_file"
-                    android:text="@string/get_file_list"
+                    app:layout_constraintEnd_toStartOf="@id/get_rt_data"
+                    android:text="@string/download_files"
                     android:textAlignment="center" />
 
-                <TextView
-                    android:id="@+id/download_file"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/get_file_list"
-                    app:layout_constraintEnd_toStartOf="@id/get_rt_data"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:text="@string/download_file"
-                    android:textAlignment="center" />
+<!--                <TextView-->
+<!--                    android:id="@+id/download_file"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:layout_constraintStart_toEndOf="@id/get_file_list"-->
+<!--                    app:layout_constraintEnd_toStartOf="@id/get_rt_data"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    android:text="@string/download_file"-->
+<!--                    android:textAlignment="center" />-->
 
                 <TextView
                     android:id="@+id/get_rt_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/download_file"
+                    app:layout_constraintStart_toEndOf="@id/get_file_list"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:text="@string/rt_data"
                     android:textAlignment="center" />

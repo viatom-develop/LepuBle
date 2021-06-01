@@ -171,7 +171,7 @@
 
             <TextView
                 android:id="@+id/get_file_list"
-                android:text="@string/get_file_list"
+                android:text="@string/download_files"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:textAlignment="center"

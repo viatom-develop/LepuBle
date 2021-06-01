@@ -2,10 +2,8 @@ package com.lepu.lepuble.ble
 
 import android.bluetooth.BluetoothDevice
 import android.content.Context
-import android.os.Environment
 import android.os.Handler
 import androidx.annotation.NonNull
-import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.ble.cmd.Er1BleCmd
@@ -14,11 +12,11 @@ import com.lepu.lepuble.ble.cmd.UniversalBleCmd
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.ble.utils.BleCRC
+import com.lepu.lepuble.file.Er2Record
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.objs.SpeedTest
 import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
-import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er1ViewModel
@@ -147,24 +145,35 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     }
 
     /**
-     * get file list
+     * all files on the device, use for download all
+     */
+    private val allFileList = mutableListOf<ByteArray>()
+
+    /**
+     * get file list - use get file list command
      */
     public fun getFileList() {
         sendCmd(UniversalBleCmd.getFileList())
     }
+    private fun processFileList(list: Er1BleResponse.Er1FileList) {
+        for (name in list.fileList) {
+            allFileList.add(name)
+            totalFileNum++
+        }
+    }
+
+    private val ALL_FILE_NAME = "file_list.txt"
+    private var isDownloadingAllFile = false
 
     /**
+     * get file list - download a file "file_list.txt"
      * 测试功能，下载"file_list.txt"文件
      * 每16个字节一个文件名
      */
-    val ALL_FILE_NAME = "file_list.txt"
-    private var isDownloadingAllFile = false
-    val allFileList = mutableListOf<ByteArray>()
-    public fun getAllFiles() {
+    public fun downloadFileListFile() {
         downloadFile(ALL_FILE_NAME.toByteArray())
     }
-
-    private fun readAllFileList(bytes: ByteArray) {
+    private fun processFileListFile(bytes: ByteArray) {
         for (i in 0 until (bytes.size/16)) {
             allFileList.add(bytes.copyOfRange(i*16, (i+1)*16))
             totalFileNum++
@@ -172,16 +181,14 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     }
 
     /**
-     * save file
+     * save file to local storage
      */
     private fun saveFile(name: String, bytes: ByteArray?) {
-
 
         val file = File(context.filesDir, name)
         if (!file.exists()) {
             file.createNewFile()
         }
-
 
         try {
             val fileOutputStream = FileOutputStream(file)
@@ -199,9 +206,12 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
      */
     var curFileName: String? = null
     var curFile: Er1BleResponse.Er1File? = null
-    var fileList: Er1BleResponse.Er1FileList? = null
     var fileNum: Int = 0
     var totalFileNum: Int = 0
+
+    /**
+     * download file from the device
+     */
     public fun downloadFile(name : ByteArray) {
         curFileName = HexString.trimStr(String(name))
         sendCmd(UniversalBleCmd.readFileStart(name, 0))
@@ -263,8 +273,13 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             }
 
             UniversalBleCmd.READ_FILE_LIST -> {
-                fileList = Er1BleResponse.Er1FileList(response.content)
-                LogUtils.d(fileList.toString())
+                val fileList = Er1BleResponse.Er1FileList(response.content)
+                processFileList(fileList)
+                LogUtils.d("get file list: $fileList")
+
+                // download all files
+                isDownloadingAllFile = true
+                proceedNextFile()
             }
 
             UniversalBleCmd.READ_FILE_START -> {
@@ -306,7 +321,12 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
                 if (curFile?.fileName == ALL_FILE_NAME) {
                     isDownloadingAllFile = true
-                    readAllFileList(curFile!!.content)
+                    processFileListFile(curFile!!.content)
+                }
+
+                if(curFile?.fileName!!.startsWith("R", false)) {
+                    val er2Record = Er2Record(curFile!!.content)
+                    LogUtils.d(er2Record)
                 }
 
                 curFileName = null

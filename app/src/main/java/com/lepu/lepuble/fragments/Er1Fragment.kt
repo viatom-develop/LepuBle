@@ -133,16 +133,16 @@ class Er1Fragment : Fragment() {
         /**
          * 默认下载第一条数据
          */
-        download_file.setOnClickListener {
-            if (bleInterface.fileList == null || bleInterface.fileList!!.size == 0) {
-                Toast.makeText(activity, "please get file list at first or file list is null", Toast.LENGTH_SHORT).show()
-            } else {
-                val name = bleInterface.fileList!!.fileList[0]
-                bleInterface.downloadFile(name)
-                Toast.makeText(activity, "download ${String(name)}", Toast.LENGTH_SHORT).show()
-            }
-
-        }
+//        download_file.setOnClickListener {
+//            if (bleInterface.fileList == null || bleInterface.fileList!!.size == 0) {
+//                Toast.makeText(activity, "please get file list at first or file list is null", Toast.LENGTH_SHORT).show()
+//            } else {
+//                val name = bleInterface.fileList!!.fileList[0]
+//                bleInterface.downloadFile(name)
+//                Toast.makeText(activity, "download ${String(name)}", Toast.LENGTH_SHORT).show()
+//            }
+//
+//        }
 
         get_rt_data.setOnClickListener {
             bleInterface.runRtTask()
@@ -150,7 +150,7 @@ class Er1Fragment : Fragment() {
         }
 
         download_all.setOnClickListener {
-            bleInterface.getAllFiles()
+            bleInterface.downloadFileListFile()
         }
 
         get_rri.setOnClickListener {
