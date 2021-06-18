@@ -1,4 +1,4 @@
-package com.lepu.nordicble.objs
+package com.lepu.lepuble.objs
 
 import android.content.Context
 

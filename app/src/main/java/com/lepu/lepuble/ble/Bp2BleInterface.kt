@@ -17,9 +17,15 @@ import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Bp2ViewModel
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import kotlin.experimental.inv
 
 class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
+
+    private lateinit var context: Context
 
     private lateinit var model: Bp2ViewModel
     fun setViewModel(viewModel: Bp2ViewModel) {
@@ -60,6 +66,8 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
         if (connecting || state) {
             return
         }
+
+        this.context = context
         LogUtils.d("try connect: ${device.name}")
         manager = LepuBleManager(context)
         mydevice = device
@@ -106,22 +114,64 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
     }
 
     /**
+     * all files on the device, use for download all
+     */
+    private val allFileList = mutableListOf<ByteArray>()
+
+    /**
      * get file list
      */
     public fun getFileList() {
         sendCmd(UniversalBleCmd.getFileList())
     }
 
+    private fun processFileList(list: Er1BleResponse.Er1FileList) {
+        for (name in list.fileList) {
+            allFileList.add(name)
+            totalFileNum++
+        }
+    }
+
+    private var isDownloadingAllFile = false
+
     /**
      * download a file, name come from filelist
      */
     var curFileName: String? = null
     var curFile: Er1BleResponse.Er1File? = null
-    var fileList: Er1BleResponse.Er1FileList? = null
+    var fileNum: Int = 0
+    var totalFileNum: Int = 0
+
+    /**
+     * download file from the device
+     */
     public fun downloadFile(name : ByteArray) {
         curFileName = String(name)
         sendCmd(UniversalBleCmd.readFileStart(name, 0))
     }
+
+    /**
+     * save file to local storage
+     */
+    private fun saveFile(name: String, bytes: ByteArray?) {
+
+        val file = File(context.filesDir, name)
+        if (!file.exists()) {
+            file.createNewFile()
+        }
+
+        try {
+            val fileOutputStream = FileOutputStream(file)
+            fileOutputStream.write(bytes)
+            fileOutputStream.close()
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+
 
     private fun sendCmd(bs: ByteArray) {
         if (!state) {
@@ -187,8 +237,13 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
             }
 
             UniversalBleCmd.READ_FILE_LIST -> {
-                fileList = Er1BleResponse.Er1FileList(response.content)
+                val fileList = Er1BleResponse.Er1FileList(response.content)
+                processFileList(fileList)
                 LogUtils.d(fileList.toString())
+
+                // download all files
+                isDownloadingAllFile = true
+                proceedNextFile()
             }
 
             UniversalBleCmd.READ_FILE_START -> {
@@ -215,8 +270,28 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
 
             UniversalBleCmd.READ_FILE_END -> {
                 LogUtils.d("read file finished: ${curFile?.fileName} ==> ${curFile?.fileSize}")
+
+                saveFile(curFile!!.fileName.trim(), curFile!!.content)
+
                 curFileName = null
                 curFile = null
+
+                proceedNextFile()
+            }
+        }
+    }
+
+    private fun proceedNextFile() {
+
+        if (isDownloadingAllFile) {
+            allFileList.removeAt(0)
+            fileNum++
+            LiveEventBus.get(EventMsgConst.EventCommonMsg).post("$fileNum/$totalFileNum")
+
+            if (allFileList.size > 0) {
+                downloadFile(allFileList[0])
+            } else {
+                isDownloadingAllFile = false
             }
         }
     }

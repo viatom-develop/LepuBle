@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
 import com.lepu.lepuble.ble.OxyBleInterface
@@ -20,7 +19,6 @@ import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.MainViewModel
 import com.lepu.lepuble.viewmodel.OxyViewModel
 import com.lepu.lepuble.views.OxyView
-import com.lepu.nordicble.objs.Const
 import kotlinx.android.synthetic.main.fragment_o2.*
 import kotlinx.android.synthetic.main.fragment_o2.battery
 import kotlinx.android.synthetic.main.fragment_o2.battery_left_duration
