@@ -3,6 +3,7 @@ package com.lepu.lepuble.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lepu.lepuble.objs.Bluetooth
+import com.lepu.lepuble.objs.CmdListItem
 
 class MainViewModel : ViewModel() {
 
@@ -45,5 +46,17 @@ class MainViewModel : ViewModel() {
 
     val wifiRssi : MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
+    }
+
+    val cmd: MutableLiveData<List<CmdListItem>> by lazy {
+        MutableLiveData<List<CmdListItem>>()
+    }
+
+    val totalBytes: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    val startStamp: MutableLiveData<Long> by lazy {
+        MutableLiveData<Long>()
     }
 }

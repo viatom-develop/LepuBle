@@ -1,11 +1,13 @@
 package com.lepu.lepuble.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.blankj.utilcode.util.LogUtils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.lepu.lepuble.BuildConfig
 import com.lepu.lepuble.R
 import com.lepu.lepuble.fragments.*
@@ -34,6 +36,36 @@ class MainActivity : AppCompatActivity() {
         connect.setOnClickListener {
             val i = Intent(this, SearchActivity::class.java)
             startActivity(i)
+        }
+
+          val behavior = BottomSheetBehavior.from(btm_sheet)
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState) {
+                    /** The bottom sheet is dragging.  */
+                    BottomSheetBehavior.STATE_DRAGGING -> {}
+
+                    /** The bottom sheet is settling.  */
+                    BottomSheetBehavior.STATE_SETTLING -> {}
+
+                    /** The bottom sheet is expanded.  */
+                    BottomSheetBehavior.STATE_EXPANDED -> {}
+
+                    /** The bottom sheet is collapsed.  */
+                    BottomSheetBehavior.STATE_COLLAPSED -> {}
+
+                    /** The bottom sheet is hidden.  */
+                    BottomSheetBehavior.STATE_HIDDEN -> {}
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                TODO("Not yet implemented")
+            }
+
+        })
+        log.setOnClickListener {
+//            behavior.
         }
 
         initFragments()
@@ -67,6 +99,9 @@ class MainActivity : AppCompatActivity() {
             }
             Bluetooth.MODEL_P1 -> {
                 fragment = P1Fragment.newInstance()
+            }
+            Bluetooth.MODEL_300B -> {
+                fragment = Am300bFragment.newInstance()
             }
 
             else -> {

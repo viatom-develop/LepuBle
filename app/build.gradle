@@ -14,7 +14,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
-        versionName "1.3.6"
+        versionName "1.3.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,7 +29,7 @@ android {
     flavorDimensions "type"
     productFlavors {
         /**
-         * er1, er2, er3, oxy, kca, airbp
+         * er1, er2, er3, oxy, kca, airbp, 300B
          */
         er1 {
             dimension 'type'
@@ -120,6 +120,16 @@ android {
 //                    logo: "@mipmap/lepu_icon",
             ]
         }
+
+        am300b {
+            dimension 'type'
+            applicationIdSuffix ".am300b"
+            versionNameSuffix "-am300b"
+            manifestPlaceholders = [
+                    name: "@string/app_name_300b",
+//                    logo: "@mipmap/lepu_icon",
+            ]
+        }
     }
 
     compileOptions {
@@ -203,4 +213,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.2.5"
 
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    // picker
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
 }

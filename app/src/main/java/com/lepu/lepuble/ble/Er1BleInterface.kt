@@ -17,6 +17,7 @@ import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.objs.SpeedTest
 import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
+import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er1ViewModel
@@ -221,7 +222,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         if (!state) {
             return
         }
-//        LogUtils.d(bs.toHex())
+//        LogUtils.d("send cmd: ${bs.toHex()}")
         manager.sendCmd(bs)
     }
 
@@ -299,8 +300,10 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             UniversalBleCmd.READ_FILE_DATA -> {
                 curFile?.apply {
                     this.addContent(response.content)
-//                    LogUtils.d("read file：${curFile?.fileName}   => ${curFile?.index} / ${curFile?.fileSize}")
 
+                    curFile?.apply {
+                        LogUtils.d("read file：${this.fileName} ${this.fileSize} => ${this.index.div(this.fileSize.toFloat())}")
+                    }
                     // speed test
                     val s = SpeedTest.add(response.content.size)
                     model.speed.postValue(s)
@@ -338,14 +341,13 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     }
 
     private fun proceedNextFile() {
-
         if (isDownloadingAllFile) {
-            allFileList.removeAt(0)
             fileNum++
             LiveEventBus.get(EventMsgConst.EventCommonMsg).post("$fileNum/$totalFileNum")
 
             if (allFileList.size > 0) {
                 downloadFile(allFileList[0])
+                allFileList.removeAt(0)
             } else {
                 isDownloadingAllFile = false
             }
@@ -375,7 +377,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             val temp: ByteArray = bytes.copyOfRange(i, i+8+len)
             if (temp.last() == BleCRC.calCRC8(temp)) {
                 val bleResponse = Er1BleResponse.Er1Response(temp)
-//                LogUtils.d("get response: ${temp.toHex()}" )
+                LogUtils.d("get response: ${temp.toHex()}" )
                 onResponseReceived(bleResponse)
 
                 val tempBytes: ByteArray? = if (i+8+len == bytes.size) null else bytes.copyOfRange(i+8+len, bytes.size)
