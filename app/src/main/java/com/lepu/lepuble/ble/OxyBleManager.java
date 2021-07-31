@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.UUID;
@@ -12,6 +13,10 @@ import java.util.UUID;
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.jeremyliao.liveeventbus.LiveEventBus;
+import com.lepu.lepuble.objs.BleLogItem;
+import com.lepu.lepuble.utils.ByteArrayKt;
+import com.lepu.lepuble.vals.EventMsgConst;
 
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.data.Data;
@@ -134,12 +139,14 @@ public class OxyBleManager extends BleManager {
                 .with((device, data) -> {
 //                        LogUtils.d(device.getName() + " received: " + ByteArrayKt.bytesToHex(data.getValue()));
                     listener.onNotify(device, data);
+                    LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getRECEIVE(), data.getValue()));
                 });
     }
 
     public void sendCmd(byte[] bytes) {
 
 //        LogUtils.d("send: " + ByteArrayKt.bytesToHex(bytes));
+        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getSEND(), bytes));
 
         writeCharacteristic(write_char, bytes)
                 .split()

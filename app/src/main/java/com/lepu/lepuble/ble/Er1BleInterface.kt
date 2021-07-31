@@ -218,7 +218,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         sendCmd(UniversalBleCmd.readFileStart(name, 0))
     }
 
-    private fun sendCmd(bs: ByteArray) {
+    public fun sendCmd(bs: ByteArray) {
         if (!state) {
             return
         }

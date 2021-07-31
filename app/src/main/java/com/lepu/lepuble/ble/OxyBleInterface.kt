@@ -10,11 +10,13 @@ import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.ble.cmd.OxyBleCmd
 import com.lepu.lepuble.ble.cmd.OxyBleResponse
 import com.lepu.lepuble.ble.obj.OxyDataController
+import com.lepu.lepuble.objs.BleLogItem
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
+import com.lepu.lepuble.viewmodel.MainViewModel
 import com.lepu.lepuble.viewmodel.OxyViewModel
 import kotlinx.coroutines.*
 import no.nordicsemi.android.ble.data.Data
@@ -25,6 +27,11 @@ import kotlin.concurrent.schedule
 import kotlin.experimental.inv
 
 class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
+
+    private var mainVM: MainViewModel? = null
+    fun setMainVM(model: MainViewModel) {
+        mainVM = model
+    }
 
     private lateinit var model: OxyViewModel
     fun setViewModel(viewModel: OxyViewModel) {
@@ -77,6 +84,13 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
                 }
                 .enqueue()
 
+    }
+
+    /**
+     * 用于测试
+     */
+    public fun sendCmd(bs: ByteArray) {
+        manager.sendCmd(bs)
     }
 
     private fun sendCmd(cmd: Int, bs: ByteArray) {

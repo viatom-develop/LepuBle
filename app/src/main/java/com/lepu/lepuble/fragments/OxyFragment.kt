@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -15,6 +16,7 @@ import com.lepu.lepuble.R
 import com.lepu.lepuble.ble.OxyBleInterface
 import com.lepu.lepuble.ble.obj.OxyDataController
 import com.lepu.lepuble.objs.Bluetooth
+import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.MainViewModel
 import com.lepu.lepuble.viewmodel.OxyViewModel
@@ -90,6 +92,7 @@ class OxyFragment : Fragment() {
 //        }
         bleInterface = OxyBleInterface()
         bleInterface.setViewModel(model)
+        bleInterface.setMainVM(activityModel)
 
         addLiveDataObserver()
         addLiveEventObserver()
@@ -220,6 +223,11 @@ class OxyFragment : Fragment() {
                 .observe(this, {
                     connect(it as Bluetooth)
                 })
+
+        LiveEventBus.get(EventMsgConst.EventMsgSendCmd)
+            .observe(this, {
+                bleInterface.sendCmd(HexString.hexToBytes(it as String))
+            })
     }
 
     @SuppressLint("UseRequireInsteadOfGet")

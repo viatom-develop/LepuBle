@@ -11,10 +11,12 @@ import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.objs.Bluetooth
+import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Bp2ViewModel
+import com.lepu.lepuble.viewmodel.MainViewModel
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import java.io.File
@@ -155,7 +157,7 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
      */
     private fun saveFile(name: String, bytes: ByteArray?) {
 
-        val file = File(context.filesDir, name)
+        val file = File(context.filesDir, HexString.trimStr(name))
         if (!file.exists()) {
             file.createNewFile()
         }
@@ -173,7 +175,7 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
 
 
 
-    private fun sendCmd(bs: ByteArray) {
+    public fun sendCmd(bs: ByteArray) {
         if (!state) {
             return
         }

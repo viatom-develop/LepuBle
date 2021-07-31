@@ -16,12 +16,20 @@ import com.lepu.lepuble.R
 import com.lepu.lepuble.ble.Er1BleInterface
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.objs.Bluetooth
+import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er1ViewModel
 import com.lepu.lepuble.viewmodel.MainViewModel
 import com.lepu.lepuble.views.EcgBkg
 import com.lepu.lepuble.views.EcgView
 import kotlinx.android.synthetic.main.fragment_er1.*
+import kotlinx.android.synthetic.main.fragment_er1.battery
+import kotlinx.android.synthetic.main.fragment_er1.battery_left_duration
+import kotlinx.android.synthetic.main.fragment_er1.ble_state
+import kotlinx.android.synthetic.main.fragment_er1.device_sn
+import kotlinx.android.synthetic.main.fragment_er1.get_rt_data
+import kotlinx.android.synthetic.main.fragment_er1.speed
+import kotlinx.android.synthetic.main.fragment_o2.*
 import java.text.SimpleDateFormat
 import kotlin.math.floor
 
@@ -276,6 +284,11 @@ class Er1Fragment : Fragment() {
         LiveEventBus.get(EventMsgConst.EventCommonMsg)
             .observe(this, {
                 download_progress.text = it as String
+            })
+
+        LiveEventBus.get(EventMsgConst.EventMsgSendCmd)
+            .observe(this, {
+                bleInterface.sendCmd(HexString.hexToBytes(it as String))
             })
     }
 

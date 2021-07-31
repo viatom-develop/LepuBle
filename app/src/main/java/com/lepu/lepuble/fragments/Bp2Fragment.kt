@@ -24,12 +24,20 @@ import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_READY
 import com.lepu.lepuble.ble.cmd.Bp2Response.STATUS_SLEEP
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.objs.Bluetooth
+import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Bp2ViewModel
 import com.lepu.lepuble.viewmodel.MainViewModel
 import com.lepu.lepuble.views.EcgBkg
 import com.lepu.lepuble.views.EcgView
 import kotlinx.android.synthetic.main.fragment_bp2.*
+import kotlinx.android.synthetic.main.fragment_bp2.battery
+import kotlinx.android.synthetic.main.fragment_bp2.battery_left_duration
+import kotlinx.android.synthetic.main.fragment_bp2.ble_state
+import kotlinx.android.synthetic.main.fragment_bp2.device_sn
+import kotlinx.android.synthetic.main.fragment_bp2.get_rt_data
+import kotlinx.android.synthetic.main.fragment_bp2.tv_pr
+import kotlinx.android.synthetic.main.fragment_o2.*
 import java.text.SimpleDateFormat
 import kotlin.math.floor
 
@@ -78,7 +86,7 @@ class Bp2Fragment : Fragment() {
             waveHandler.postDelayed(this, interval.toLong())
 //            LogUtils.d("DataRec: ${Er1DataController.dataRec.size}, delayed $interval")
 
-            val temp = Er1DataController.draw(5)
+            val temp = Er1DataController.draw(5*Er1DataController.speed)
             model.dataSrc.value = Er1DataController.feed(model.dataSrc.value, temp)
         }
     }
@@ -155,9 +163,11 @@ class Bp2Fragment : Fragment() {
     }
 
     private fun initEcgView() {
+        val sampleRate = 250
+        Er1DataController.speed = 2
         // cal screen
         val dm =resources.displayMetrics
-        val index = floor(viewEcgBkg.width / dm.xdpi * 25.4 / 25 * 125).toInt()
+        val index = floor(viewEcgBkg.width / dm.xdpi * 25.4 / 25 * sampleRate).toInt()
         Er1DataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
@@ -302,6 +312,11 @@ class Bp2Fragment : Fragment() {
         LiveEventBus.get(EventMsgConst.EventDeviceChoosen)
             .observe(this, {
                 connect(it as Bluetooth)
+            })
+
+        LiveEventBus.get(EventMsgConst.EventMsgSendCmd)
+            .observe(this, {
+                bleInterface.sendCmd(HexString.hexToBytes(it as String))
             })
     }
 

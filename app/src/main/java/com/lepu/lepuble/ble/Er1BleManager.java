@@ -11,8 +11,11 @@ import androidx.annotation.NonNull;
 
 
 import com.blankj.utilcode.util.LogUtils;
+import com.jeremyliao.liveeventbus.LiveEventBus;
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd;
+import com.lepu.lepuble.objs.BleLogItem;
 import com.lepu.lepuble.utils.ByteArrayKt;
+import com.lepu.lepuble.vals.EventMsgConst;
 import com.lepu.lepuble.vals.RunVarsKt;
 
 import java.util.UUID;
@@ -121,6 +124,7 @@ public class Er1BleManager extends BleManager {
                     .with((device, data) -> {
 //                        LogUtils.d(device.getName() + " received: " + ByteArrayKt.bytesToHex(data.getValue()));
                         listener.onNotify(device, data);
+                        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getRECEIVE(), data.getValue()));
                     });
 
             // sync time
@@ -160,6 +164,8 @@ public class Er1BleManager extends BleManager {
     }
 
     public void sendCmd(byte[] bytes) {
+
+        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getSEND(), bytes));
 
         writeCharacteristic(write_char, bytes)
                 .split()

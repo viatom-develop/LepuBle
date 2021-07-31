@@ -207,24 +207,24 @@ class Am300bFragment : Fragment() {
             }
         })
 
-        model.emgPkg.observe(this, {
-            channel_a.text = "A: ${it.a}"
-            channel_b.text = "B: ${it.b}"
-        })
-
-        model.emgLead.observe(this, {
-            if (it.electrode_lead) {
-                electrode_lead.visibility = View.INVISIBLE
-            } else {
-                electrode_lead.visibility = View.VISIBLE
-            }
-
-            if (it.probe_lead) {
-                probe_lead.visibility = View.INVISIBLE
-            } else {
-                probe_lead.visibility = View.VISIBLE
-            }
-        })
+//        model.emgPkg.observe(this, {
+//            channel_a.text = "A: ${it.a}"
+//            channel_b.text = "B: ${it.b}"
+//        })
+//
+//        model.emgLead.observe(this, {
+//            if (it.electrode_lead) {
+//                electrode_lead.visibility = View.INVISIBLE
+//            } else {
+//                electrode_lead.visibility = View.VISIBLE
+//            }
+//
+//            if (it.probe_lead) {
+//                probe_lead.visibility = View.INVISIBLE
+//            } else {
+//                probe_lead.visibility = View.VISIBLE
+//            }
+//        })
 
         model.frequency.observe(this, {
             sp_freq.text = "$it Hz"

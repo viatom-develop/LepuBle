@@ -10,6 +10,8 @@ public class Er1DataController {
     public static int maxIndex;
     public static float mm2px;
 
+    public static int speed = 1; // 125hz =1; 250hz =2
+
     // received from device
     public static float[] dataRec = new float[0];
 
