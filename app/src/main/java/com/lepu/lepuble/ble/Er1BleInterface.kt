@@ -158,6 +158,9 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     }
     private fun processFileList(list: Er1BleResponse.Er1FileList) {
         for (name in list.fileList) {
+            if (HexString.trimStr(String(name)).startsWith("MKFS")) {
+                continue
+            }
             allFileList.add(name)
             totalFileNum++
         }
