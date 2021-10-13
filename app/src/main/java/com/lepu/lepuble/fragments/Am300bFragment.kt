@@ -15,6 +15,7 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
 import com.lepu.lepuble.ble.Am300bBleInterface
 import com.lepu.lepuble.objs.Bluetooth
+import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Am300bViewModel
 import com.lepu.lepuble.viewmodel.MainViewModel
@@ -277,6 +278,11 @@ class Am300bFragment : Fragment() {
         LiveEventBus.get(EventMsgConst.EventDeviceChoosen)
             .observe(this, {
                 connect(it as Bluetooth)
+            })
+
+        LiveEventBus.get(EventMsgConst.EventMsgSendCmd)
+            .observe(this, {
+                bleInterface.sendCmd(HexString.hexToBytes(it as String))
             })
     }
 

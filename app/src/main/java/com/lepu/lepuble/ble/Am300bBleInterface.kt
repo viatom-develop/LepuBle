@@ -126,7 +126,7 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
 
     /*----------------------------------*/
 
-    private fun sendCmd(bs: ByteArray) {
+    fun sendCmd(bs: ByteArray) {
         if (!state) {
             return
         }
