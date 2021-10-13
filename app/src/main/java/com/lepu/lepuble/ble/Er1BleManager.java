@@ -124,7 +124,7 @@ public class Er1BleManager extends BleManager {
                     .with((device, data) -> {
 //                        LogUtils.d(device.getName() + " received: " + ByteArrayKt.bytesToHex(data.getValue()));
                         listener.onNotify(device, data);
-                        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getRECEIVE(), data.getValue()));
+//                        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getRECEIVE(), data.getValue()));
                     });
 
             // sync time
@@ -165,7 +165,7 @@ public class Er1BleManager extends BleManager {
 
     public void sendCmd(byte[] bytes) {
 
-        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getSEND(), bytes));
+//        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getSEND(), bytes));
 
         writeCharacteristic(write_char, bytes)
                 .split()

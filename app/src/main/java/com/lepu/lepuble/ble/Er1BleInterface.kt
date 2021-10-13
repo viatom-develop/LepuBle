@@ -329,7 +329,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
                 if(curFile?.fileName!!.startsWith("R", false)) {
                     val er2Record = Er2Record(curFile!!.content)
-                    LogUtils.d(er2Record)
+//                    LogUtils.d(er2Record)
                 }
 
                 curFileName = null
@@ -377,7 +377,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             val temp: ByteArray = bytes.copyOfRange(i, i+8+len)
             if (temp.last() == BleCRC.calCRC8(temp)) {
                 val bleResponse = Er1BleResponse.Er1Response(temp)
-                LogUtils.d("get response: ${temp.toHex()}" )
+//                LogUtils.d("get response: ${temp.toHex()}" )
                 onResponseReceived(bleResponse)
 
                 val tempBytes: ByteArray? = if (i+8+len == bytes.size) null else bytes.copyOfRange(i+8+len, bytes.size)
