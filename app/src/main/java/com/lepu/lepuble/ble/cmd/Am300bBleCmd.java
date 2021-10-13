@@ -81,17 +81,22 @@ public class Am300bBleCmd {
         return cmd.toBytes();
     }
 
-    public static byte[] intensityStart() {
-        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STIMULATE_START, null);
+    public static byte[] intensityStart(int channel) {
+        byte[] content = new byte[1];
+        content[0] = (byte) channel;
+        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STIMULATE_START, content);
         return cmd.toBytes();
     }
 
-    public static byte[] intensityEnd() {
-        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STIMULATE_END, null);
+    public static byte[] intensityEnd(int channel) {
+        byte[] content = new byte[1];
+        content[0] = (byte) channel;
+        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STIMULATE_END, content);
         return cmd.toBytes();
     }
 
     public static byte[] setIntensityParam(
+            int channel,
             int freq,
             int bandwidth,
             float raise,
@@ -99,7 +104,7 @@ public class Am300bBleCmd {
             int duration,
             int rest
     ) {
-        byte[] content = new byte[8];
+        byte[] content = new byte[9];
         content[0] = (byte) (freq >> 8);
         content[1] = (byte) (freq);
         content[2] = (byte) (bandwidth >> 8);
@@ -108,19 +113,20 @@ public class Am300bBleCmd {
         content[5] = (byte) duration;
         content[6] = (byte) (fall*10);
         content[7] = (byte) rest;
+        content[8] = (byte) channel;
 
         BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STIMULATE_CONFIG, content);
         return cmd.toBytes();
     }
 
     public static byte[] setIntensity(
-            int a,
-            int b
+            int value,
+            int channel
     ) {
-        byte[] content = new byte[2];
-        content[0] = (byte) a;
+        byte[] content = new byte[3];
+        content[0] = (byte) value;
         content[1] = (byte) 3;
-//        content[2] = (byte) 3;
+        content[2] = (byte) channel;
 
         BleCmd cmd = new BleCmd(TOKEN_KF, CMD_INTENSITY_CONFIG, content);
         return cmd.toBytes();

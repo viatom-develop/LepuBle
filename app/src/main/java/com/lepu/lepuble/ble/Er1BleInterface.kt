@@ -104,10 +104,10 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     }
 
     public fun disconnect() {
-        manager.disconnect()
-        manager.close()
+        manager.disconnect().enqueue()
+//        manager.close()
 
-        this.onDeviceDisconnected(mydevice, ConnectionObserver.REASON_SUCCESS)
+//        this.onDeviceDisconnected(mydevice, ConnectionObserver.REASON_SUCCESS)
     }
 
     /**

@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/projects/LepuBle/app/src/main/res/layout/activity_main.xml" value="0.2271174863387978" />
+        <entry key="..\:/projects/LepuBle/app/src/main/res/layout/activity_permission.xml" value="0.15846994535519127" />
+        <entry key="..\:/projects/LepuBle/app/src/main/res/layout/fragment_am300b.xml" value="0.29815573770491804" />
+        <entry key="..\:/projects/LepuBle/app/src/main/res/layout/list_bluetooth.xml" value="0.278515625" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

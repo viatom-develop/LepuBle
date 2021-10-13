@@ -32,7 +32,7 @@ public class Bluetooth implements Parcelable {
     public static final String BT_NAME_ER3 = "ER3";
     public static final String BT_NAME_S1 = "le S1";
     public static final String BT_NAME_P1 = "LEM1"; // HOSO
-    public static final String BT_NAME_300B = "AM300B"; // HOSO
+    public static final String BT_NAME_300B = "AM300A"; // HOSO
 
 
     public static final int MODEL_UNRECOGNIZED = 0;

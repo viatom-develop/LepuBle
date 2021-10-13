@@ -176,6 +176,7 @@ public class Er1BleManager extends BleManager {
     }
 
     public interface onNotifyListener {
+
         void onNotify(BluetoothDevice device, Data data);
     }
 

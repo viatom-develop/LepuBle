@@ -39,6 +39,10 @@ class Am300bViewModel: ViewModel() {
         MutableLiveData<Am300Obj.EmgLeadOff>()
     }
 
+    val channel: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
     val frequency: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }

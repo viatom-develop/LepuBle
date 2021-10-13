@@ -210,6 +210,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:text="通道设置"
+                    android:layout_gravity="start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/sp_channel"
+                    android:textAlignment="textEnd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginVertical="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
                     android:text="频率"
                     android:layout_gravity="start"
                     android:layout_width="wrap_content"

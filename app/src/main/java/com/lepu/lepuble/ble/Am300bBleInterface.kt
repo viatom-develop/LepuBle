@@ -100,6 +100,7 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
     }
 
     public fun setParam(
+        channel: Int,
         freq: Int,
         bandwidth : Int,
         raise: Float,
@@ -107,19 +108,19 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
         duration: Int,
         rest: Int
     ) {
-        sendCmd(Am300bBleCmd.setIntensityParam(freq, bandwidth, raise, fall, duration, rest))
+        sendCmd(Am300bBleCmd.setIntensityParam(channel, freq, bandwidth, raise, fall, duration, rest))
     }
 
-    public fun setIntensity(a: Int, b: Int) {
-        sendCmd(Am300bBleCmd.setIntensity(a, b))
+    public fun setIntensity(value: Int, channel: Int) {
+        sendCmd(Am300bBleCmd.setIntensity(value, channel))
     }
 
-    public fun startIntensity() {
-        sendCmd(Am300bBleCmd.intensityStart())
+    public fun startIntensity(channel: Int) {
+        sendCmd(Am300bBleCmd.intensityStart(channel))
     }
 
-    public fun endIntensity() {
-        sendCmd(Am300bBleCmd.intensityEnd())
+    public fun endIntensity(channel: Int) {
+        sendCmd(Am300bBleCmd.intensityEnd(channel))
     }
 
 

@@ -10,8 +10,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.jeremyliao.liveeventbus.LiveEventBus;
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd;
+import com.lepu.lepuble.objs.BleLogItem;
 import com.lepu.lepuble.utils.ByteArrayKt;
+import com.lepu.lepuble.vals.EventMsgConst;
 import com.lepu.lepuble.vals.RunVarsKt;
 
 import java.util.UUID;
@@ -107,6 +110,8 @@ public class Am300bBleManager extends BleManager {
             setNotificationCallback(notify_char)
                     .with((device, data) -> {
 //                        LogUtils.d(device.getName() + " received: " + ByteArrayKt.bytesToHex(data.getValue()));
+
+                        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getRECEIVE(), data.getValue()));
                         listener.onNotify(device, data);
                     });
 
@@ -123,6 +128,8 @@ public class Am300bBleManager extends BleManager {
     }
 
     public void sendCmd(byte[] bytes) {
+
+        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getSEND(), bytes));
 
         writeCharacteristic(write_char, bytes)
                 .split()

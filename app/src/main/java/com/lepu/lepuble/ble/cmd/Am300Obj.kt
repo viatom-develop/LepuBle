@@ -79,6 +79,7 @@ object Am300Obj {
             """.trimIndent()
         }
     }
+
     class EmgPkg(var bytes: ByteArray) {
         val data: Int
         val a: Int
@@ -86,8 +87,8 @@ object Am300Obj {
 
         init {
             data = toUInt(bytes)
-            a = bytes[0].toInt()
-            b = bytes[1].toInt()
+            a = toUInt(bytes.copyOfRange(0,2))
+            b = toUInt(bytes.copyOfRange(2,4))
         }
 
         override fun toString(): String {

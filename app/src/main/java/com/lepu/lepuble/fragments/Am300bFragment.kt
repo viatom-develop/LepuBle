@@ -58,6 +58,16 @@ class Am300bFragment : Fragment() {
             bleInterface.endEmg()
         }
 
+        sp_channel.setOnClickListener {
+            val list = listOf<String>("A 通道", "B 通道", "A+B 通道")
+            val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
+                model.channel.value = options1+1
+            }.build<String>()
+            picker.setPicker(list)
+            picker.show()
+            updateParams()
+        }
+
         sp_freq.setOnClickListener {
             val list = (1 .. 120).toMutableList()
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
@@ -127,7 +137,7 @@ class Am300bFragment : Fragment() {
             }.build<Int>()
             picker.setPicker(list)
             picker.show()
-            updateIntensity()
+            updateIntensity(model.channelA.value!!, 1)
         }
         sp_intensity_b.setOnClickListener {
             val list = (0 .. 90).toMutableList()
@@ -136,24 +146,25 @@ class Am300bFragment : Fragment() {
             }.build<Int>()
             picker.setPicker(list)
             picker.show()
-            updateIntensity()
+            updateIntensity(model.channelB.value!!, 2)
         }
 
         intensity_start.setOnClickListener {
-            bleInterface.startIntensity()
+            bleInterface.startIntensity(model.channel.value!!)
         }
 
         intensity_end.setOnClickListener {
-            bleInterface.endIntensity()
+            bleInterface.endIntensity(model.channel.value!!)
         }
     }
 
-    private fun updateIntensity() {
-        bleInterface.setIntensity(model.channelA.value!!, model.channelB.value!!)
+    private fun updateIntensity(value: Int, channel: Int) {
+        bleInterface.setIntensity(value, channel)
     }
 
     private fun updateParams() {
         bleInterface.setParam(
+            model.channel.value!!,
             model.frequency.value!!,
             model.bandwidth.value!!,
             model.raise.value!!,
@@ -161,17 +172,21 @@ class Am300bFragment : Fragment() {
             model.duration.value!!,
             model.rest.value!!
         )
+
+        model.channelA.value = 0
+        model.channelB.value = 0
     }
 
     private fun initParams() {
+        model.channel.value = 3
         model.frequency.value = 100
         model.bandwidth.value = 200
         model.raise.value = 1.0f
         model.fall.value = 1.0f
         model.duration.value = 5
         model.rest.value = 5
-        model.channelA.value = 10
-        model.channelB.value = 10
+        model.channelA.value = 0
+        model.channelB.value = 0
     }
 
     private fun addLiveDataObserver() {
@@ -207,10 +222,10 @@ class Am300bFragment : Fragment() {
             }
         })
 
-//        model.emgPkg.observe(this, {
-//            channel_a.text = "A: ${it.a}"
-//            channel_b.text = "B: ${it.b}"
-//        })
+        model.emgPkg.observe(this, {
+            channel_a.text = "A: ${it.a}"
+            channel_b.text = "B: ${it.b}"
+        })
 //
 //        model.emgLead.observe(this, {
 //            if (it.electrode_lead) {
@@ -225,6 +240,11 @@ class Am300bFragment : Fragment() {
 //                probe_lead.visibility = View.VISIBLE
 //            }
 //        })
+
+        model.channel.observe(this, {
+            val list = listOf<String>("A 通道", "B 通道", "A+B 通道")
+            sp_channel.text = list[it-1]
+        })
 
         model.frequency.observe(this, {
             sp_freq.text = "$it Hz"
