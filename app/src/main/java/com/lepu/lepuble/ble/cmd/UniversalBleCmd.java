@@ -55,8 +55,8 @@ public class UniversalBleCmd {
 
         byte[] cmd = new byte[8+len];
         cmd[0] = (byte) 0xA5;
-        cmd[1] = (byte) 0xE1;
-        cmd[2] = (byte) ~0xE1;
+        cmd[1] = (byte) GET_INFO;
+        cmd[2] = (byte) ~GET_INFO;
         cmd[3] = (byte) 0x00;
         cmd[4] = (byte) seqNo;
         cmd[5] = (byte) 0;

@@ -43,24 +43,56 @@ class Am300bViewModel: ViewModel() {
         MutableLiveData<Int>()
     }
 
-    val frequency: MutableLiveData<Int> by lazy {
+    val is_ab: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
+    /**
+     * A
+     *
+     */
+    val frequency_a: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
-    val bandwidth: MutableLiveData<Int> by lazy {
+    val bandwidth_a: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
-    val raise: MutableLiveData<Float> by lazy {
+    val raise_a: MutableLiveData<Float> by lazy {
         MutableLiveData<Float>()
     }
-    val fall: MutableLiveData<Float> by lazy {
+    val fall_a: MutableLiveData<Float> by lazy {
         MutableLiveData<Float>()
     }
-    val duration: MutableLiveData<Int> by lazy {
+    val duration_a: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
-    val rest: MutableLiveData<Int> by lazy {
+    val rest_a: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
+
+    /**
+     * B
+     *
+     */
+    val frequency_b: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+    val bandwidth_b: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+    val raise_b: MutableLiveData<Float> by lazy {
+        MutableLiveData<Float>()
+    }
+    val fall_b: MutableLiveData<Float> by lazy {
+        MutableLiveData<Float>()
+    }
+    val duration_b: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+    val rest_b: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
 
     val channelA: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()

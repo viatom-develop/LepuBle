@@ -111,6 +111,14 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
         sendCmd(Am300bBleCmd.setIntensityParam(channel, freq, bandwidth, raise, fall, duration, rest))
     }
 
+    /**
+     * 肌肉刺激参数查询
+     * @return
+     */
+    public fun queryParam() {
+        sendCmd(Am300bBleCmd.queryIntensityParam())
+    }
+
     public fun setIntensity(value: Int, channel: Int) {
         sendCmd(Am300bBleCmd.setIntensity(value, channel))
     }
@@ -184,7 +192,9 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
                     ACK_STIMULATE_CONFIG -> {
                         LogUtils.d(response.toBytes().toHex())
                     }
-                    ACK_STIMULATE_CONFIG_QUERY -> {}
+                    ACK_STIMULATE_CONFIG_QUERY -> {
+
+                    }
                     ACK_INTENSITY_CONFIG -> {
                         LogUtils.d(response.toBytes().toHex())
                     }

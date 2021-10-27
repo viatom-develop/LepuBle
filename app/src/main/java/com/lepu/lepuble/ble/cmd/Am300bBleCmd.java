@@ -119,6 +119,15 @@ public class Am300bBleCmd {
         return cmd.toBytes();
     }
 
+    /**
+     * 肌肉刺激参数查询
+     * @return
+     */
+    public static byte[] queryIntensityParam() {
+        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STIMULATE_CONFIG_QUERY, null);
+        return cmd.toBytes();
+    }
+
     public static byte[] setIntensity(
             int value,
             int channel

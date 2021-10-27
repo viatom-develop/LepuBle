@@ -6,11 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.annotation.FloatRange
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder
+import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
 import com.lepu.lepuble.ble.Am300bBleInterface
@@ -59,99 +62,244 @@ class Am300bFragment : Fragment() {
             bleInterface.endEmg()
         }
 
-        sp_channel.setOnClickListener {
-            val list = listOf<String>("A 通道", "B 通道", "A+B 通道")
-            val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
-                model.channel.value = options1+1
-            }.build<String>()
-            picker.setPicker(list)
-            picker.show()
-            updateParams()
+        check_ab.setOnCheckedChangeListener { buttonView, isChecked ->
+            model.is_ab.value = isChecked
+
+            if (isChecked) {
+                model.frequency_b.value = model.frequency_a.value
+                model.bandwidth_b.value = model.bandwidth_a.value
+                model.raise_b.value = model.raise_a.value
+                model.fall_b.value = model.fall_a.value
+                model.duration_b.value = model.duration_a.value
+                model.rest_b.value = model.rest_a.value
+
+                updateParams(3)
+            }
+
         }
 
-        sp_freq.setOnClickListener {
+        sp_a_freq.setOnClickListener {
             val list = (1 .. 120).toMutableList()
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
-                model.frequency.value = list[options1]
+                model.frequency_a.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.frequency_b.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(1)
+                }
             }.build<Int>()
             picker.setPicker(list)
             picker.show()
-            updateParams()
         }
-        sp_bandwidth.setOnClickListener {
+        sp_b_freq.setOnClickListener {
+            val list = (1 .. 120).toMutableList()
+            val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
+                model.frequency_b.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.frequency_b.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(2)
+                }
+            }.build<Int>()
+            picker.setPicker(list)
+            picker.show()
+        }
+
+        sp_a_bandwidth.setOnClickListener {
             val list = (50 .. 450).step(50).toMutableList()
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
-                model.bandwidth.value = list[options1]
+                model.bandwidth_a.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.bandwidth_b.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(1)
+                }
             }.build<Int>()
             picker.setPicker(list)
             picker.show()
-            updateParams()
         }
-        sp_raise.setOnClickListener {
+        sp_b_bandwidth.setOnClickListener {
+            val list = (50 .. 450).step(50).toMutableList()
+            val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
+                model.bandwidth_b.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.bandwidth_a.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(2)
+                }
+            }.build<Int>()
+            picker.setPicker(list)
+            picker.show()
+        }
+
+        sp_a_raise.setOnClickListener {
             val list = mutableListOf<Float>()
             for (i in 0 .. 180) {
                 list.add(i/10.0f)
             }
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
-                model.raise.value = list[options1]
+                model.raise_a.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.raise_b.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(1)
+                }
             }.build<Float>()
 
             picker.setPicker(list)
             picker.show()
-            updateParams()
         }
-        sp_fall.setOnClickListener {
+        sp_b_raise.setOnClickListener {
             val list = mutableListOf<Float>()
             for (i in 0 .. 180) {
                 list.add(i/10.0f)
             }
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
-                model.fall.value = list[options1]
+                model.raise_b.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.raise_a.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(2)
+                }
             }.build<Float>()
 
             picker.setPicker(list)
             picker.show()
-            updateParams()
         }
-        sp_duration.setOnClickListener {
+
+        sp_a_fall.setOnClickListener {
+            val list = mutableListOf<Float>()
+            for (i in 0 .. 180) {
+                list.add(i/10.0f)
+            }
+            val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
+                model.fall_a.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.fall_b.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(1)
+                }
+            }.build<Float>()
+
+            picker.setPicker(list)
+            picker.show()
+        }
+        sp_b_fall.setOnClickListener {
+            val list = mutableListOf<Float>()
+            for (i in 0 .. 180) {
+                list.add(i/10.0f)
+            }
+            val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
+                model.fall_b.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.fall_a.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(2)
+                }
+            }.build<Float>()
+
+            picker.setPicker(list)
+            picker.show()
+        }
+
+        sp_a_duration.setOnClickListener {
             val list = (0 .. 60).toMutableList()
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
-                model.duration.value = list[options1]
+                model.duration_a.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.duration_b.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(1)
+                }
             }.build<Int>()
             picker.setPicker(list)
             picker.show()
-            updateParams()
         }
-        sp_reset.setOnClickListener {
+        sp_b_duration.setOnClickListener {
             val list = (0 .. 60).toMutableList()
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
-                model.rest.value = list[options1]
+                model.duration_b.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.duration_a.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(2)
+                }
             }.build<Int>()
             picker.setPicker(list)
             picker.show()
-            updateParams()
         }
+
+        sp_a_reset.setOnClickListener {
+            val list = (0 .. 60).toMutableList()
+            val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
+                model.rest_a.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.rest_b.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(1)
+                }
+            }.build<Int>()
+            picker.setPicker(list)
+            picker.show()
+        }
+        sp_b_reset.setOnClickListener {
+            val list = (0 .. 60).toMutableList()
+            val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
+                model.rest_b.value = list[options1]
+                if (model.is_ab.value!!) {
+                    model.rest_a.value = list[options1]
+                    updateParams(3)
+                } else {
+                    updateParams(2)
+                }
+            }.build<Int>()
+            picker.setPicker(list)
+            picker.show()
+        }
+
         sp_intensity_a.setOnClickListener {
             val list = (0 .. 90).toMutableList()
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
                 model.channelA.value = list[options1]
+                updateIntensity(model.channelA.value!!, 1)
             }.build<Int>()
             picker.setPicker(list)
             picker.show()
-            updateIntensity(model.channelA.value!!, 1)
         }
         sp_intensity_b.setOnClickListener {
             val list = (0 .. 90).toMutableList()
             val picker = OptionsPickerBuilder(this.activity) {options1, options2, options3, v ->
                 model.channelB.value = list[options1]
+                updateIntensity(model.channelB.value!!, 2)
             }.build<Int>()
             picker.setPicker(list)
             picker.show()
-            updateIntensity(model.channelB.value!!, 2)
         }
 
-        intensity_start.setOnClickListener {
-            bleInterface.startIntensity(model.channel.value!!)
+        intensity_start_a.setOnClickListener {
+            if (model.is_ab.value!!) {
+                bleInterface.startIntensity(3)
+            } else {
+                bleInterface.startIntensity(1)
+            }
+        }
+        intensity_start_b.setOnClickListener {
+            if (model.is_ab.value!!) {
+                bleInterface.startIntensity(3)
+            } else {
+                bleInterface.startIntensity(2)
+            }
         }
 
         intensity_end.setOnClickListener {
@@ -163,29 +311,48 @@ class Am300bFragment : Fragment() {
         bleInterface.setIntensity(value, channel)
     }
 
-    private fun updateParams() {
-        bleInterface.setParam(
-            model.channel.value!!,
-            model.frequency.value!!,
-            model.bandwidth.value!!,
-            model.raise.value!!,
-            model.fall.value!!,
-            model.duration.value!!,
-            model.rest.value!!
-        )
+    private fun updateParams(channel: Int) {
+
+        when(channel) {
+            2->bleInterface.setParam(
+                channel,
+                model.frequency_b.value!!,
+                model.bandwidth_b.value!!,
+                model.raise_b.value!!,
+                model.fall_b.value!!,
+                model.duration_b.value!!,
+                model.rest_b.value!!
+            )
+            else->bleInterface.setParam(
+                channel,
+                model.frequency_a.value!!,
+                model.bandwidth_a.value!!,
+                model.raise_a.value!!,
+                model.fall_a.value!!,
+                model.duration_a.value!!,
+                model.rest_a.value!!
+            )
+        }
 
         model.channelA.value = 0
         model.channelB.value = 0
     }
 
     private fun initParams() {
+        model.is_ab.value = false
         model.channel.value = 3
-        model.frequency.value = 100
-        model.bandwidth.value = 200
-        model.raise.value = 1.0f
-        model.fall.value = 1.0f
-        model.duration.value = 5
-        model.rest.value = 5
+        model.frequency_a.value = 100
+        model.frequency_b.value = 100
+        model.bandwidth_a.value = 200
+        model.bandwidth_b.value = 200
+        model.raise_a.value = 1.0f
+        model.raise_b.value = 1.0f
+        model.fall_a.value = 1.0f
+        model.fall_b.value = 1.0f
+        model.duration_a.value = 5
+        model.duration_b.value = 5
+        model.rest_a.value = 5
+        model.rest_b.value = 5
         model.channelA.value = 0
         model.channelB.value = 0
     }
@@ -228,42 +395,61 @@ class Am300bFragment : Fragment() {
             channel_b.text = "B: ${it.b}"
         })
 //
-//        model.emgLead.observe(this, {
-//            if (it.electrode_lead) {
-//                electrode_lead.visibility = View.INVISIBLE
-//            } else {
-//                electrode_lead.visibility = View.VISIBLE
-//            }
-//
-//            if (it.probe_lead) {
-//                probe_lead.visibility = View.INVISIBLE
-//            } else {
-//                probe_lead.visibility = View.VISIBLE
-//            }
+        model.emgLead.observe(this, {
+            if (it.electrode_lead) {
+                electrode_lead.visibility = View.INVISIBLE
+            } else {
+                electrode_lead.visibility = View.VISIBLE
+            }
+
+            if (it.probe_lead) {
+                probe_lead.visibility = View.INVISIBLE
+            } else {
+                probe_lead.visibility = View.VISIBLE
+            }
+        })
+
+//        model.channel.observe(this, {
+//            val list = listOf<String>("A 通道", "B 通道", "A+B 通道")
+//            sp_channel.text = list[it-1]
 //        })
 
-        model.channel.observe(this, {
-            val list = listOf<String>("A 通道", "B 通道", "A+B 通道")
-            sp_channel.text = list[it-1]
+        model.frequency_a.observe(this, {
+            sp_a_freq.text = "$it Hz"
+        })
+        model.bandwidth_a.observe(this, {
+            sp_a_bandwidth.text = "$it us"
+        })
+        model.raise_a.observe(this, {
+            sp_a_raise.text = "$it s"
+        })
+        model.fall_a.observe(this, {
+            sp_a_fall.text = "$it s"
+        })
+        model.duration_a.observe(this, {
+            sp_a_duration.text = "$it s"
+        })
+        model.rest_a.observe(this, {
+            sp_a_reset.text = "$it s"
         })
 
-        model.frequency.observe(this, {
-            sp_freq.text = "$it Hz"
+        model.frequency_b.observe(this, {
+            sp_b_freq.text = "$it Hz"
         })
-        model.bandwidth.observe(this, {
-            sp_bandwidth.text = "$it us"
+        model.bandwidth_b.observe(this, {
+            sp_b_bandwidth.text = "$it us"
         })
-        model.raise.observe(this, {
-            sp_raise.text = "$it s"
+        model.raise_b.observe(this, {
+            sp_b_raise.text = "$it s"
         })
-        model.fall.observe(this, {
-            sp_fall.text = "$it s"
+        model.fall_b.observe(this, {
+            sp_b_fall.text = "$it s"
         })
-        model.duration.observe(this, {
-            sp_duration.text = "$it s"
+        model.duration_b.observe(this, {
+            sp_b_duration.text = "$it s"
         })
-        model.rest.observe(this, {
-            sp_reset.text = "$it s"
+        model.rest_b.observe(this, {
+            sp_b_reset.text = "$it s"
         })
         model.channelA.observe(this, {
             sp_intensity_a.text = "$it mA"
