@@ -17,7 +17,6 @@ import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.objs.SpeedTest
 import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
-import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er1ViewModel
@@ -250,6 +249,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
                 Er1DataController.receive(rtData.wave.wFs)
 //                LogUtils.d("ER1 Controller: ${Er1DataController.dataRec.size}")
+                LogUtils.d(rtData.param.runStatusByte, rtData.param.status.toString())
                 LiveEventBus.get(EventMsgConst.EventEr1RtData)
                     .post(rtData)
             }

@@ -1,12 +1,8 @@
 package com.lepu.lepuble.ble.cmd
 
 import android.os.Parcelable
-import com.blankj.utilcode.util.LogUtils
-import com.google.gson.Gson
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.utils.ByteUtils
-import com.lepu.lepuble.utils.toHex
-import com.lepu.lepuble.utils.toInt
 import com.lepu.lepuble.utils.toUInt
 import kotlinx.android.parcel.Parcelize
 import java.util.*
@@ -40,7 +36,7 @@ object Er1BleResponse {
         var wave: RtWave
 
         init {
-            LogUtils.d(bytes.toHex())
+//            LogUtils.d(bytes.toHex())
             param = RtParam(bytes.copyOfRange(0, 20))
             wave = RtWave(bytes.copyOfRange(20, bytes.size))
         }
@@ -53,7 +49,8 @@ object Er1BleResponse {
         var sysFlag: Byte
         var battery: Int
         var recordTime: Int = 0
-        var runStatus: Byte
+        var runStatusByte: Byte
+        var status: RunStatus
         var leadOn: Boolean
         // reserve 11
 
@@ -65,7 +62,8 @@ object Er1BleResponse {
             if (bytes[8].toUInt() and 0x02u == 0x02u) {
                 recordTime = toUInt(bytes.copyOfRange(4, 8))
             }
-            runStatus = bytes[8]
+            runStatusByte = bytes[8]
+            status = RunStatus(runStatusByte)
             leadOn = (bytes[8].toUInt() and 0x07u) != 0x07u
         }
     }
@@ -110,7 +108,8 @@ object Er1BleResponse {
         var sysFlag: Byte
         var battery: Int
         var recordTime: Int = 0
-        var runStatus: Byte
+        var runStatusByte: Byte
+        var status: RunStatus
         var leadOn: Boolean
 
         // rri version
@@ -139,7 +138,8 @@ object Er1BleResponse {
                 recordTime = toUInt(bytes.copyOfRange(index, index+4))
             }
             index+=4
-            runStatus = bytes[8]
+            runStatusByte = bytes[8]
+            status = RunStatus(runStatusByte)
             leadOn = (bytes[8].toUInt() and 0x07u) != 0x07u
             index++
             s = toUInt(bytes.copyOfRange(index, index+4))
