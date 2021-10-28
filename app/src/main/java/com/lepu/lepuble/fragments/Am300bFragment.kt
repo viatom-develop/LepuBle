@@ -12,11 +12,13 @@ import androidx.annotation.FloatRange
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
+import com.afollestad.materialdialogs.MaterialDialog
 import com.bigkoo.pickerview.builder.OptionsPickerBuilder
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
 import com.lepu.lepuble.ble.Am300bBleInterface
+import com.lepu.lepuble.ble.cmd.AmResponse
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.vals.EventMsgConst
@@ -288,22 +290,36 @@ class Am300bFragment : Fragment() {
         }
 
         intensity_start_a.setOnClickListener {
-            if (model.is_ab.value!!) {
-                bleInterface.startIntensity(3)
-            } else {
+//            if (model.is_ab.value!!) {
+//                bleInterface.startIntensity(3)
+//            } else {
                 bleInterface.startIntensity(1)
-            }
+//            }
         }
         intensity_start_b.setOnClickListener {
-            if (model.is_ab.value!!) {
-                bleInterface.startIntensity(3)
-            } else {
+//            if (model.is_ab.value!!) {
+//                bleInterface.startIntensity(3)
+//            } else {
                 bleInterface.startIntensity(2)
-            }
+//            }
+        }
+
+        intensity_start_ab.setOnClickListener {
+            bleInterface.startIntensity(3)
         }
 
         intensity_end.setOnClickListener {
             bleInterface.endIntensity(model.channel.value!!)
+        }
+
+        btn1.setOnClickListener {
+            bleInterface.queryParam()
+        }
+        btn2.setOnClickListener {
+            bleInterface.queryIntensity()
+        }
+        btn3.setOnClickListener {
+            bleInterface.queryWorkingStatus()
         }
     }
 

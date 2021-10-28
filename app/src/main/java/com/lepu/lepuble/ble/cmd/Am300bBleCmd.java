@@ -141,6 +141,22 @@ public class Am300bBleCmd {
         return cmd.toBytes();
     }
 
+    /**
+     * 刺激强度查询
+     */
+    public static byte[] queryIntensity() {
+        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_INTENSITY_QUERY, null);
+        return cmd.toBytes();
+    }
+
+    /**
+     * 下位机工作状态查询
+     */
+    public static byte[] queryWorkingStatus() {
+        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STATUS, null);
+        return cmd.toBytes();
+    }
+
     public static class BleCmd {
 //        byte header1 = (byte) 0xAA;
 //        byte header2 = (byte) 0x55;

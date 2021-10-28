@@ -8,6 +8,7 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.ble.cmd.Am300Obj
 import com.lepu.lepuble.ble.cmd.Am300bBleCmd
 import com.lepu.lepuble.ble.cmd.Am300bBleCmd.*
+import com.lepu.lepuble.ble.cmd.AmResponse
 import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.utils.Am300bCRC
 import com.lepu.lepuble.ble.utils.BleCRC
@@ -131,6 +132,20 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
         sendCmd(Am300bBleCmd.intensityEnd(channel))
     }
 
+    /**
+     * 刺激强度查询
+     */
+    public fun queryIntensity() {
+        sendCmd(Am300bBleCmd.queryIntensity())
+    }
+
+    /**
+     * 查询下位机工作状态
+     */
+    public fun queryWorkingStatus() {
+        sendCmd(Am300bBleCmd.queryWorkingStatus())
+    }
+
 
     /*----------------------------------*/
 
@@ -193,12 +208,16 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
                         LogUtils.d(response.toBytes().toHex())
                     }
                     ACK_STIMULATE_CONFIG_QUERY -> {
-
+                        val param = AmResponse.IntensityParam(response.content)
+                        LiveEventBus.get(EventMsgConst.EventDialogMsg).post(param.toString())
                     }
                     ACK_INTENSITY_CONFIG -> {
                         LogUtils.d(response.toBytes().toHex())
                     }
-                    ACK_INTENSITY_QUERY -> {}
+                    ACK_INTENSITY_QUERY -> {
+                        val intensity = AmResponse.Intensity(response.content)
+                        LiveEventBus.get(EventMsgConst.EventDialogMsg).post(intensity.toString())
+                    }
                     ACK_STIMULATE_START -> {
                         LogUtils.d(response.toBytes().toHex())
                     }
@@ -208,6 +227,10 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
                     ACK_STIMULATE_PAUSE -> {}
                     ACK_STIMULATE_PKG -> {}
                     ACK_BATTERY_LOW -> {}
+                    ACK_STATUS -> {
+                        val status = AmResponse.WorkingStatus(response.content)
+                        LiveEventBus.get(EventMsgConst.EventDialogMsg).post(status.toString())
+                    }
                 }
             }
         }
