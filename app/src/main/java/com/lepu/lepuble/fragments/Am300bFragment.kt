@@ -18,6 +18,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.lepu.lepuble.R
 import com.lepu.lepuble.ble.Am300bBleInterface
+import com.lepu.lepuble.ble.cmd.Am300Obj
 import com.lepu.lepuble.ble.cmd.AmResponse
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.HexString
@@ -25,6 +26,8 @@ import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Am300bViewModel
 import com.lepu.lepuble.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_am300b.*
+import java.util.*
+import kotlin.concurrent.schedule
 
 class Am300bFragment : Fragment() {
 
@@ -371,6 +374,13 @@ class Am300bFragment : Fragment() {
         model.rest_b.value = 5
         model.channelA.value = 0
         model.channelB.value = 0
+
+        /**
+         * test
+         */
+//        model.emgLead.value = Am300Obj.EmgLeadState(byteArrayOf(0x00, 0x01))
+//        Timer().schedule(1000) {model.emgLead.postValue(Am300Obj.EmgLeadState(byteArrayOf(0x02, 0x00)))}
+//        Timer().schedule(3000) {model.emgLead.postValue(Am300Obj.EmgLeadState(byteArrayOf(0x03, 0x01)))}
     }
 
     private fun addLiveDataObserver() {
@@ -412,17 +422,32 @@ class Am300bFragment : Fragment() {
         })
 //
         model.emgLead.observe(this, {
-            if (it.electrode_lead) {
-                electrode_lead.visibility = View.INVISIBLE
+//            if (it.electrode_lead) {
+//                electrode_lead.visibility = View.INVISIBLE
+//            } else {
+//                electrode_lead.visibility = View.VISIBLE
+//            }
+//
+//            if (it.probe_lead) {
+//                probe_lead.visibility = View.INVISIBLE
+//            } else {
+//                probe_lead.visibility = View.VISIBLE
+//            }
+
+            electrode_lead.text = if (it.electrode1) {
+                ""
             } else {
-                electrode_lead.visibility = View.VISIBLE
+                "电极1脱落"
             }
 
-            if (it.probe_lead) {
-                probe_lead.visibility = View.INVISIBLE
-            } else {
-                probe_lead.visibility = View.VISIBLE
+            var probe = ""
+            if (!it.probeA) {
+                probe += "A脱落"
             }
+            if (!it.probeB) {
+                probe += "B脱落"
+            }
+            probe_lead.text = probe
         })
 
 //        model.channel.observe(this, {

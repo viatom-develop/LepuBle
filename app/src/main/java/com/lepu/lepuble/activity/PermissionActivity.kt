@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.afollestad.materialdialogs.MaterialDialog
 import com.blankj.utilcode.util.LogUtils
 import com.lepu.lepuble.BuildConfig
 import com.lepu.lepuble.R
@@ -26,7 +27,9 @@ class PermissionActivity : AppCompatActivity() {
 
         checkModel()
 
-        requestLocation()
+        checkVersion()
+
+//        requestLocation()
     }
 
     private fun checkModel() {
@@ -43,6 +46,21 @@ class PermissionActivity : AppCompatActivity() {
             "am300b" -> curModel = Bluetooth.MODEL_300B
 
             else -> curModel = Bluetooth.MODEL_ER1
+        }
+    }
+
+    private fun checkVersion() {
+        val version = android.os.Build.VERSION.SDK_INT
+        if (version < android.os.Build.VERSION_CODES.N) {
+            MaterialDialog(this).show {
+                title(text = "NOTICE")
+                message(text = "Your phone is not supported, please update to Android 7.0!")
+                positiveButton(text = "Confirm") {
+                    finish()
+                }
+            }
+        } else {
+            requestLocation()
         }
     }
 

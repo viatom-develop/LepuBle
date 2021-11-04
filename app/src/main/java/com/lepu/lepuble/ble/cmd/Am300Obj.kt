@@ -1,9 +1,11 @@
 package com.lepu.lepuble.ble.cmd
 
+import com.blankj.utilcode.util.LogUtils
 import com.google.gson.Gson
 import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
+import kotlin.experimental.and
 
 object Am300Obj {
 
@@ -95,13 +97,29 @@ object Am300Obj {
             return Gson().toJson(this)
         }
     }
-    class EmgLeadOff(var bytes: ByteArray) {
+    class EmgLeadState(var bytes: ByteArray) {
+
+        /**
+         * Probe_lead:探头是否脱落。 = 1,脱落； =0不脱落字节不动用位区分
+        electrode_lead：参考电极片是否脱落 --= 1,脱落； =0不脱落
+
+         */
         var probe_lead: Boolean
         var electrode_lead: Boolean
 
+        var probeA: Boolean
+        var probeB: Boolean
+        var electrode1: Boolean
+
         init {
+//            LogUtils.d(bytes.toHex())
             probe_lead = bytes[0] == 0x00.toByte()
             electrode_lead = bytes[1] == 0x00.toByte()
+
+            probeA = (bytes[0] and 0x01) != 0x01.toByte()
+            probeB = (bytes[0] and 0x02) != 0x02.toByte()
+
+            electrode1 = (bytes[1] and 0x01) != 0x01.toByte()
         }
 
         override fun toString(): String {

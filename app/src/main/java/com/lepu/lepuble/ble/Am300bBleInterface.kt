@@ -9,9 +9,7 @@ import com.lepu.lepuble.ble.cmd.Am300Obj
 import com.lepu.lepuble.ble.cmd.Am300bBleCmd
 import com.lepu.lepuble.ble.cmd.Am300bBleCmd.*
 import com.lepu.lepuble.ble.cmd.AmResponse
-import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.utils.Am300bCRC
-import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.ByteUtils
 import com.lepu.lepuble.utils.add
@@ -23,7 +21,6 @@ import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import java.util.*
 import kotlin.concurrent.schedule
-import kotlin.experimental.inv
 
 class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener {
 
@@ -132,6 +129,10 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
         sendCmd(Am300bBleCmd.intensityEnd(channel))
     }
 
+    public fun setSn(sn: String) {
+        sendCmd(Am300bBleCmd.setSn(sn))
+    }
+
     /**
      * 刺激强度查询
      */
@@ -167,7 +168,7 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
                         model.version.value = "V${Am300Obj.Version(response.content).sf_version}"
                     }
                     ACK_SN -> {
-//                        LogUtils.d(response.toBytes().toHex())
+                        LogUtils.d(response.toBytes().toHex())
                         model.sn.value = "SN: ${Am300Obj.SN(response.content).sn}"
                     }
                     ACK_BATTERY -> {
@@ -200,7 +201,8 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
                         model.emgPkg.value = o
                     }
                     ACK_EMG_LEAD -> {
-                        val o = Am300Obj.EmgLeadOff(response.content)
+                        LogUtils.d(response.content.toHex())
+                        val o = Am300Obj.EmgLeadState(response.content)
 //                        LogUtils.d(o)
                         model.emgLead.value = o
                     }
@@ -230,6 +232,9 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
                     ACK_STATUS -> {
                         val status = AmResponse.WorkingStatus(response.content)
                         LiveEventBus.get(EventMsgConst.EventDialogMsg).post(status.toString())
+                    }
+                    ACK_SET_SN -> {
+                        LogUtils.d(response.toBytes().toHex())
                     }
                 }
             }

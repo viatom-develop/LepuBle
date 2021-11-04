@@ -3,7 +3,6 @@ package com.lepu.lepuble.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lepu.lepuble.ble.cmd.Am300Obj
-import com.lepu.lepuble.ble.obj.LepuDevice
 
 class Am300bViewModel: ViewModel() {
 
@@ -35,8 +34,8 @@ class Am300bViewModel: ViewModel() {
         MutableLiveData<Am300Obj.EmgPkg>()
     }
 
-    val emgLead: MutableLiveData<Am300Obj.EmgLeadOff> by lazy {
-        MutableLiveData<Am300Obj.EmgLeadOff>()
+    val emgLead: MutableLiveData<Am300Obj.EmgLeadState> by lazy {
+        MutableLiveData<Am300Obj.EmgLeadState>()
     }
 
     val channel: MutableLiveData<Int> by lazy {

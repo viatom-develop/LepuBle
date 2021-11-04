@@ -37,6 +37,7 @@ public class Am300bBleCmd {
     public static int CMD_TRIGGER_END = 0x99;  //肌电触发刺激治疗停止
     public static int CMD_MUSCLE_SINGLE = 0x9A;  //肌电触发刺激进行单次刺激
     public static int CMD_STATUS = 0x9C;  //查询下位机工作状态
+    public static int CMD_SET_SN = 0xA6; // 设置SN
 
     public static int ACK_EMG_START = 0x01;
     public static int ACK_EMG_END = 0x02;
@@ -56,6 +57,7 @@ public class Am300bBleCmd {
     public static int ACK_MUSCLE_SINGLE = 0x1A;  //肌电触发刺激进行单次刺激
     public static int ACK_BATTERY_LOW = 0x1B;  //电池电量低，治疗终止
     public static int ACK_STATUS = 0x1C;  //查询下位机工作状态
+    public static int ACK_SET_SN = 0x26; // 设置SN
 
     /*--------------------------------------------*/
 
@@ -157,6 +159,24 @@ public class Am300bBleCmd {
         return cmd.toBytes();
     }
 
+    /**
+     * 设置SN
+     */
+    public static byte[] setSn(String sn) {
+        byte[] bs = new byte[4];
+        for (int i = 0; i<Math.min(sn.length(), 4); i++) {
+            bs[i] = (byte) sn.charAt(i);
+        }
+
+        bs[0] = 0x31;
+        bs[1] = 0x32;
+        bs[2] = 0x33;
+        bs[3] = 0x34;
+
+        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_SET_SN, bs);
+        return cmd.toBytes();
+    }
+
     public static class BleCmd {
 //        byte header1 = (byte) 0xAA;
 //        byte header2 = (byte) 0x55;
@@ -183,6 +203,7 @@ public class Am300bBleCmd {
             len = bytes[index] & 0xff;
             index++;
             cmd = bytes[index];
+            index++;
             if (len > 2) {
                 content = new byte[len-2];
                 System.arraycopy(bytes, index, content, 0, len-2);

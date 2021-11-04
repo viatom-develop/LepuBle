@@ -52,4 +52,24 @@ class Er2Record {
             data: $waveInts
         """.trimIndent()
     }
+
+    /**
+     * 输出保存为AI分析的txt文件内容
+     * 返回字符串，然后保存在 txt文件中
+     * version解释：
+     *      1: 不带滤波配置
+     *      2： 带滤波配置
+     */
+    public fun toAIFile(version: Int) : String {
+        var file = ""
+        if (version == 2) {
+            file += "F-0-01,"
+        }
+        file += "125,II,405.35,"
+        for (i in waveInts) {
+            file += "$i,"
+        }
+
+        return file
+    }
 }

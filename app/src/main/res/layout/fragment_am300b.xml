@@ -145,7 +145,6 @@
 
                         <TextView
                             android:text="探头脱落"
-                            android:visibility="invisible"
                             android:id="@+id/probe_lead"
                             android:layout_width="wrap_content"
                             android:layout_margin="5dp"
@@ -153,7 +152,6 @@
 
                         <TextView
                             android:text="电极片脱落"
-                            android:visibility="invisible"
                             android:id="@+id/electrode_lead"
                             android:layout_width="wrap_content"
                             android:layout_margin="5dp"

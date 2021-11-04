@@ -1,5 +1,7 @@
 package com.lepu.lepuble.utils;
 
+import com.blankj.utilcode.util.LogUtils;
+
 public class HexString {
     private HexString() {
         // Utility class.
