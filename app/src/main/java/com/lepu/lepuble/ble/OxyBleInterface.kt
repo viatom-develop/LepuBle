@@ -10,7 +10,7 @@ import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.ble.cmd.OxyBleCmd
 import com.lepu.lepuble.ble.cmd.OxyBleResponse
 import com.lepu.lepuble.ble.obj.OxyDataController
-import com.lepu.lepuble.objs.BleLogItem
+import com.lepu.lepuble.file.OxyDataFile
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toHex
@@ -202,6 +202,8 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
             OxyBleCmd.OXY_CMD_READ_END -> {
                 clearTimeout()
                 LogUtils.d("read file finished: ${curFile?.fileName} ==> ${curFile?.fileSize}")
+                val oxyFile = OxyDataFile(curFile!!.fileContent)
+                LogUtils.d(oxyFile)
                 curFileName = null
                 curFile = null
             }
