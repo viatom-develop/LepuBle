@@ -70,6 +70,8 @@ class Er2Record {
             file += "$i,"
         }
 
+        file = file.substring(0, file.length-1)
+
         return file
     }
 }
