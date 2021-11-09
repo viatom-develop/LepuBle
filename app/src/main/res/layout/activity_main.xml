@@ -95,6 +95,7 @@
                     android:id="@+id/send_cmd"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.annotation.FloatRange
@@ -60,6 +61,16 @@ class Am300bFragment : Fragment() {
     }
 
     private fun initView() {
+        set_sn.setOnClickListener {
+            val sn = et_sn.text.toString()
+            if (sn.length != 4) {
+                Toast.makeText(activity, "请输入正确SN", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            LogUtils.d("set sn: $sn")
+            bleInterface.setSn(sn)
+        }
+
         emg_start.setOnClickListener {
             bleInterface.startEmg()
         }
@@ -324,6 +335,24 @@ class Am300bFragment : Fragment() {
         btn3.setOnClickListener {
             bleInterface.queryWorkingStatus()
         }
+        
+        et_a_hwGain.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val g = et_a_hwGain.text.toString().toInt()
+                bleInterface.setHwGain(g, 1)
+                LogUtils.d("set HW Gain: $g, channel A")
+            }
+            false
+        }
+
+        et_b_hwGain.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val g = et_b_hwGain.text.toString().toInt()
+                bleInterface.setHwGain(g, 2)
+                LogUtils.d("set HW Gain: $g, channel B")
+            }
+            false
+        }
     }
 
     private fun updateIntensity(value: Int, channel: Int) {
@@ -396,6 +425,7 @@ class Am300bFragment : Fragment() {
         })
         model.battery.observe(this, {
             battery.setImageLevel(it)
+            battery_level.text = "${it}%"
         })
 
         model.connect.observe(this, {

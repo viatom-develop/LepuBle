@@ -134,6 +134,13 @@ class Am300bBleInterface : ConnectionObserver, Am300bBleManager.onNotifyListener
     }
 
     /**
+     * 设置硬件增益
+     */
+    public fun setHwGain(gain: Int, channel: Int) {
+        sendCmd(Am300bBleCmd.setHwGain(gain, channel))
+    }
+
+    /**
      * 刺激强度查询
      */
     public fun queryIntensity() {

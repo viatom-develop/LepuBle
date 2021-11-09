@@ -168,12 +168,20 @@ public class Am300bBleCmd {
             bs[i] = (byte) sn.charAt(i);
         }
 
-        bs[0] = 0x31;
-        bs[1] = 0x32;
-        bs[2] = 0x33;
-        bs[3] = 0x34;
-
         BleCmd cmd = new BleCmd(TOKEN_KF, CMD_SET_SN, bs);
+        return cmd.toBytes();
+    }
+
+    /**
+     * 设置硬件增益
+     */
+    public static byte[] setHwGain(int gain, int channel) {
+        byte[] content = new byte[3];
+        content[0] = (byte) gain;
+        content[1] = (byte) (gain >> 8);
+
+        content[2] = (byte) channel;
+        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STIMULATE_START, content);
         return cmd.toBytes();
     }
 

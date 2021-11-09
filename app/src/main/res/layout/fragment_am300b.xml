@@ -57,6 +57,18 @@
                         app:layout_constraintTop_toTopOf="@id/version" />
 
                     <TextView
+                        android:id="@+id/battery_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:textColor="@color/Black"
+                        android:text="0%"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        app:layout_constraintStart_toEndOf="@id/battery"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
                         android:id="@+id/version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -64,7 +76,7 @@
                         android:textColor="@color/Black"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
-                        app:layout_constraintStart_toEndOf="@id/battery"
+                        app:layout_constraintStart_toEndOf="@id/battery_level"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -79,7 +91,34 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <LinearLayout
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/info"
+                    android:padding="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                    <TextView
+                        android:text="设置SN："
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_sn"
+                        android:layout_width="50sp"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:maxLength="4"/>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/set_sn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Confirm" />
+
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
@@ -351,6 +390,26 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
                         </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_marginVertical="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:text="硬件增益A"
+                                android:layout_gravity="start"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <EditText
+                                android:id="@+id/et_a_hwGain"
+                                android:imeOptions="actionDone"
+                                android:textAlignment="textEnd"
+                                android:inputType="number"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
@@ -481,6 +540,25 @@
 
                             <TextView
                                 android:id="@+id/sp_b_reset"
+                                android:textAlignment="textEnd"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_marginVertical="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:text="硬件增益B"
+                                android:layout_gravity="start"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <EditText
+                                android:id="@+id/et_b_hwGain"
+                                android:inputType="number"
+                                android:imeOptions="actionDone"
                                 android:textAlignment="textEnd"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
@@ -619,6 +697,7 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
+
 
         <RelativeLayout
             app:layout_constraintTop_toBottomOf="@id/card_query"

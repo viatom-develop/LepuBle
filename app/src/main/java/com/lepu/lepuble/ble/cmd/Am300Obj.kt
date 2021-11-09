@@ -36,6 +36,7 @@ object Am300Obj {
     class Version(var bytes: ByteArray) {
         var sf_version: String
         var hd_version: String
+        var sw_version: String
         var name: String
 
         init {
@@ -43,6 +44,8 @@ object Am300Obj {
             sf_version = bytes.copyOfRange(index, index+2).toHex()
             index += 2
             hd_version = String(bytes.copyOfRange(index, index+1))
+            index++
+            sw_version = String(bytes.copyOfRange(index, index+1))
             index++
             name = HexString.trimStr(String(bytes.copyOfRange(index, bytes.size)))
 

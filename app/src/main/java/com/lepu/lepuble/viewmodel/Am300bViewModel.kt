@@ -2,7 +2,10 @@ package com.lepu.lepuble.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.blankj.utilcode.util.LogUtils
 import com.lepu.lepuble.ble.cmd.Am300Obj
+import com.lepu.lepuble.ble.cmd.Am300bBleCmd
+import com.lepu.lepuble.utils.byteArrayOfInts
 
 class Am300bViewModel: ViewModel() {
 
@@ -98,5 +101,16 @@ class Am300bViewModel: ViewModel() {
     }
     val channelB: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
+    }
+
+    init {
+        test()
+    }
+
+    private fun test() {
+        val bs = byteArrayOfInts(0xaa, 0x55, 0x59, 0x06, 0x03, 0x00, 0x00, 0x00, 0x00, 0x9f)
+        val o = Am300bBleCmd.BleCmd(bs)
+        val emgPkg = Am300Obj.EmgPkg(o.content)
+        LogUtils.d("test: ${emgPkg.a} ${emgPkg.b}")
     }
 }
