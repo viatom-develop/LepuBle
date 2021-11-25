@@ -14,8 +14,8 @@ object Am300Obj {
         val voltage: Int
 
         init {
-            level = bytes[0]*25
-            voltage = bytes[1]*256 + bytes[2]
+            level = bytes[0].toUInt().toInt()
+            voltage = toUInt(bytes.copyOfRange(1,3))
         }
         override fun toString(): String {
             return Gson().toJson(this)

@@ -26,9 +26,9 @@ public class AmResponse {
                 return;
             }
             int i = 0;
-            freq_a = ((buf[i] << 8) + buf[i+1]);
+            freq_a = (buf[i] + (buf[i+1] << 8));
             i += 2;
-            bandwidth_a = ((buf[i] << 8) + buf[i+1]);
+            bandwidth_a = (buf[i] + (buf[i+1] << 8));
             i += 2;
             raise_a = buf[i] & 0xff;
             i++;
@@ -38,9 +38,9 @@ public class AmResponse {
             i++;
             rest_a = buf[i] & 0xff;
             i++;
-            freq_b = ((buf[i] << 8) + buf[i+1]);
+            freq_b = (buf[i] + (buf[i+1] << 8));
             i += 2;
-            bandwidth_b = ((buf[i] << 8) + buf[i+1]);
+            bandwidth_b = (buf[i] + (buf[i+1] << 8));
             i += 2;
             raise_b = buf[i] & 0xff;
             i++;

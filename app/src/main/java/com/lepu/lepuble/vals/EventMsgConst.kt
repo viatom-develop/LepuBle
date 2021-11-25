@@ -56,6 +56,7 @@ object EventMsgConst {
      */
     const val EventCommonMsg = "com.lepu.common.message"
     const val EventBleLog = "com.lepu.ble.log"
+    const val EventBlePkg = "com.lepu.ble.package"
     const val EventMsgSendCmd = "com.lepu.ble.log.send"
     const val EventDialogMsg = "com.lepu.ble.dialog.msg"
 }

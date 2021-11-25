@@ -13,6 +13,7 @@ import com.lepu.lepuble.ble.cmd.Er3BleCmd
 import com.lepu.lepuble.ble.obj.EcgDataController
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
+import com.lepu.lepuble.objs.BleLogItem
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toUInt
@@ -80,8 +81,8 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
     }
 
     public fun disconnect() {
-        manager.disconnect()
-        manager.close()
+        manager.disconnect().enqueue()
+//        manager.close()
 
         this.onDeviceDisconnected(mydevice, ConnectionObserver.REASON_SUCCESS)
     }
@@ -130,11 +131,13 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
             return
         }
         manager.sendCmd(bs)
+        LiveEventBus.get(EventMsgConst.EventBlePkg).post(1)
     }
 
     @ExperimentalUnsignedTypes
     private fun onResponseReceived(response: Er1BleResponse.Er1Response) {
 //        LogUtils.d("received: ${response.cmd}")
+        LiveEventBus.get(EventMsgConst.EventBlePkg).post(2)
         when(response.cmd) {
             UniversalBleCmd.GET_INFO -> {
                 val erInfo = LepuDevice(response.content)

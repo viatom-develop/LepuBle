@@ -38,6 +38,7 @@ public class Am300bBleCmd {
     public static int CMD_MUSCLE_SINGLE = 0x9A;  //肌电触发刺激进行单次刺激
     public static int CMD_STATUS = 0x9C;  //查询下位机工作状态
     public static int CMD_SET_SN = 0xA6; // 设置SN
+    public static int CMD_SET_HWGAIN = 0xA7; // 设置硬件增益
 
     public static int ACK_EMG_START = 0x01;
     public static int ACK_EMG_END = 0x02;
@@ -58,6 +59,7 @@ public class Am300bBleCmd {
     public static int ACK_BATTERY_LOW = 0x1B;  //电池电量低，治疗终止
     public static int ACK_STATUS = 0x1C;  //查询下位机工作状态
     public static int ACK_SET_SN = 0x26; // 设置SN
+    public static int ACK_SET_HWGAIN = 0xA8; // 设置硬件增益
 
     /*--------------------------------------------*/
 
@@ -107,10 +109,10 @@ public class Am300bBleCmd {
             int rest
     ) {
         byte[] content = new byte[9];
-        content[0] = (byte) (freq >> 8);
-        content[1] = (byte) (freq);
-        content[2] = (byte) (bandwidth >> 8);
-        content[3] = (byte) (bandwidth);
+        content[0] = (byte) (freq);
+        content[1] = (byte) (freq >> 8);
+        content[2] = (byte) (bandwidth);
+        content[3] = (byte) (bandwidth >> 8);
         content[4] = (byte) (raise*10);
         content[5] = (byte) duration;
         content[6] = (byte) (fall*10);
@@ -181,7 +183,7 @@ public class Am300bBleCmd {
         content[1] = (byte) (gain >> 8);
 
         content[2] = (byte) channel;
-        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_STIMULATE_START, content);
+        BleCmd cmd = new BleCmd(TOKEN_KF, CMD_SET_HWGAIN, content);
         return cmd.toBytes();
     }
 

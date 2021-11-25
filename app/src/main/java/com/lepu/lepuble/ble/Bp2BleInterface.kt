@@ -10,6 +10,7 @@ import com.lepu.lepuble.ble.cmd.*
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.ble.utils.BleCRC
+import com.lepu.lepuble.file.Er2Record
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
@@ -129,6 +130,9 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
 
     private fun processFileList(list: Er1BleResponse.Er1FileList) {
         for (name in list.fileList) {
+            if (HexString.trimStr(String(name)).startsWith("MKFS")) {
+                continue
+            }
             allFileList.add(name)
             totalFileNum++
         }
@@ -172,7 +176,6 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
             e.printStackTrace()
         }
     }
-
 
 
     public fun sendCmd(bs: ByteArray) {
@@ -273,7 +276,11 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
             UniversalBleCmd.READ_FILE_END -> {
                 LogUtils.d("read file finished: ${curFile?.fileName} ==> ${curFile?.fileSize}")
 
-                saveFile(curFile!!.fileName.trim(), curFile!!.content)
+                saveFile(curFile!!.fileName, curFile!!.content)
+
+                val er2Record = Er2Record(curFile!!.content)
+//                    LogUtils.d(er2Record)
+                LogUtils.d(er2Record.toAIFile(1))
 
                 curFileName = null
                 curFile = null
@@ -284,14 +291,13 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
     }
 
     private fun proceedNextFile() {
-
         if (isDownloadingAllFile) {
-            allFileList.removeAt(0)
             fileNum++
             LiveEventBus.get(EventMsgConst.EventCommonMsg).post("$fileNum/$totalFileNum")
 
             if (allFileList.size > 0) {
                 downloadFile(allFileList[0])
+                allFileList.removeAt(0)
             } else {
                 isDownloadingAllFile = false
             }

@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     private var logItems: ArrayList<BleLogItem> = ArrayList()
     var totalSend = 0
     var totalReceive = 0
+    var pkgSend = 0
+    var pkgRec = 0
 
     lateinit var logAdapter: LogAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -190,6 +192,18 @@ class MainActivity : AppCompatActivity() {
             if (item.type == BleLogItem.RECEIVE) {
                 totalReceive += item.content.size
                 receive.text = "RECEIVE: $totalReceive"
+            }
+        })
+
+        LiveEventBus.get(EventMsgConst.EventBlePkg).observe(this, {
+            (it as Int).apply {
+                if (it == 1) {
+                    pkgSend++
+                }
+                if (it == 2) {
+                    pkgRec++
+                }
+                pkgs.text = "PKG: ${pkgSend}/${pkgRec}"
             }
         })
     }
