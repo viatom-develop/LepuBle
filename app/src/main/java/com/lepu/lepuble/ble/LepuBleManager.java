@@ -207,6 +207,6 @@ public class LepuBleManager extends BleManager {
 //        if (Build.DEBUG || priority == Log.ERROR) {
 //            Log.println(priority, "MyBleManager", message);
 //        }
-        LogUtils.d(message);
+//        LogUtils.d(message);
     }
 }

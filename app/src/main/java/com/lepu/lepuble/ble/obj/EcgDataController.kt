@@ -127,7 +127,7 @@ object EcgDataController {
             index %= maxIndex
         }
 
-        LogUtils.d("feed: ${fs.size}  $index")
+//        LogUtils.d("feed: ${fs.size}  $index")
     }
 
     /**
@@ -150,7 +150,7 @@ object EcgDataController {
             dataRec = dataRec.copyOfRange(8*n, dataRec.size)
         }
 
-        LogUtils.d("dataRec len: ${dataRec.size}")
+//        LogUtils.d("dataRec len: ${dataRec.size}")
 
         feed(fs)
     }

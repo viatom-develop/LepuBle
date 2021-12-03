@@ -177,7 +177,7 @@ public class EcgView12 extends View {
 //                y = y > mBottom ? mBottom : y;
 //                y = y < mTop ? mTop : y;
 
-                float x = (float) (i+4)/5/ EcgDataController.getMm2px();
+                float x = (float) (i+4)/5/2/ EcgDataController.getMm2px();
 
                 p.moveTo(x, y);
                 i = i+4;
@@ -187,7 +187,7 @@ public class EcgView12 extends View {
 //                y1 = y1 > mBottom ? mBottom : y1;
 //                y1 = y1 < mTop ? mTop : y1;
 
-                float x1 = (float) i/5/ EcgDataController.getMm2px();
+                float x1 = (float) i/5/2/ EcgDataController.getMm2px();
                 p.lineTo(x1, y1);
             }
         }

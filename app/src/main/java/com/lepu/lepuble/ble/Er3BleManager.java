@@ -1,5 +1,7 @@
 package com.lepu.lepuble.ble;
 
+import static no.nordicsemi.android.ble.ConnectionPriorityRequest.CONNECTION_PRIORITY_HIGH;
+
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -11,10 +13,12 @@ import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd;
+import com.lepu.lepuble.vals.RunVarsKt;
 
 import java.util.UUID;
 
 import no.nordicsemi.android.ble.BleManager;
+import no.nordicsemi.android.ble.PhyRequest;
 import no.nordicsemi.android.ble.data.Data;
 
 
@@ -88,16 +92,27 @@ public class Er3BleManager extends BleManager {
         protected void initialize() {
             // You may enqueue multiple operations. A queue ensures that all operations are
             // performed one after another, but it is not required.
-            beginAtomicRequestQueue()
-                    .add(requestMtu(247) // Remember, GATT needs 3 bytes extra. This will allow packet size of 244 bytes.
-                            .with((device, mtu) -> log(Log.INFO, "MTU set to " + mtu))
-                            .fail((device, status) -> log(Log.WARN, "Requested MTU not supported: " + status)))
-//                    .add(setPreferredPhy(PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_OPTION_NO_PREFERRED)
-//                            .fail((device, status) -> log(Log.WARN, "Requested PHY not supported: " + status)))
-//                    .add(requestConnectionPriority(CONNECTION_PRIORITY_HIGH))
-                    .add(enableNotifications(notify_char))
-                    .done(device -> log(Log.INFO, "Target initialized"))
-                    .enqueue();
+            if (RunVarsKt.getSupport2MPhy()) {
+                beginAtomicRequestQueue()
+                        .add(requestMtu(247) // Remember, GATT needs 3 bytes extra. This will allow packet size of 244 bytes.
+                                .with((device, mtu) -> log(Log.INFO, "MTU set to " + mtu))
+                                .fail((device, status) -> log(Log.INFO, "Requested MTU not supported: " + status)))
+                        .add(setPreferredPhy(PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_OPTION_NO_PREFERRED)
+                                .fail((device, status) -> log(Log.WARN, "Requested PHY not supported: " + status)))
+                        .add(requestConnectionPriority(CONNECTION_PRIORITY_HIGH))
+                        .add(enableNotifications(notify_char))
+                        .done(device -> log(Log.INFO, "Target initialized"))
+                        .enqueue();
+            } else {
+                beginAtomicRequestQueue()
+                        .add(requestMtu(247) // Remember, GATT needs 3 bytes extra. This will allow packet size of 244 bytes.
+                                .with((device, mtu) -> log(Log.INFO, "MTU set to " + mtu))
+                                .fail((device, status) -> log(Log.WARN, "Requested MTU not supported: " + status)))
+                        .add(requestConnectionPriority(CONNECTION_PRIORITY_HIGH))
+                        .add(enableNotifications(notify_char))
+                        .done(device -> log(Log.INFO, "Target initialized"))
+                        .enqueue();
+            }
             // You may easily enqueue more operations here like such:
 
             setNotificationCallback(notify_char)

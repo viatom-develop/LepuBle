@@ -106,13 +106,13 @@ class Er3Fragment: Fragment() {
             }
 
             val interval: Int = when {
-                EcgDataController.dataRec.size > 250*8 -> {
+                EcgDataController.dataRec.size > 250*8*2 -> {
                     30
                 }
-                EcgDataController.dataRec.size > 150*8 -> {
+                EcgDataController.dataRec.size > 150*8*2 -> {
                     35
                 }
-                EcgDataController.dataRec.size > 75*8 -> {
+                EcgDataController.dataRec.size > 75*8*2 -> {
                     40
                 }
                 else -> {
@@ -123,7 +123,7 @@ class Er3Fragment: Fragment() {
             waveHandler.postDelayed(this, interval.toLong())
 //            LogUtils.d("DataRec: ${Er1DataController.dataRec.size}, delayed $interval")
 
-            EcgDataController.draw(5)
+            EcgDataController.draw(10)
             /**
              * update viewModel
              */
@@ -248,7 +248,7 @@ class Er3Fragment: Fragment() {
     private fun initEcgView() {
         // cal screen
         val dm =resources.displayMetrics
-        val index = floor(viewEcgBkg1.width / dm.xdpi * 25.4 / 25 * 125).toInt()
+        val index = floor(viewEcgBkg1.width / dm.xdpi * 25.4 / 25 * 250).toInt()
         EcgDataController.maxIndex = index
 
         val mm2px = 25.4f / dm.xdpi
