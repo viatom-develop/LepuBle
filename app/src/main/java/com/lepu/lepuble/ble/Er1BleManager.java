@@ -99,9 +99,9 @@ public class Er1BleManager extends BleManager {
             // performed one after another, but it is not required.
             if (RunVarsKt.getSupport2MPhy()) {
                 beginAtomicRequestQueue()
-                        .add(requestMtu(247) // Remember, GATT needs 3 bytes extra. This will allow packet size of 244 bytes.
-                                .with((device, mtu) -> log(Log.INFO, "MTU set to " + mtu))
-                                .fail((device, status) -> log(Log.INFO, "Requested MTU not supported: " + status)))
+//                        .add(requestMtu(247) // Remember, GATT needs 3 bytes extra. This will allow packet size of 244 bytes.
+//                                .with((device, mtu) -> log(Log.INFO, "MTU set to " + mtu))
+//                                .fail((device, status) -> log(Log.INFO, "Requested MTU not supported: " + status)))
                         .add(setPreferredPhy(PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_LE_2M_MASK, PhyRequest.PHY_OPTION_NO_PREFERRED)
                                 .fail((device, status) -> log(Log.WARN, "Requested PHY not supported: " + status)))
                         .add(requestConnectionPriority(CONNECTION_PRIORITY_HIGH))
@@ -128,7 +128,7 @@ public class Er1BleManager extends BleManager {
                     });
 
             // sync time
-//            syncTime();
+            syncTime();
 
             // get info
             getInfo();
@@ -165,7 +165,7 @@ public class Er1BleManager extends BleManager {
 
     public void sendCmd(byte[] bytes) {
 
-//        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getSEND(), bytes));
+        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getSEND(), bytes));
 
         writeCharacteristic(write_char, bytes)
                 .split()
@@ -228,6 +228,6 @@ public class Er1BleManager extends BleManager {
 //        if (Build.DEBUG || priority == Log.ERROR) {
 //            Log.println(priority, "MyBleManager", message);
 //        }
-//        LogUtils.d(message);
+        LogUtils.d(message);
     }
 }

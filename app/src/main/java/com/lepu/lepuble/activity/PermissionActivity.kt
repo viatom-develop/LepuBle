@@ -44,6 +44,7 @@ class PermissionActivity : AppCompatActivity() {
             "s1" -> curModel = Bluetooth.MODEL_S1
             "p1" -> curModel = Bluetooth.MODEL_P1
             "am300b" -> curModel = Bluetooth.MODEL_300B
+            "aed" -> curModel = Bluetooth.MODEL_AED
 
             else -> curModel = Bluetooth.MODEL_ER1
         }

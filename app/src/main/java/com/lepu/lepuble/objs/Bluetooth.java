@@ -34,6 +34,7 @@ public class Bluetooth implements Parcelable {
     public static final String BT_NAME_S1 = "le S1";
     public static final String BT_NAME_P1 = "LEM1"; // HOSO
     public static final String BT_NAME_300B = "AM300"; // HOSO
+    public static final String BT_NAME_AED = "UrTransfer"; // HOSO
 
 
     public static final int MODEL_UNRECOGNIZED = 0;
@@ -60,8 +61,9 @@ public class Bluetooth implements Parcelable {
     public static final int MODEL_BP2A = 21;
     public static final int MODEL_300B = 22;
     public static final int MODEL_BP2w = 23;
+    public static final int MODEL_AED = 24;
 
-    @IntDef({MODEL_CHECKO2, MODEL_SNOREO2, MODEL_SLEEPO2, MODEL_O2RING, MODEL_WEARO2, MODEL_SLEEPU, MODEL_ER1, MODEL_ER2, MODEL_PULSEBITEX, MODEL_OXYLINK, MODEL_KIDSO2, MODEL_FETAL, MODEL_BP2, MODEL_RINGO2, MODEL_KCA, MODEL_O2MAX, MODEL_ER3, MODEL_AIRBP, MODEL_S1, MODEL_P1, MODEL_BP2A, MODEL_300B, MODEL_BP2w})
+    @IntDef({MODEL_UNRECOGNIZED, MODEL_CHECKO2, MODEL_SNOREO2, MODEL_SLEEPO2, MODEL_O2RING, MODEL_WEARO2, MODEL_SLEEPU, MODEL_ER1, MODEL_ER2, MODEL_PULSEBITEX, MODEL_OXYLINK, MODEL_KIDSO2, MODEL_FETAL, MODEL_BP2, MODEL_RINGO2, MODEL_KCA, MODEL_O2MAX, MODEL_ER3, MODEL_AIRBP, MODEL_S1, MODEL_P1, MODEL_BP2A, MODEL_300B, MODEL_BP2w, MODEL_AED})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MODEL {
 
@@ -102,6 +104,8 @@ public class Bluetooth implements Parcelable {
                     return MODEL_P1;
                 if (deviceNamePrefix.startsWith(BT_NAME_300B))
                     return MODEL_300B;
+                if (deviceName.startsWith(BT_NAME_AED))
+                    return MODEL_AED;
                 return MODEL_UNRECOGNIZED;
         }
     }

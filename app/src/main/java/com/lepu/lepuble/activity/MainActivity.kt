@@ -150,6 +150,9 @@ class MainActivity : AppCompatActivity() {
             Bluetooth.MODEL_300B -> {
                 fragment = Am300bFragment.newInstance()
             }
+            Bluetooth.MODEL_AED -> {
+                fragment = AedFragment.newInstance()
+            }
 
             else -> {
                 fragment = Er1Fragment.newInstance()

@@ -171,7 +171,6 @@ class P1BleInterface : ConnectionObserver, P1BleManager.onNotifyListener {
         model.duration.value = 0
     }
 
-    @ExperimentalUnsignedTypes
     override fun onNotify(device: BluetoothDevice?, data: Data?) {
         data?.value?.apply {
             hasResponse(this)

@@ -6,6 +6,7 @@ import android.os.Handler
 import androidx.annotation.NonNull
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
+import com.lepu.lepuble.ble.cmd.AedBleCmd
 import com.lepu.lepuble.ble.cmd.Er1BleCmd
 import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd
@@ -19,7 +20,7 @@ import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
-import com.lepu.lepuble.viewmodel.Er1ViewModel
+import com.lepu.lepuble.viewmodel.AedViewModel
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import java.io.File
@@ -28,12 +29,12 @@ import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.experimental.inv
 
-class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
+class AedBleInterface : ConnectionObserver, Er1BleManager.onNotifyListener  {
 
     private lateinit var context: Context
 
-    private lateinit var model: Er1ViewModel
-    fun setViewModel(viewModel: Er1ViewModel) {
+    private lateinit var model: AedViewModel
+    fun setViewModel(viewModel: AedViewModel) {
         this.model = viewModel
     }
 
@@ -42,30 +43,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
     lateinit var mydevice: BluetoothDevice
 
     private var pool: ByteArray? = null
-
-    private val rtHandler = Handler()
-    private var count: Int = 0
-    inner class RtTask: Runnable {
-        override fun run() {
-            rtHandler.postDelayed(this, 1000)
-            if (state) {
-                count++
-                getRtData()
-//                LogUtils.d("RtTask: $count")
-            }
-        }
-    }
-
-    inner class RtRriTask: Runnable {
-        override fun run() {
-            rtHandler.postDelayed(this, 100)
-            if (state) {
-                count++
-                getRtRri()
-//                LogUtils.d("RtTask: $count")
-            }
-        }
-    }
 
     /**
      * interface
@@ -121,27 +98,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
      */
     public fun getRtData() {
         sendCmd(UniversalBleCmd.getRtData())
-    }
-
-    /**
-     * get real-time RRI
-     */
-    public fun getRtRri() {
-        sendCmd(Er1BleCmd.getRtRri())
-    }
-
-    /**
-     * run real-time task
-     */
-    public fun runRtTask() {
-        rtHandler.postDelayed(RtTask(), 200)
-    }
-
-    /**
-     * run real-time rri task
-     */
-    public fun runRtRriTask() {
-        rtHandler.postDelayed(RtRriTask(), 200)
     }
 
     /**
@@ -220,66 +176,31 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         sendCmd(UniversalBleCmd.readFileStart(name, 0))
     }
 
+    /**
+     * 设置序列
+     */
+    public fun configSerial(a1:Int, a2 :Int, a3: Int, c1:Int, c2: Int, c3: Int) {
+        sendCmd(AedBleCmd.aedConfig(a1, a2, a3, c1, c2, c3))
+    }
+
     public fun sendCmd(bs: ByteArray) {
         if (!state) {
             return
         }
 //        LogUtils.d("send cmd: ${bs.toHex()}")
         manager.sendCmd(bs)
-
-        /**
-         * count pkgs
-         */
-        LiveEventBus.get(EventMsgConst.EventBlePkg).post(1)
     }
 
     @ExperimentalUnsignedTypes
     private fun onResponseReceived(response: Er1BleResponse.Er1Response) {
 //        LogUtils.d("received: ${response.cmd}")
-        LiveEventBus.get(EventMsgConst.EventBlePkg).post(2)  // count pkgs
         when(response.cmd) {
             UniversalBleCmd.GET_INFO -> {
                 val erInfo = LepuDevice(response.content)
-                model.er1.value = erInfo
+                model.aed.value = erInfo
                 LiveEventBus.get(EventMsgConst.EventEr1Info)
                     .post(erInfo)
 
-            }
-
-            UniversalBleCmd.RT_DATA -> {
-                val rtData = Er1BleResponse.RtData(response.content)
-                model.hr.value = rtData.param.hr
-                model.duration.value = rtData.param.recordTime
-                model.lead.value = rtData.param.leadOn
-                model.battery.value = rtData.param.battery
-
-                Er1DataController.receive(rtData.wave.wFs)
-//                LogUtils.d("ER1 Controller: ${Er1DataController.dataRec.size}")
-                LogUtils.d(rtData.param.runStatusByte, rtData.param.status.toString())
-                LiveEventBus.get(EventMsgConst.EventEr1RtData)
-                    .post(rtData)
-            }
-
-            Er1BleCmd.RT_RRI -> {
-                val rtRriData = Er1BleResponse.RtRriData(response.content)
-
-                rtRriData.param.apply {
-                    model.hr.value = this.hr
-                    model.duration.value = this.recordTime
-                    model.lead.value = this.leadOn
-                    model.battery.value = this.battery
-
-                    model.acceleration.value = """
-                        x: ${this.axis_x} mg
-                        y: ${this.axis_y} mg
-                        z: ${this.axis_z} mg
-                    """.trimIndent()
-
-                }
-
-                rtRriData.rri.apply {
-                    model.rris.value = this.rris.toString()
-                }
             }
 
             UniversalBleCmd.READ_FILE_LIST -> {
@@ -347,6 +268,10 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
                 proceedNextFile()
             }
+
+            AedBleCmd.AED_CONFIG -> {
+                LogUtils.d("config finished")
+            }
         }
     }
 
@@ -401,8 +326,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 
     private fun clearVar() {
         model.battery.value = 0
-        model.duration.value = 0
-        model.hr.value = 0
     }
 
     override fun onNotify(device: BluetoothDevice?, data: Data?) {
@@ -434,8 +357,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
         state = false
         model.connect.value = state
         LogUtils.d(mydevice.name)
-        rtHandler.removeCallbacks(RtTask())
-        rtHandler.removeCallbacks(RtRriTask())
 
         clearVar()
 
@@ -465,3 +386,4 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
 //        LogUtils.d(mydevice.name)
     }
 }
+
