@@ -339,7 +339,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                 if(curFile?.fileName!!.startsWith("R", false)) {
                     val er2Record = Er2Record(curFile!!.content)
 //                    LogUtils.d(er2Record)
-                    LogUtils.d(er2Record.toAIFile(1))
+                    LogUtils.d(er2Record.toAIFile())
                 }
 
                 curFileName = null

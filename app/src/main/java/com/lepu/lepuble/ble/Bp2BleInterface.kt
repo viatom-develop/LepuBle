@@ -280,7 +280,7 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
 
                 val er2Record = Er2Record(curFile!!.content)
 //                    LogUtils.d(er2Record)
-                LogUtils.d(er2Record.toAIFile(1))
+                LogUtils.d(er2Record.toAIFile())
 
                 curFileName = null
                 curFile = null

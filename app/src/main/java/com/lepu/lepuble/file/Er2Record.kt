@@ -34,10 +34,14 @@ class Er2Record {
         val convert = DataConvert()
         for (i in waveData!!.indices) {
             val tmp = convert.unCompressAlgECG(waveData!![i])
-            if (tmp.toInt() != -32768) {
-                val mv = (tmp * (1.0035 * 1800) / (4096 * 178.74)).toFloat()
-                waveFloats.add(mv)
-                waveInts.add((mv*405.35).toInt())
+
+            tmp.toInt().apply {
+                if (this == -32768)
+                    return@apply
+
+                waveFloats.add((this * (1.0035 * 1800) / (4096 * 178.74)).toFloat())
+                waveInts.add(this)
+
             }
         }
 
@@ -59,8 +63,9 @@ class Er2Record {
      * version解释：
      *      1: 不带滤波配置
      *      2： 带滤波配置
+     *  update at 2021/12/31: 算法已经支持滤波配置，请使用默认version =2
      */
-    public fun toAIFile(version: Int) : String {
+    public fun toAIFile(version: Int = 2) : String {
         var file = ""
         if (version == 2) {
             file += "F-0-01,"
