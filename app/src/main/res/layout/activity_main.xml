@@ -44,7 +44,7 @@
 
                 <TextView
                     android:id="@+id/connect"
-                    android:text="连接设备"
+                    android:text="Connect"
                     android:textColor="@color/colorWhite"
                     android:padding="10dp"
                     android:layout_width="wrap_content"

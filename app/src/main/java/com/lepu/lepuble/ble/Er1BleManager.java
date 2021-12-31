@@ -124,7 +124,7 @@ public class Er1BleManager extends BleManager {
                     .with((device, data) -> {
 //                        LogUtils.d(device.getName() + " received: " + ByteArrayKt.bytesToHex(data.getValue()));
                         listener.onNotify(device, data);
-//                        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getRECEIVE(), data.getValue()));
+                        LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getRECEIVE(), data.getValue()));
                     });
 
             // sync time

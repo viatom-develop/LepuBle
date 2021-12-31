@@ -34,10 +34,13 @@ class Er2Record {
         val convert = DataConvert()
         for (i in waveData!!.indices) {
             val tmp = convert.unCompressAlgECG(waveData!![i])
-            if (tmp.toInt() != -32768) {
+            if (tmp.toInt() != 32767) {
                 val mv = (tmp * (1.0035 * 1800) / (4096 * 178.74)).toFloat()
                 waveFloats.add(mv)
                 waveInts.add((mv*405.35).toInt())
+            } else {
+                waveFloats.add(32767.0f)
+                waveInts.add(32767)
             }
         }
 
