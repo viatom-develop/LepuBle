@@ -10,6 +10,7 @@ import com.lepu.lepuble.ble.cmd.Er1BleCmd
 import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd
 import com.lepu.lepuble.ble.obj.Er1DataController
+import com.lepu.lepuble.ble.obj.Er1Vibrate
 import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.file.Er2Record
@@ -17,6 +18,7 @@ import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.objs.SpeedTest
 import com.lepu.lepuble.utils.HexString
 import com.lepu.lepuble.utils.add
+import com.lepu.lepuble.utils.toHex
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er1ViewModel
@@ -96,7 +98,6 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             .retry(3, 100)
             .done {
                 LogUtils.d("Device Init")
-
             }
             .enqueue()
 
@@ -128,6 +129,21 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
      */
     public fun getRtRri() {
         sendCmd(Er1BleCmd.getRtRri())
+    }
+
+    /**
+     * set hr vibrate config
+     */
+    public fun setHrVibrate(on : Boolean,threshold1: Int, threshold2: Int) {
+        sendCmd(Er1BleCmd.setVibrate(on, threshold1, threshold2))
+    }
+
+    /**
+     * get hr vibrate config
+     */
+
+    public fun getHrVibrate() {
+        sendCmd(Er1BleCmd.getVibrateConfig())
     }
 
     /**
@@ -280,6 +296,16 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
                 rtRriData.rri.apply {
                     model.rris.value = this.rris.toString()
                 }
+            }
+
+            Er1BleCmd.SET_VIBRATE -> {
+                // set hr vibrate
+                LogUtils.d("SET_VIBRATE success")
+            }
+
+            Er1BleCmd.GET_VIBRATE_CONFIG -> {
+                val vibrate = Er1Vibrate(response.content)
+                LogUtils.d("get vibrate: $vibrate")
             }
 
             UniversalBleCmd.READ_FILE_LIST -> {

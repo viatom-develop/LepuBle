@@ -98,49 +98,6 @@ public class UniversalBleCmd {
         return cmd;
     }
 
-    public static byte[] setVibrate(boolean on1,int threshold1, int threshold2) {
-        int len = 3;
-
-        byte[] cmd = new byte[8+len];
-        cmd[0] = (byte) 0xA5;
-        cmd[1] = (byte) 0x04;
-        cmd[2] = (byte) ~0x04;
-        cmd[3] = (byte) 0x00;
-        cmd[4] = (byte) seqNo;
-        cmd[5] = (byte) 0x03;
-        cmd[6] = (byte) 0x00;
-        if(on1){
-            cmd[7] = (byte) 0x01;
-        }else{
-            cmd[7] = (byte) 0x00;
-        }
-
-        cmd[8] = (byte) threshold1;
-        cmd[9] = (byte) threshold2;
-        cmd[10] = BleCRC.calCRC8(cmd);
-        addNo();
-
-//        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
-        return cmd;
-    }
-
-    public static byte[] getVibrateConfig() {
-        int len = 0;
-
-        byte[] cmd = new byte[8+len];
-        cmd[0] = (byte) 0xA5;
-        cmd[1] = (byte) 0x00;
-        cmd[2] = (byte) ~0x00;
-        cmd[3] = (byte) 0x00;
-        cmd[4] = (byte) seqNo;
-        cmd[5] = (byte) 0x00;
-        cmd[6] = (byte) 0x00;
-        cmd[7] = BleCRC.calCRC8(cmd);
-        addNo();
-
-        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
-        return cmd;
-    }
     public static byte[] getFileList() {
         int len = 0;
 
