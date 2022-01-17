@@ -3,6 +3,7 @@ package com.lepu.lepuble.ble
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import androidx.annotation.NonNull
 import com.blankj.utilcode.util.LogUtils
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -250,7 +251,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
             val temp: ByteArray = bytes.copyOfRange(i, i+8+len)
             if (temp.last() == BleCRC.calCRC8(temp)) {
                 val bleResponse = OxyBleResponse.OxyResponse(temp)
-//                Log.d(TAG, "get response: " + temp.toHex())
+                LogUtils.d("get response: " + temp.toHex())
                 onResponseReceived(bleResponse)
 
                 val tempBytes: ByteArray? = if (i+8+len == bytes.size) null else bytes.copyOfRange(i+8+len, bytes.size)

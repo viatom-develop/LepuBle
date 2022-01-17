@@ -145,7 +145,7 @@ public class OxyBleManager extends BleManager {
 
     public void sendCmd(byte[] bytes) {
 
-//        LogUtils.d("send: " + ByteArrayKt.bytesToHex(bytes));
+        LogUtils.d("send: " + ByteArrayKt.bytesToHex(bytes));
         LiveEventBus.get(EventMsgConst.EventBleLog).post(new BleLogItem(BleLogItem.Companion.getSEND(), bytes));
 
         writeCharacteristic(write_char, bytes)

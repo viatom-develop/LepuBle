@@ -45,6 +45,15 @@ class Er2Record {
             }
         }
 
+        var index = waveInts.size-1
+        while (waveInts[index] == -32767) {
+            waveFloats.removeAt(index)
+            waveInts.removeAt(index)
+            index--
+        }
+        recordingTime = index/125
+
+
         fileVersion = "V${bytes[0]}"
     }
 

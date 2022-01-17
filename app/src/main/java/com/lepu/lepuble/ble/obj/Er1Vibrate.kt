@@ -18,8 +18,8 @@ class Er1Vibrate {
             return
         }
         this.on = bytes[0] == 1.toByte()
-        this.threshold1 = bytes[1].toUInt().toInt()
-        this.threshold2 = bytes[2].toUInt().toInt()
+        this.threshold1 = (bytes[1].toInt() and 0xFF)
+        this.threshold2 = (bytes[2].toInt() and 0xFF)
     }
 
     public fun toBytes(): ByteArray {

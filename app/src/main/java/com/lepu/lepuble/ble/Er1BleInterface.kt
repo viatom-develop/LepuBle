@@ -53,7 +53,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             if (state) {
                 count++
                 getRtData()
-//                LogUtils.d("RtTask: $count")
+
             }
         }
     }
@@ -64,7 +64,7 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             if (state) {
                 count++
                 getRtRri()
-//                LogUtils.d("RtTask: $count")
+
             }
         }
     }
@@ -98,6 +98,8 @@ class Er1BleInterface : ConnectionObserver, Er1BleManager.onNotifyListener {
             .retry(3, 100)
             .done {
                 LogUtils.d("Device Init")
+                getHrVibrate()
+                setHrVibrate(true, 90, 160)
             }
             .enqueue()
 
