@@ -14,6 +14,6 @@ Here is a list of supported devices
 
 
 
-To debug, use `Gradle` -> `Lepu Ble` -> `Task` -> `install`, then choose the `productFlavors` like `installEr1Debug`
+To debug, use `BuildVariants` -> `Active Build Variant`, then choose the `Variant` like `installEr1Debug`
 
-![Flavors](./imgs/flavors.png)
+![Flavors](./imgs/flavors_as4.2.png)
