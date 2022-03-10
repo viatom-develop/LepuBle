@@ -67,6 +67,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:visibility="gone"
         android:id="@+id/btm_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

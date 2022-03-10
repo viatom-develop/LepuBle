@@ -59,4 +59,9 @@ object EventMsgConst {
     const val EventBlePkg = "com.lepu.ble.package"
     const val EventMsgSendCmd = "com.lepu.ble.log.send"
     const val EventDialogMsg = "com.lepu.ble.dialog.msg"
+
+    /**
+     * ER3 live event bus
+     */
+    const val EventEr3GetConfig = "com.lepu.ble.er3.get.config"
 }

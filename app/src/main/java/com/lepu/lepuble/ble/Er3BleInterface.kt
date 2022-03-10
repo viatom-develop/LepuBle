@@ -16,6 +16,7 @@ import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.objs.BleLogItem
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.add
+import com.lepu.lepuble.utils.toInt
 import com.lepu.lepuble.utils.toUInt
 import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er3ViewModel
@@ -74,7 +75,7 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
                 .retry(3, 100)
                 .done {
                     LogUtils.d("Device Init")
-
+                    getConfig()
                 }
                 .enqueue()
 
@@ -113,6 +114,21 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
      */
     public fun getFileList() {
         sendCmd(UniversalBleCmd.getFileList())
+    }
+
+    /**
+     * get config
+     * 心电测量模式：
+    0   监护模式
+    1   手术模式
+    2   ST模式
+    */
+    public fun getConfig() {
+        sendCmd(Er3BleCmd.getConfig())
+    }
+
+    public fun setConfig(mode: Int) {
+        sendCmd(Er3BleCmd.setConfig(mode))
     }
 
     /**
@@ -160,6 +176,20 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
                 rtData.wave.waveFs?.let { EcgDataController.receive(it) }
                 LiveEventBus.get(EventMsgConst.EventEr1RtData)
                         .post(rtData)
+            }
+
+            Er3BleCmd.GET_CONFIG -> {
+                response.content.apply {
+                    if (this.isNotEmpty()) {
+                        LiveEventBus.get(EventMsgConst.EventEr3GetConfig)
+                            .post(toInt(this))
+                    }
+                }
+
+            }
+
+            Er3BleCmd.SET_CONFIG -> {
+                getConfig()
             }
 
             UniversalBleCmd.READ_FILE_LIST -> {

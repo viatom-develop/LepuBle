@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/SDK/platforms/android-30/data/res/layout/simple_spinner_dropdown_item.xml" value="0.278515625" />
         <entry key="..\:/projects/LepuBle/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/projects/LepuBle/app/src/main/res/layout/activity_permission.xml" value="0.15846994535519127" />
+        <entry key="..\:/projects/LepuBle/app/src/main/res/layout/fragment_aed.xml" value="0.2527322404371585" />
         <entry key="..\:/projects/LepuBle/app/src/main/res/layout/fragment_am300b.xml" value="0.22" />
+        <entry key="..\:/projects/LepuBle/app/src/main/res/layout/fragment_er3.xml" value="0.32684426229508196" />
         <entry key="..\:/projects/LepuBle/app/src/main/res/layout/fragment_o2.xml" value="0.419140625" />
         <entry key="..\:/projects/LepuBle/app/src/main/res/layout/list_bluetooth.xml" value="0.278515625" />
       </map>

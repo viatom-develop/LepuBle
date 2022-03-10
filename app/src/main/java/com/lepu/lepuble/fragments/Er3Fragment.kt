@@ -8,6 +8,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -242,6 +244,21 @@ class Er3Fragment: Fragment() {
             val i = Intent(activity, About::class.java)
             i.putExtra("er3", model.er3.value)
             startActivity(i)
+        }
+
+        planets_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                bleInterface.setConfig(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //
+            }
         }
     }
 
@@ -539,6 +556,19 @@ class Er3Fragment: Fragment() {
                     dialog?.setCancelable(false)
                     dialog?.show()
                 })
+
+        LiveEventBus.get(EventMsgConst.EventEr3GetConfig)
+            .observe(this, {
+                val msg = when(it as Int) {
+                    0 -> "监护模式"
+                    1 -> "手术模式"
+                    2 -> "ST模式"
+                    else -> ""
+                }
+
+                Toast.makeText(this.activity, msg, Toast.LENGTH_SHORT).show()
+                planets_spinner.setSelection(it, true)
+            })
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
