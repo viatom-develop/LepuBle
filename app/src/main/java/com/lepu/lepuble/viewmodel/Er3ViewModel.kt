@@ -10,6 +10,7 @@ class Er3ViewModel : ViewModel() {
         MutableLiveData<Boolean>()
     }
 
+    @OptIn(ExperimentalUnsignedTypes::class)
     val er3: MutableLiveData<LepuDevice> by lazy {
         MutableLiveData<LepuDevice>()
     }
@@ -24,6 +25,14 @@ class Er3ViewModel : ViewModel() {
 
     val hr: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
+    }
+
+    val spo2: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    val temp: MutableLiveData<Float> by lazy {
+        MutableLiveData<Float>()
     }
 
     // measure duration

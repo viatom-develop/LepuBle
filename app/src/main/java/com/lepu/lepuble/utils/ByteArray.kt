@@ -44,6 +44,10 @@ fun toInt(bytes: ByteArray): Int {
     return result
 }
 
+fun toUInt(byte: Byte): Int {
+    return (byte.toUInt() and 0xFFu).toInt()
+}
+
 fun toString(bytes: ByteArray): String {
     var str = ""
     for (byte in bytes) {

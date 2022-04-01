@@ -179,4 +179,21 @@ public class UniversalBleCmd {
 //        LogUtils.d(ByteArrayKt.bytesToHex(cmd));
         return cmd;
     }
+
+    public static byte[] factoryReset() {
+        int len = 0;
+
+        byte[] cmd = new byte[8+len];
+        cmd[0] = (byte) 0xA5;
+        cmd[1] = (byte) FACTORY_RESET;
+        cmd[2] = (byte) ~FACTORY_RESET;
+        cmd[3] = (byte) 0x00;
+        cmd[4] = (byte) seqNo;
+        cmd[5] = (byte) 0x00;
+        cmd[6] = (byte) 0x00;
+        cmd[7] = BleCRC.calCRC8(cmd);
+
+        addNo();
+        return cmd;
+    }
 }

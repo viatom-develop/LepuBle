@@ -214,6 +214,8 @@ class Er3Fragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+
+//        startWave()
     }
 
     @ExperimentalUnsignedTypes
@@ -259,6 +261,10 @@ class Er3Fragment: Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //
             }
+        }
+
+        factory_reset.setOnClickListener {
+            bleInterface.factoryReset()
         }
     }
 
@@ -405,95 +411,95 @@ class Er3Fragment: Fragment() {
     // Er1ViewModel
     private fun addLiveDataObserver(){
 
-        activityModel.er1DeviceName.observe(this, {
+        activityModel.er1DeviceName.observe(this) {
             if (it == null) {
                 device_sn.text = "no bind device"
             } else {
                 device_sn.text = it
             }
-        })
+        }
 
-        model.dataSrc1.observe(this, {
+        model.dataSrc1.observe(this) {
             if (this::ecgView1.isInitialized) {
                 ecgView1.setDataSrc(it)
                 ecgView1.invalidate()
             }
-        })
-        model.dataSrc2.observe(this, {
+        }
+        model.dataSrc2.observe(this) {
             if (this::ecgView2.isInitialized) {
                 ecgView2.setDataSrc(it)
                 ecgView2.invalidate()
             }
-        })
-        model.dataSrc3.observe(this, {
+        }
+        model.dataSrc3.observe(this) {
             if (this::ecgView3.isInitialized) {
                 ecgView3.setDataSrc(it)
                 ecgView3.invalidate()
             }
-        })
-        model.dataSrc4.observe(this, {
+        }
+        model.dataSrc4.observe(this) {
             if (this::ecgView4.isInitialized) {
                 ecgView4.setDataSrc(it)
                 ecgView4.invalidate()
             }
-        })
-        model.dataSrc5.observe(this, {
+        }
+        model.dataSrc5.observe(this) {
             if (this::ecgView5.isInitialized) {
                 ecgView5.setDataSrc(it)
                 ecgView5.invalidate()
             }
-        })
-        model.dataSrc6.observe(this, {
+        }
+        model.dataSrc6.observe(this) {
             if (this::ecgView6.isInitialized) {
                 ecgView6.setDataSrc(it)
                 ecgView6.invalidate()
             }
-        })
-        model.dataSrc7.observe(this, {
+        }
+        model.dataSrc7.observe(this) {
             if (this::ecgView7.isInitialized) {
                 ecgView7.setDataSrc(it)
                 ecgView7.invalidate()
             }
-        })
-        model.dataSrc8.observe(this, {
+        }
+        model.dataSrc8.observe(this) {
             if (this::ecgView8.isInitialized) {
                 ecgView8.setDataSrc(it)
                 ecgView8.invalidate()
             }
-        })
-        model.dataSrc9.observe(this, {
+        }
+        model.dataSrc9.observe(this) {
             if (this::ecgView9.isInitialized) {
                 ecgView9.setDataSrc(it)
                 ecgView9.invalidate()
             }
-        })
-        model.dataSrc10.observe(this, {
+        }
+        model.dataSrc10.observe(this) {
             if (this::ecgView10.isInitialized) {
                 ecgView10.setDataSrc(it)
                 ecgView10.invalidate()
             }
-        })
-        model.dataSrc11.observe(this, {
+        }
+        model.dataSrc11.observe(this) {
             if (this::ecgView11.isInitialized) {
                 ecgView11.setDataSrc(it)
                 ecgView11.invalidate()
             }
-        })
-        model.dataSrc12.observe(this, {
+        }
+        model.dataSrc12.observe(this) {
             if (this::ecgView12.isInitialized) {
                 ecgView12.setDataSrc(it)
                 ecgView12.invalidate()
             }
-        })
+        }
 
-        model.er3.observe(this, {
+        model.er3.observe(this) {
             device_sn.text = "SN：${it.sn}"
 
             about.isEnabled = true
             about.setTextColor(resources.getColor(R.color.colorPrimary))
-        })
+        }
 
-        model.connect.observe(this, {
+        model.connect.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 ecgViewVisible(true)
@@ -502,6 +508,7 @@ class Er3Fragment: Fragment() {
 
                 dialog?.dismiss()
                 Toast.makeText(activity, "配对成功", Toast.LENGTH_SHORT).show()
+//                bleInterface.runRtTask()
             } else {
                 ble_state.setImageResource(R.mipmap.bluetooth_error)
                 ecgViewVisible(false)
@@ -509,36 +516,44 @@ class Er3Fragment: Fragment() {
                 battery_left_duration.visibility = View.INVISIBLE
                 stopWave()
             }
-        })
+        }
 
-        model.duration.observe(this, {
+        model.duration.observe(this) {
             if (it == 0) {
                 measure_duration.text = "?"
             } else {
-                val day = it/60/60/24
-                val hour = it/60/60 % 24
-                val minute = it/60 % 60
+                val day = it / 60 / 60 / 24
+                val hour = it / 60 / 60 % 24
+                val minute = it / 60 % 60
 
-                val start = System.currentTimeMillis() - it*1000
+                val start = System.currentTimeMillis() - it * 1000
                 if (day != 0) {
                     measure_duration.text = "$day 天 $hour 小时 $minute 分钟"
                 } else {
                     measure_duration.text = "$hour 小时 $minute 分钟"
                 }
             }
-        })
+        }
 
-        model.battery.observe(this, {
+        model.battery.observe(this) {
             battery.setImageLevel(it)
-        })
+        }
 
-        model.hr.observe(this, {
+        model.hr.observe(this) {
             if (it == 0) {
                 hr.text = "?"
             } else {
                 hr.text = it.toString()
             }
-        })
+        }
+
+        model.temp.observe(this) {
+            temp.text = "TEMP: $it dec"
+        }
+
+        model.spo2.observe(this) {
+            spo2.text = "SpO2: $it %"
+        }
     }
 
 
@@ -549,17 +564,17 @@ class Er3Fragment: Fragment() {
      */
     private fun addLiveEventObserver() {
         LiveEventBus.get(EventMsgConst.EventDeviceChoosen)
-                .observe(this, {
+                .observe(this) {
                     connect(it as Bluetooth)
                     dialog = ProgressDialog(activity)
                     dialog?.setMessage("正在配对")
                     dialog?.setCancelable(false)
                     dialog?.show()
-                })
+                }
 
         LiveEventBus.get(EventMsgConst.EventEr3GetConfig)
-            .observe(this, {
-                val msg = when(it as Int) {
+            .observe(this) {
+                val msg = when (it as Int) {
                     0 -> "监护模式"
                     1 -> "手术模式"
                     2 -> "ST模式"
@@ -568,7 +583,7 @@ class Er3Fragment: Fragment() {
 
                 Toast.makeText(this.activity, msg, Toast.LENGTH_SHORT).show()
                 planets_spinner.setSelection(it, true)
-            })
+            }
     }
 
     @SuppressLint("UseRequireInsteadOfGet")

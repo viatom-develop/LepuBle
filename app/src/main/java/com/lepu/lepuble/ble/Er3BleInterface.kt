@@ -10,10 +10,9 @@ import com.lepu.lepuble.ble.utils.BleCRC
 import com.lepu.lepuble.ble.cmd.UniversalBleCmd
 import com.lepu.lepuble.ble.cmd.Er1BleResponse
 import com.lepu.lepuble.ble.cmd.Er3BleCmd
+import com.lepu.lepuble.ble.cmd.Er3BleResponse
 import com.lepu.lepuble.ble.obj.EcgDataController
-import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
-import com.lepu.lepuble.objs.BleLogItem
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.add
 import com.lepu.lepuble.utils.toInt
@@ -22,6 +21,7 @@ import com.lepu.lepuble.vals.EventMsgConst
 import com.lepu.lepuble.viewmodel.Er3ViewModel
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import java.util.*
 import kotlin.experimental.inv
 
 class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
@@ -40,7 +40,7 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
     private var count: Int = 0
     inner class RtTask: Runnable {
         override fun run() {
-            rtHandler.postDelayed(this, 200)
+            rtHandler.postDelayed(this, 1000)
             if (state) {
                 count++
                 getRtData()
@@ -96,7 +96,15 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
     }
 
     /**
-     * get real-time data
+     * get er3 real-time data
+     * 旧协议
+     */
+    public fun getEr3RtData() {
+        sendCmd(Er3BleCmd.getEr3RtData())
+    }
+
+    /**
+     * get rt data
      */
     public fun getRtData() {
         sendCmd(Er3BleCmd.getRtData())
@@ -132,6 +140,13 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
     }
 
     /**
+     * factory reset
+     */
+    public fun factoryReset() {
+        sendCmd(UniversalBleCmd.factoryReset())
+    }
+
+    /**
      * download a file, name come from filelist
      */
     var curFileName: String? = null
@@ -147,7 +162,7 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
             return
         }
         manager.sendCmd(bs)
-        LiveEventBus.get(EventMsgConst.EventBlePkg).post(1)
+//        LiveEventBus.get(EventMsgConst.EventBlePkg).post(1)
     }
 
     @ExperimentalUnsignedTypes
@@ -164,18 +179,29 @@ class Er3BleInterface : ConnectionObserver, Er3BleManager.onNotifyListener {
 
             }
 
-            Er3BleCmd.RT_DATA -> {
-                val rtData = Er1BleResponse.Er3RtData(response.content)
+            Er3BleCmd.ER3_RT_DATA -> {
+                val rtData = Er3BleResponse.Er3RtData(response.content)
                 model.hr.value = rtData.param.hr
                 model.duration.value = rtData.param.recordTime
                 model.lead.value = rtData.param.leadOn
                 model.battery.value = rtData.param.battery
 
-                LogUtils.d("${rtData.param.hr} => ${rtData.wave.len}")
+//                LogUtils.d("${rtData.param.hr} => ${rtData.wave.len}")
 
                 rtData.wave.waveFs?.let { EcgDataController.receive(it) }
                 LiveEventBus.get(EventMsgConst.EventEr1RtData)
                         .post(rtData)
+            }
+
+            Er3BleCmd.RT_DATA -> {
+                val rtData = Er3BleResponse.RtData(response.content)
+                LogUtils.d("RT Data received")
+                model.hr.value = rtData.runStatus.hr
+                model.spo2.value = rtData.runStatus.spo2
+                model.temp.value = rtData.runStatus.temp
+                model.battery.value = rtData.runStatus.battery
+
+                rtData.rtWave.waveMvs?.let { EcgDataController.receive(it) }
             }
 
             Er3BleCmd.GET_CONFIG -> {

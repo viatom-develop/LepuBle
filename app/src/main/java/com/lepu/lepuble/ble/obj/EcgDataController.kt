@@ -109,7 +109,7 @@ object EcgDataController {
             src12 = FloatArray(maxIndex) { 0f }
         }
 
-        for (i in 0 until fs.size step 8) {
+        for (i in fs.indices step 8) {
             src1[index] = fs[i]
             src2[index] = fs[i+1]
             src3[index] = fs[i+2]

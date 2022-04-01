@@ -6,7 +6,8 @@ public class Er3BleCmd {
 
     public static int GET_CONFIG = 0X00;
     public static int SET_CONFIG = 0x04;
-    public static int RT_DATA = 0x05;
+    public static int ER3_RT_DATA = 0x05;
+    public static int RT_DATA = 0x06;
 
     private static int seqNo = 0;
     private static void addNo() {
@@ -57,8 +58,26 @@ public class Er3BleCmd {
         return cmd;
     }
 
-    public static byte[] getRtData() {
+    public static byte[] getEr3RtData() {
         int len = 1;
+
+        byte[] cmd = new byte[8+len];
+        cmd[0] = (byte) 0xA5;
+        cmd[1] = (byte) ER3_RT_DATA;
+        cmd[2] = (byte) ~ER3_RT_DATA;
+        cmd[3] = (byte) 0x00;
+        cmd[4] = (byte) seqNo;
+        cmd[5] = (byte) 0x01;
+        cmd[6] = (byte) 0x00;
+        cmd[7] = (byte) 0x7D;  // 0 -> 125hz;  1-> 62.5hz
+        cmd[8] = BleCRC.calCRC8(cmd);
+
+        addNo();
+        return cmd;
+    }
+
+    public static byte[] getRtData() {
+        int len = 0;
 
         byte[] cmd = new byte[8+len];
         cmd[0] = (byte) 0xA5;
@@ -66,10 +85,9 @@ public class Er3BleCmd {
         cmd[2] = (byte) ~RT_DATA;
         cmd[3] = (byte) 0x00;
         cmd[4] = (byte) seqNo;
-        cmd[5] = (byte) 0x01;
+        cmd[5] = (byte) 0x00;
         cmd[6] = (byte) 0x00;
-        cmd[7] = (byte) 0x7D;  // 0 -> 125hz;  1-> 62.5hz
-        cmd[8] = BleCRC.calCRC8(cmd);
+        cmd[7] = BleCRC.calCRC8(cmd);
 
         addNo();
         return cmd;

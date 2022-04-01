@@ -185,43 +185,6 @@ object Er1BleResponse {
         }
     }
 
-    @ExperimentalUnsignedTypes
-    class Er3RtData constructor(var bytes: ByteArray) {
-        var content: ByteArray = bytes
-        var param: RtParam
-        var wave: Er3RtWave
-
-        init {
-            param = RtParam(bytes.copyOfRange(0, 20))
-            wave = Er3RtWave(bytes.copyOfRange(20, bytes.size))
-        }
-    }
-
-    @ExperimentalUnsignedTypes
-    class Er3RtWave constructor(var bytes: ByteArray) {
-        var content: ByteArray = bytes
-        var len: Int
-        val channels = 8
-        var wave : ByteArray? = null
-        var waveFs : FloatArray? = null
-
-        init {
-            len = toUInt(bytes.copyOfRange(0, 2))
-            if (len > 0) {
-                wave = bytes.copyOfRange(2, bytes.size)
-
-                waveFs = FloatArray(len * channels)
-
-                for (i in 0 until (len * channels)) {
-                    waveFs!![i] = Er1DataController.byteTomV(wave!![2 * i], wave!![2 * i + 1])
-                }
-//                LogUtils.d(wave!!.toHex())
-//                LogUtils.d(Arrays.toString(waveFs))
-            }
-        }
-    }
-
-
     class Er1File(val name:String, val size: Int) {
         var fileName: String
         var fileSize: Int
