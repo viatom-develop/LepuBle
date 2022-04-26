@@ -61,7 +61,9 @@ class PermissionActivity : AppCompatActivity() {
                 }
             }
         } else {
-            requestLocation()
+//            requestLocation()
+//            requestPermission()
+            checkBt()
         }
     }
 

@@ -165,7 +165,7 @@ object Er3BleResponse {
 
                 when(lead) {
                     LeadType.TYPE_LEAD_12 -> {
-//                        val lead_size = 8
+                        val lead_size = 8
                         waveMvs = oriMvs
 
                     }
@@ -173,7 +173,9 @@ object Er3BleResponse {
                         val lead_size = 4
                         for (i in oriMvs.indices step lead_size) {
                             tmpFs.add(0f)
-                            addFloats(tmpFs, oriMvs.copyOfRange(i, i+3))
+                            tmpFs.add(oriMvs[i+1])
+                            tmpFs.add(oriMvs[i+2])
+                            tmpFs.add(oriMvs[i+3])
                             tmpFs.add(0f)
                             tmpFs.add(0f)
                             tmpFs.add(0f)
@@ -185,7 +187,9 @@ object Er3BleResponse {
                         val lead_size = 4
                         for (i in oriMvs.indices step lead_size) {
                             tmpFs.add(0f)
-                            addFloats(tmpFs, oriMvs.copyOfRange(i, i+4))
+                            tmpFs.add(oriMvs[i+1])
+                            tmpFs.add(oriMvs[i+2])
+                            tmpFs.add(oriMvs[i+3])
                             tmpFs.add(0f)
                             tmpFs.add(0f)
                             tmpFs.add(0f)
@@ -226,7 +230,8 @@ object Er3BleResponse {
                         val lead_size = 4
                         for (i in oriMvs.indices step lead_size) {
                             tmpFs.add(0f)
-                            addFloats(tmpFs, oriMvs.copyOfRange(i+1, i+3))
+                            tmpFs.add(oriMvs[i+1])
+                            tmpFs.add(oriMvs[i+2])
                             tmpFs.add(0f)
                             tmpFs.add(0f)
                             tmpFs.add(0f)
@@ -240,7 +245,8 @@ object Er3BleResponse {
                         val lead_size = 4
                         for (i in oriMvs.indices step lead_size) {
                             tmpFs.add(0f)
-                            addFloats(tmpFs, oriMvs.copyOfRange(i+1, i+3))
+                            tmpFs.add(oriMvs[i+1])
+                            tmpFs.add(oriMvs[i+2])
                             tmpFs.add(0f)
                             tmpFs.add(0f)
                             tmpFs.add(0f)
