@@ -5,15 +5,22 @@ import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.utils.toUInt
 import java.util.*
 
+/**
+ * ER1、ER2心电记录保存文件解析
+ * 波形段有压缩
+ *
+ * ER1、ER2 ECG file format
+ * the waveform part has been compressed
+ */
 class Er2Record {
 
     private var data: ByteArray? = null
     private var fileVersion: String? = null
-    private var recordingTime = 0
+    private var recordingTime = 0  // record duration
     private var waveData: ByteArray? = null
-    private var waveFloats = mutableListOf<Float>()
+    private var waveFloats = mutableListOf<Float>()  // ECG mV values
     // 用于向服务器上传的 int
-    private var waveInts= mutableListOf<Int>()
+    private var waveInts= mutableListOf<Int>() // for .txt file
     private var dataCrc = 0
     private var magic = 0
     private var startTime: Long = 0

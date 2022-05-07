@@ -1,5 +1,6 @@
 package com.lepu.lepuble.activity
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
@@ -128,6 +129,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var bluetoothAdapter : BluetoothAdapter
     private lateinit var leScanner : BluetoothLeScanner
 
+    @SuppressLint("MissingPermission")
     private fun scanDevice(enable: Boolean) {
         GlobalScope.launch {
             if (enable) {
@@ -152,6 +154,7 @@ class SearchActivity : AppCompatActivity() {
      * lescan callback
      */
     private val leScanCallback: ScanCallback = object : ScanCallback() {
+        @SuppressLint("MissingPermission")
         override fun onScanResult(
             callbackType: Int,
             result: ScanResult

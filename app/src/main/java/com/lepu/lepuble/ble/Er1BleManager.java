@@ -153,6 +153,11 @@ public class Er1BleManager extends BleManager {
             write_char = null;
             notify_char = null;
         }
+
+        @Override
+        protected void onServicesInvalidated() {
+
+        }
     }
 
     private void getInfo() {

@@ -64,4 +64,10 @@ object EventMsgConst {
      * ER3 live event bus
      */
     const val EventEr3GetConfig = "com.lepu.ble.er3.get.config"
+
+    /**
+     * Monitor liveevent data
+     *
+     */
+    const val EventMonitorRtdata = "com.lepu.ble.monitor.rt.data"
 }

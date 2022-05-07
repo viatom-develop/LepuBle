@@ -27,6 +27,7 @@ public class Bluetooth implements Parcelable {
     public static final String BT_NAME_BP2 = "BP2";
     public static final String BT_NAME_BP2W = "BP2W";
     public static final String BT_NAME_BP2A = "BP2A";
+    public static final String BT_NAME_BP2T = "BP2T";
     public static final String BT_NAME_RINGO2 = "O2NCI";
     public static final String BT_NAME_KCA = "KCA"; // 康康血压计
     public static final String BT_NAME_O2MAX = "O2M"; // O2 Max
@@ -35,6 +36,7 @@ public class Bluetooth implements Parcelable {
     public static final String BT_NAME_P1 = "LEM1"; // HOSO
     public static final String BT_NAME_300B = "AM300"; // HOSO
     public static final String BT_NAME_AED = "UrTransfer"; // HOSO
+    public static final String BT_NAME_MONITOR = "Checkme"; // Checkme Monitor
 
 
     public static final int MODEL_UNRECOGNIZED = 0;
@@ -62,8 +64,9 @@ public class Bluetooth implements Parcelable {
     public static final int MODEL_300B = 22;
     public static final int MODEL_BP2w = 23;
     public static final int MODEL_AED = 24;
+    public static final int MODEL_MONITOR = 25;
 
-    @IntDef({MODEL_UNRECOGNIZED, MODEL_CHECKO2, MODEL_SNOREO2, MODEL_SLEEPO2, MODEL_O2RING, MODEL_WEARO2, MODEL_SLEEPU, MODEL_ER1, MODEL_ER2, MODEL_PULSEBITEX, MODEL_OXYLINK, MODEL_KIDSO2, MODEL_FETAL, MODEL_BP2, MODEL_RINGO2, MODEL_KCA, MODEL_O2MAX, MODEL_ER3, MODEL_AIRBP, MODEL_S1, MODEL_P1, MODEL_BP2A, MODEL_300B, MODEL_BP2w, MODEL_AED})
+    @IntDef({MODEL_UNRECOGNIZED, MODEL_CHECKO2, MODEL_SNOREO2, MODEL_SLEEPO2, MODEL_O2RING, MODEL_WEARO2, MODEL_SLEEPU, MODEL_ER1, MODEL_ER2, MODEL_PULSEBITEX, MODEL_OXYLINK, MODEL_KIDSO2, MODEL_FETAL, MODEL_BP2, MODEL_RINGO2, MODEL_KCA, MODEL_O2MAX, MODEL_ER3, MODEL_AIRBP, MODEL_S1, MODEL_P1, MODEL_BP2A, MODEL_300B, MODEL_BP2w, MODEL_AED, MODEL_MONITOR})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MODEL {
 
@@ -92,7 +95,10 @@ public class Bluetooth implements Parcelable {
             case BT_NAME_BP2A:
             case BT_NAME_BP2:
             case BT_NAME_BP2W:
+            case BT_NAME_BP2T:
                 return MODEL_BP2;
+            case BT_NAME_MONITOR:
+                return MODEL_MONITOR;
             default:
                 if (deviceNamePrefix.contains("O2"))
                     return MODEL_CHECKO2;

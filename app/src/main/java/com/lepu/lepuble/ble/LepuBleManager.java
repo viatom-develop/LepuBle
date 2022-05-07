@@ -132,6 +132,11 @@ public class LepuBleManager extends BleManager {
             write_char = null;
             notify_char = null;
         }
+
+        @Override
+        protected void onServicesInvalidated() {
+
+        }
     }
 
     private void getInfo() {

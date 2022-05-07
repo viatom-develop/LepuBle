@@ -1,5 +1,6 @@
 package com.lepu.lepuble.ble
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.os.Handler
@@ -10,6 +11,7 @@ import com.lepu.lepuble.ble.cmd.*
 import com.lepu.lepuble.ble.obj.Er1DataController
 import com.lepu.lepuble.ble.obj.LepuDevice
 import com.lepu.lepuble.ble.utils.BleCRC
+import com.lepu.lepuble.file.BP2File
 import com.lepu.lepuble.file.Er2Record
 import com.lepu.lepuble.objs.Bluetooth
 import com.lepu.lepuble.utils.HexString
@@ -226,8 +228,8 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
 
 //                Er1DataController.receive(rtData.wave.wFs)
                 LogUtils.d("${rtData.toString()}")
-//                LiveEventBus.get(EventMsgConst.EventEr1RtData)
-//                    .post(rtData)
+                LiveEventBus.get(EventMsgConst.EventEr1RtData)
+                    .post(rtData)
             }
 
             Bp2BleCmd.RT_PARAM -> {
@@ -278,9 +280,9 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
 
                 saveFile(curFile!!.fileName, curFile!!.content)
 
-                val er2Record = Er2Record(curFile!!.content)
-//                    LogUtils.d(er2Record)
-                LogUtils.d(er2Record.toAIFile())
+                val bP2File = BP2File(curFile!!.content)
+                    LogUtils.d(bP2File)
+//                LogUtils.d(bP2File.toAIFile())
 
                 curFileName = null
                 curFile = null
@@ -375,6 +377,7 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
         connecting = true
     }
 
+    @SuppressLint("MissingPermission")
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         state = false
         model.connect.value = state
@@ -396,6 +399,7 @@ class Bp2BleInterface : ConnectionObserver, LepuBleManager.onNotifyListener {
         connecting = false
     }
 
+    @SuppressLint("MissingPermission")
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
         state = false
         LogUtils.d(mydevice.name)

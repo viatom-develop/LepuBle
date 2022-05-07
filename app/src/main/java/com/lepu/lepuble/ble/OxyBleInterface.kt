@@ -74,7 +74,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
         LogUtils.d("try connect: ${device.name}")
         manager = OxyBleManager(context)
         mydevice = device
-        manager.setConnectionObserver(this)
+        manager.connectionObserver = this
         manager.setNotifyListener(this)
         manager.connect(device)
                 .useAutoConnect(true)

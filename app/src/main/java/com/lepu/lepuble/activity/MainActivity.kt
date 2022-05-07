@@ -154,6 +154,10 @@ class MainActivity : AppCompatActivity() {
                 fragment = AedFragment.newInstance()
             }
 
+            Bluetooth.MODEL_MONITOR -> {
+                fragment = AedFragment.newInstance()
+            }
+
             else -> {
                 fragment = Er1Fragment.newInstance()
             }
@@ -183,22 +187,22 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun observeLiveDataObserve() {
 
-        LiveEventBus.get(EventMsgConst.EventBleLog).observe(this, {
+        LiveEventBus.get(EventMsgConst.EventBleLog).observe(this) {
             val item = it as BleLogItem
             logItems.add(item)
-            logAdapter.notifyItemInserted(logItems.size-1)
+            logAdapter.notifyItemInserted(logItems.size - 1)
 
             if (item.type == BleLogItem.SEND) {
                 totalSend += item.content.size
-                send.text =  "SEND: $totalSend"
+                send.text = "SEND: $totalSend"
             }
             if (item.type == BleLogItem.RECEIVE) {
                 totalReceive += item.content.size
                 receive.text = "RECEIVE: $totalReceive"
             }
-        })
+        }
 
-        LiveEventBus.get(EventMsgConst.EventBlePkg).observe(this, {
+        LiveEventBus.get(EventMsgConst.EventBlePkg).observe(this) {
             (it as Int).apply {
                 if (it == 1) {
                     pkgSend++
@@ -208,6 +212,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 pkgs.text = "PKG: ${pkgSend}/${pkgRec}"
             }
-        })
+        }
     }
 }

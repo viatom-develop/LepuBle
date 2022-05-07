@@ -146,6 +146,11 @@ public class KcaBleManger extends BleManager {
             write_char = null;
             notify_char = null;
         }
+
+        @Override
+        protected void onServicesInvalidated() {
+
+        }
     }
 
     public void syncTime() {

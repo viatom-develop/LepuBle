@@ -132,6 +132,11 @@ public class OxyBleManager extends BleManager {
             write_char = null;
             notify_char = null;
         }
+
+        @Override
+        protected void onServicesInvalidated() {
+
+        }
     }
 
     public void setNotify() {
