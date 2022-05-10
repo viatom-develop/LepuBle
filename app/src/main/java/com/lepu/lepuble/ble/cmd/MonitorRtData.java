@@ -8,8 +8,15 @@ public class MonitorRtData {
     public int pr, spo2, pi;
     public boolean isPulseMark; // pulse detected, use for play pulse sound.
     public int battery;
-    public ArrayList<Integer> ecgWave;
-    public ArrayList<Integer> spo2Wave;
+    /**
+     * ecgWave: ECG original sample data
+     */
+    public ArrayList<Integer> ecgWave = new ArrayList<Integer>();
+    /**
+     * ecgFloats: ECG voltage mV values
+     */
+    public ArrayList<Float> ecgFloats = new ArrayList<Float>();
+    public ArrayList<Integer> spo2Wave = new ArrayList<Integer>();
 
     public MonitorRtData(byte[] buf) {
         int index = 0;
@@ -18,7 +25,9 @@ public class MonitorRtData {
         index++;
         index++; // ecg type
         for (int i = 0; i<5; i++) {
-            ecgWave.add(buf[index]&0xff + ((buf[index+1]&0xff)<<8));
+            int sample = buf[index]&0xff + ((buf[index+1]&0xff)<<8);
+            ecgWave.add(sample);
+            ecgFloats.add(sample * 4033/32767/12/8.0f);
             index += 2;
         }
         hr = buf[index]&0xff + ((buf[index+1]&0xff)<<8);
@@ -27,6 +36,7 @@ public class MonitorRtData {
         index += 2; // st
         index += 2; // pvcs
         isRMark = buf[index] != (byte) 0x00;
+        index++;
         index++; //note
         index ++; // spo2 type
         for (int i = 0; i<5; i++) {

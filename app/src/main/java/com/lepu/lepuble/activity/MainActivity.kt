@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             Bluetooth.MODEL_MONITOR -> {
-                fragment = AedFragment.newInstance()
+                fragment = MonitorFragment.newInstance()
             }
 
             else -> {

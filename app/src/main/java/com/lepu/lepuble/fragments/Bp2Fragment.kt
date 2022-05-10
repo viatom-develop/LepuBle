@@ -187,22 +187,23 @@ class Bp2Fragment : Fragment() {
     }
 
     // Er1ViewModel
+    @OptIn(ExperimentalUnsignedTypes::class)
     private fun addLiveDataObserver(){
 
-        activityModel.er1DeviceName.observe(this, {
+        activityModel.er1DeviceName.observe(this) {
             if (it == null) {
                 device_sn.text = "no bind device"
             } else {
                 device_sn.text = it
             }
-        })
+        }
 
-        model.dataSrc.observe(this, {
+        model.dataSrc.observe(this) {
             if (this::ecgView.isInitialized) {
                 ecgView.setDataSrc(it)
                 ecgView.invalidate()
             }
-        })
+        }
 
         model.bp2.observe(this, {
             device_sn.text = "SN：${it.sn}"

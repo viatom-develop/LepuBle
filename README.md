@@ -11,6 +11,7 @@ Here is a list of supported devices
 | O2 serial: CheckO2, O2Ring, SleepO2 ... | oxy |
 | KCA BP monitor | kca |
 | BP2 | bp2 |
+| Checkme Pro Monitor | monitor |
 
 
 

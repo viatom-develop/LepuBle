@@ -36,9 +36,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
                     android:src="@mipmap/bluetooth_error"
-                    app:layout_constraintBottom_toBottomOf="@id/battery_left_duration"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/battery_left_duration" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/battery"
@@ -47,28 +46,17 @@
                     android:layout_height="14dp"
                     android:src="@drawable/batter_blue"
                     android:layout_marginStart="5dp"
-                    app:layout_constraintBottom_toBottomOf="@id/battery_left_duration"
                     app:layout_constraintStart_toEndOf="@id/ble_state"
-                    app:layout_constraintTop_toTopOf="@id/battery_left_duration" />
-
-                <TextView
-                    android:id="@+id/battery_left_duration"
-                    android:visibility="invisible"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:textColor="@color/Black"
-                    app:layout_constraintStart_toEndOf="@id/battery"
                     app:layout_constraintTop_toTopOf="parent" />
+
 
                 <TextView
                     android:id="@+id/device_sn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="no bind device"
-                    app:layout_constraintBottom_toBottomOf="@id/battery_left_duration"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/battery_left_duration" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -78,14 +66,48 @@
                 app:layout_constraintTop_toBottomOf="@id/info"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
 
                 <TextView
-                    android:text="shhahah "
+                    android:id="@+id/hr"
+                    android:text="HR: "
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/spo2"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/spo2"
+                    android:text="SpO2: "
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/pr"
+                    app:layout_constraintStart_toEndOf="@id/hr"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/pr"
+                    android:text="PR: "
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/pi"
+                    app:layout_constraintStart_toEndOf="@id/spo2"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/pi"
+                    android:text="PI: "
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/pr"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="1"
                     android:layout_height="wrap_content" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

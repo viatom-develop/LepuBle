@@ -54,6 +54,7 @@ class MonitorBleInterface : ConnectionObserver, MonitorBleManager.onNotifyListen
             .retry(3, 100)
             .done {
                 LogUtils.d("Device Init")
+                getRtData()
             }
             .enqueue()
 
@@ -85,9 +86,13 @@ class MonitorBleInterface : ConnectionObserver, MonitorBleManager.onNotifyListen
         sendCmd(byteArrayOfInts(0))
     }
 
-
+    /**
+     * Checkme Pro will send one package every 40ms
+     * contains 5 ECG dots and 5 SpO2 dots
+     */
     override fun onNotify(device: BluetoothDevice?, data: Data?) {
         data?.apply {
+//            LogUtils.d(data)
             val d = MonitorRtData(this.value)
             LiveEventBus.get(EventMsgConst.EventMonitorRtdata).post(d)
             LogUtils.d("${d.hr}, ${d.spo2}, ${d.battery}")
