@@ -97,7 +97,7 @@ class BP2File {
             for (i in index until bytes.size step 2) {
                 toUInt(bytes.copyOfRange(i, i+2)).apply {
                     waveInts.add(this)
-                    waveFloats.add((this * (1.0035 * 1800) / (4096 * 178.74)).toFloat())
+                    waveFloats.add((this /322.79).toFloat())
                 }
 
             }
@@ -129,7 +129,7 @@ class BP2File {
         if (version == 2) {
             file += "F-0-01,"
         }
-        file += "125,II,405.35,"
+        file += "125,II,322.79,"
         for (i in ecgStruct?.waveInts!!) {
             file += "$i,"
         }
