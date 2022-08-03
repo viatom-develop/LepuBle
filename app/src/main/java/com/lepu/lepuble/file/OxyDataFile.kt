@@ -25,6 +25,7 @@ class OxyDataFile {
     private var spo2Wave: MutableList<O2Sample> = mutableListOf()
 
 
+    @OptIn(ExperimentalUnsignedTypes::class)
     constructor(bytes: ByteArray) {
         var index = 0
         version = bytes[index].toInt()
@@ -91,7 +92,7 @@ class OxyDataFile {
             index++
             pr = toUInt(bytes.copyOfRange(index, index+2))
             index += 2
-            acceleration = bytes[index].toUInt().toInt()
+            acceleration = bytes[index].toUByte().toInt()
 //            index++
             // reserve 1
         }

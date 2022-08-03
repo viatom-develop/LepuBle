@@ -172,7 +172,7 @@ class KcaBleInterface : ConnectionObserver, KcaBleManger.onNotifyListener {
                             .post(sn)
                     }
                     KEY_BATTERY_RES -> {
-                        val battery = key.`val`[0].toUInt().toInt()
+                        val battery = key.`val`[0].toUByte().toInt()
                         model.battery.value = battery
                         LogUtils.d("获取到电量: $battery")
                     }

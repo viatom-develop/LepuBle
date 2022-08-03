@@ -41,11 +41,11 @@ class OxyBleResponse{
         var wByte: ByteArray? = null
 
         init {
-            spo2 = bytes[0].toUInt().toInt()
+            spo2 = bytes[0].toUByte().toInt()
             pr = toUInt(bytes.copyOfRange(1, 3))
-            battery = bytes[3].toUInt().toInt()
+            battery = bytes[3].toUByte().toInt()
             batteryState = bytes[4].toUInt().toString()
-            pi = bytes[5].toUInt().toInt()
+            pi = bytes[5].toUByte().toInt()
             state = bytes[6].toUInt().toString()
             len = toUInt(bytes.copyOfRange(10, 12))
             waveByte = bytes.copyOfRange(12, 12 + len)

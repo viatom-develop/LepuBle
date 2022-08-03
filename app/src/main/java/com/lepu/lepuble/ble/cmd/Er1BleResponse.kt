@@ -215,7 +215,7 @@ object Er1BleResponse {
         var fileList = mutableListOf<ByteArray>()
 
         init {
-            size=bytes[0].toUInt().toInt()
+            size=bytes[0].toUByte().toInt()
             for (i in  0 until size) {
                 fileList.add(bytes.copyOfRange(1+i*16, 17+i*16))
             }

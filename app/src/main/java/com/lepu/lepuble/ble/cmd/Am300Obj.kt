@@ -14,7 +14,7 @@ object Am300Obj {
         val voltage: Int
 
         init {
-            level = bytes[0].toUInt().toInt()
+            level = bytes[0].toUByte().toInt()
             voltage = toUInt(bytes.copyOfRange(1,3))
         }
         override fun toString(): String {
