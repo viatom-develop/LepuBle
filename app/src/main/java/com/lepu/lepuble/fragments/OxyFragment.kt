@@ -152,26 +152,26 @@ class OxyFragment : Fragment() {
 
     private fun addLiveDataObserver() {
 
-        activityModel.oxyDeviceName.observe(this, {
+        activityModel.oxyDeviceName.observe(this) {
             if (it == null) {
                 device_sn.text = "no bind device"
             } else {
                 device_sn.text = it
             }
-        })
+        }
 
-        model.dataSrc.observe(this, {
+        model.dataSrc.observe(this) {
             if (this::oxyView.isInitialized) {
                 oxyView.setDataSrc(it)
                 oxyView.invalidate()
             }
-        })
+        }
 
-        model.info.observe(this, {
+        model.info.observe(this) {
             device_sn.text = "SN：${it.sn}"
-        })
+        }
 
-        model.connect.observe(this, {
+        model.connect.observe(this) {
             if (it) {
                 ble_state.setImageResource(R.mipmap.bluetooth_ok)
                 oxyView.visibility = View.VISIBLE
@@ -185,26 +185,26 @@ class OxyFragment : Fragment() {
                 battery_left_duration.visibility = View.INVISIBLE
                 stopWave()
             }
-        })
+        }
 
-        model.battery.observe(this, {
+        model.battery.observe(this) {
             battery.setImageLevel(it)
-        })
+        }
 
-        model.pr.observe(this, {
+        model.pr.observe(this) {
             if (it == 0) {
                 tv_pr.text = "?"
             } else {
                 tv_pr.text = it.toString()
             }
-        })
-        model.spo2.observe(this, {
+        }
+        model.spo2.observe(this) {
             if (it == 0) {
                 tv_oxy.text = "?"
             } else {
                 tv_oxy.text = it.toString()
             }
-        })
+        }
 //        model.pi.observe(this, {
 //            if (it == 0.0f) {
 //                tv_pi.text = "?"
@@ -220,14 +220,14 @@ class OxyFragment : Fragment() {
 
     private fun addLiveEventObserver() {
         LiveEventBus.get(EventMsgConst.EventDeviceChoosen)
-                .observe(this, {
+                .observe(this) {
                     connect(it as Bluetooth)
-                })
+                }
 
         LiveEventBus.get(EventMsgConst.EventMsgSendCmd)
-            .observe(this, {
+            .observe(this) {
                 bleInterface.sendCmd(HexString.hexToBytes(it as String))
-            })
+            }
     }
 
     @SuppressLint("UseRequireInsteadOfGet")

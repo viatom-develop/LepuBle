@@ -37,6 +37,8 @@ public class Bluetooth implements Parcelable {
     public static final String BT_NAME_300B = "AM300"; // HOSO
     public static final String BT_NAME_AED = "UrTransfer"; // HOSO
     public static final String BT_NAME_MONITOR = "Checkme"; // Checkme Monitor
+    public static final String BT_NAME_SANEI_O2 = "CMRing"; // Checkme Monitor
+    public static final String BT_NAME_ER4 = "ER4";
 
 
     public static final int MODEL_UNRECOGNIZED = 0;
@@ -65,8 +67,10 @@ public class Bluetooth implements Parcelable {
     public static final int MODEL_BP2w = 23;
     public static final int MODEL_AED = 24;
     public static final int MODEL_MONITOR = 25;
+    public static final int MODEL_SANEI_O2 = 26;
+    public static final int MODEL_ER4 = 27;
 
-    @IntDef({MODEL_UNRECOGNIZED, MODEL_CHECKO2, MODEL_SNOREO2, MODEL_SLEEPO2, MODEL_O2RING, MODEL_WEARO2, MODEL_SLEEPU, MODEL_ER1, MODEL_ER2, MODEL_PULSEBITEX, MODEL_OXYLINK, MODEL_KIDSO2, MODEL_FETAL, MODEL_BP2, MODEL_RINGO2, MODEL_KCA, MODEL_O2MAX, MODEL_ER3, MODEL_AIRBP, MODEL_S1, MODEL_P1, MODEL_BP2A, MODEL_300B, MODEL_BP2w, MODEL_AED, MODEL_MONITOR})
+    @IntDef({MODEL_UNRECOGNIZED, MODEL_CHECKO2, MODEL_SNOREO2, MODEL_SLEEPO2, MODEL_O2RING, MODEL_WEARO2, MODEL_SLEEPU, MODEL_ER1, MODEL_ER2, MODEL_PULSEBITEX, MODEL_OXYLINK, MODEL_KIDSO2, MODEL_FETAL, MODEL_BP2, MODEL_RINGO2, MODEL_KCA, MODEL_O2MAX, MODEL_ER3, MODEL_AIRBP, MODEL_S1, MODEL_P1, MODEL_BP2A, MODEL_300B, MODEL_BP2w, MODEL_AED, MODEL_MONITOR, MODEL_SANEI_O2, MODEL_ER4})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MODEL {
 
@@ -89,6 +93,7 @@ public class Bluetooth implements Parcelable {
             case BT_NAME_DUOEK:
                 return MODEL_ER1;
             case BT_NAME_ER3:
+            case BT_NAME_ER4:
                 return MODEL_ER3;
             case BT_NAME_OXY_LINK:
                 return MODEL_OXYLINK;
@@ -99,6 +104,8 @@ public class Bluetooth implements Parcelable {
                 return MODEL_BP2;
             case BT_NAME_MONITOR:
                 return MODEL_MONITOR;
+            case BT_NAME_SANEI_O2:
+                return MODEL_CHECKO2;
             default:
                 if (deviceNamePrefix.contains("O2"))
                     return MODEL_CHECKO2;

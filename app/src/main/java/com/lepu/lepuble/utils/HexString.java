@@ -40,4 +40,6 @@ public class HexString {
     public static String trimStr(String s) {
         return s.trim();
     }
+
+
 }

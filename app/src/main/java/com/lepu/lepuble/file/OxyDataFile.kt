@@ -36,10 +36,10 @@ class OxyDataFile {
         val c = Calendar.getInstance()
         val year = toUInt(bytes.copyOfRange(index, index+2))
         val month = bytes[index+2].toInt()-1
-        val day = bytes[index+3].toInt()-1
-        val hour = bytes[index+4].toInt()-1
-        val min = bytes[index+5].toInt()-1
-        val second = bytes[index+6].toInt()-1
+        val day = bytes[index+3].toInt()
+        val hour = bytes[index+4].toInt()
+        val min = bytes[index+5].toInt()
+        val second = bytes[index+6].toInt()
         c.set(year, month, day, hour, min, second)
         startTime = c.time
         index +=7

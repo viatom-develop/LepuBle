@@ -296,7 +296,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
     fun downloadFiles(oxyInfo: OxyBleResponse.OxyInfo) {
         val files = oxyInfo.fileList.split(",")
         if (files.isNotEmpty()) {
-            readFile(files[0])
+            readFile(files[3])
         }
     }
 

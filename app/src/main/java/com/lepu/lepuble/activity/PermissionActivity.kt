@@ -1,10 +1,12 @@
 package com.lepu.lepuble.activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -62,7 +64,7 @@ class PermissionActivity : AppCompatActivity() {
                 }
             }
         } else {
-            requestLocation()
+//            requestLocation()
             requestPermission()
 //            checkBt()
         }
@@ -84,19 +86,23 @@ class PermissionActivity : AppCompatActivity() {
     }
 
     private fun requestPermission() {
-        val ps : Array<String> = arrayOf(
-//            Manifest.permission.ACCESS_WIFI_STATE,
-//            Manifest.permission.CHANGE_WIFI_STATE,
-//            Manifest.permission.ACCESS_NETWORK_STATE,
-//            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//            Manifest.permission.CAMERA,
-            Manifest.permission.BLUETOOTH,
-            Manifest.permission.BLUETOOTH_ADMIN,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
+        val ps : Array<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            arrayOf(
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN,
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        }
 
         for (p  in ps) {
             if (!checkP(p)) {
@@ -113,9 +119,13 @@ class PermissionActivity : AppCompatActivity() {
     }
 
     private fun permissionFinished() {
-        checkBt()
+//        checkBt()
+        val i = Intent(this, MainActivity::class.java)
+        startActivity(i)
+        this.finish()
     }
 
+    @SuppressLint("MissingPermission")
     private fun checkBt() {
         val adapter = BluetoothAdapter.getDefaultAdapter()
         if (adapter == null) {
@@ -140,6 +150,6 @@ class PermissionActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        requestLocation()
+//        requestLocation()
     }
 }

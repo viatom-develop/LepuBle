@@ -35,6 +35,15 @@ fun add(ori: ByteArray?, add: ByteArray): ByteArray {
     return result.toInt()
 }
 
+@ExperimentalUnsignedTypes fun toLong(bytes: ByteArray): Long {
+    var result : UInt = 0u
+    for (i in bytes.indices) {
+        result = result or ((bytes[i].toUInt() and 0xFFu) shl 8*i)
+    }
+
+    return result.toLong()
+}
+
 fun toInt(bytes: ByteArray): Int {
     var result : Int = 0
     for (i in bytes.indices) {
@@ -75,4 +84,9 @@ fun bytesToHex(bytes: ByteArray): String {
         hexChars[j * 2 + 1] = HEX_ARRAY.get(v and 0x0F)
     }
     return String(hexChars)
+}
+
+fun main() {
+    val bs = byteArrayOfInts(0xfe, 0xff, 0xff, 0xff)
+    println(toLong(bs))
 }

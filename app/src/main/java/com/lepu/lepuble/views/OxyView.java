@@ -13,6 +13,7 @@ import com.lepu.lepuble.ble.obj.OxyDataController;
 
 public class OxyView extends View {
     private Paint wPaint;
+    private Paint pulseBarPaint;
 
     public int mWidth;
     public int mHeight;
@@ -57,6 +58,11 @@ public class OxyView extends View {
         wPaint.setStrokeWidth(4.0f);
         wPaint.setTextAlign(Paint.Align.LEFT);
         wPaint.setTextSize(32);
+
+        pulseBarPaint = new Paint();
+        pulseBarPaint.setColor(getColor(R.color.Black));
+        pulseBarPaint.setStyle(Paint.Style.FILL);
+
     }
 
     public void setDataSrc(int[] fs) {
@@ -75,7 +81,10 @@ public class OxyView extends View {
     private void iniParam() {
 //        SPEED = DataController.SPEED;
 
-        maxIndex = OxyDataController.maxIndex;
+        /**
+         * 留20个位置给脉搏柱
+         */
+        maxIndex = OxyDataController.maxIndex-20;
 
 //        maxIndex = (int) (getWidth() / 2 / SPEED * 2);
 //        dataSrc = new byte[maxIndex*2];
@@ -125,6 +134,31 @@ public class OxyView extends View {
         }
 
         canvas.drawPath(p, wPaint);
+
+        /**
+         * 当前index的值即为脉搏柱的高度
+         */
+        int pulseL = OxyDataController.maxIndex-15;
+        int pulseR = OxyDataController.maxIndex-5;
+        float pulseLX = (float) pulseL/5/ OxyDataController.mm2px;
+        float pulseRX = (float) pulseR/5/ OxyDataController.mm2px;
+
+        // 纵向y值归一化
+        int pulseVal = dataSrc[OxyDataController.index];
+
+        int pulseMax = 121;
+        int pulseMin = 60;
+//        if (pulseVal == pulseMax || pulseVal == 0)
+//            return;
+        if (pulseVal < pulseMin) {
+            pulseVal = pulseMin;
+        } else if (pulseVal > pulseMax) {
+            pulseVal = pulseMax;
+        }
+
+        float pulseY = ((float) (pulseVal-pulseMin)/(pulseMax-pulseMin))*200.0f;
+
+        canvas.drawRect(pulseLX, pulseY, pulseRX, mBottom, pulseBarPaint);
 
 //        canvas.drawText("" + DataController.index, 0,100,bPaint);
     }
