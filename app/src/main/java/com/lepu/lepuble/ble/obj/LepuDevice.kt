@@ -26,7 +26,7 @@ class LepuDevice constructor(var bytes: ByteArray) : Parcelable {
 
     init {
         hwV = bytes[0].toChar()
-        fwV = "${bytes[4].toUInt()}.${bytes[3].toUInt()}.${bytes[32].toUInt()}.${bytes[1].toUInt()}"
+        fwV = "${bytes[4].toUInt()}.${bytes[3].toUInt()}.${bytes[2].toUInt()}.${bytes[1].toUInt()}"
         btlV = "${bytes[8].toUInt()}.${bytes[7].toUInt()}.${bytes[6].toUInt()}.${bytes[5].toUInt()}"
         branchCode = String(bytes.copyOfRange(9, 17))
         fileV = (bytes[17].toUInt() and 0xFFu).toInt()
