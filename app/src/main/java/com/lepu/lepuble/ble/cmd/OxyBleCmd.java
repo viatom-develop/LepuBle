@@ -20,6 +20,7 @@ public class OxyBleCmd {
 
     // O2 系列不使用SeqNo, 仅在下载数据时作为数据偏移
     private static int seqNo = 0;
+    public static int curSeqNo = 0;
     private static void addNo() {
         seqNo++;
         if (seqNo >= 65535) {
@@ -102,7 +103,6 @@ public class OxyBleCmd {
         }
 
         buf[buf.length - 1] = BleCRC.calCRC8(buf);
-
         seqNo = 0;
 
         return buf;
@@ -117,7 +117,7 @@ public class OxyBleCmd {
         buf[4] = (byte) (seqNo >> 8);
 
         buf[7] = BleCRC.calCRC8(buf);
-
+        curSeqNo = seqNo;
         seqNo++;
 
         return buf;
@@ -130,7 +130,7 @@ public class OxyBleCmd {
         buf[2] = (byte) ~OXY_CMD_READ_END;
 
         buf[7] = BleCRC.calCRC8(buf);
-
+        curSeqNo = 0;
         seqNo = 0;
 
         return buf;

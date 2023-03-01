@@ -242,12 +242,11 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
             }
 
             /**
-             * 发现有偶发情况导致下载文件过程中数据包撞上协议。因此忽略掉无效的包号来做规避措施
-             * 也可以使用包号连续性来做规避
-             * valid data may match the protocol, so filter the invalid package number to fix
+             * 发现有偶发情况导致下载文件过程中数据包撞上协议。因此使用包号对比连续性来做规避
+             * valid data may match the protocol, so compare package number to fix
              */
             val pkgNum = toUInt(bytes.copyOfRange(i+3,i+5))
-            if (pkgNum > 256) {
+            if (pkgNum != OxyBleCmd.curSeqNo) {
                 continue@loop
             }
 
