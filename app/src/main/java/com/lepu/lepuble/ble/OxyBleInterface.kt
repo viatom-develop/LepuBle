@@ -241,6 +241,16 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
                 continue@loop
             }
 
+            /**
+             * 发现有偶发情况导致下载文件过程中数据包撞上协议。因此忽略掉无效的包号来做规避措施
+             * 也可以使用包号连续性来做规避
+             * valid data may match the protocol, so filter the invalid package number to fix
+             */
+            val pkgNum = toUInt(bytes.copyOfRange(i+3,i+5))
+            if (pkgNum > 256) {
+                continue@loop
+            }
+
             // need content length
             val len = toUInt(bytes.copyOfRange(i+5, i+7))
 //            Log.d(TAG, "want bytes length: $len")
@@ -296,7 +306,7 @@ class OxyBleInterface : ConnectionObserver, OxyBleManager.onNotifyListener {
     fun downloadFiles(oxyInfo: OxyBleResponse.OxyInfo) {
         val files = oxyInfo.fileList.split(",")
         if (files.isNotEmpty()) {
-            readFile(files[3])
+            readFile(files[1])
         }
     }
 
