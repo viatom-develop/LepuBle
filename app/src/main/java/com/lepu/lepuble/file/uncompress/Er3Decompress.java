@@ -129,7 +129,7 @@ public class Er3Decompress {
                 compressRet = true;
                 break;
             case 0x04:
-                output[0] = COM_MIN_VAL + (lastData[0] + (compressData & 0xff));
+                output[0] = COM_MIN_VAL + (lastData[0] - (compressData & 0xff));
                 lastData[0] = output[0];
                 mUncompressStep = 0x00;
                 compressRet = true;
